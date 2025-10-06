@@ -1,25 +1,21 @@
 package movement;
 
-import arenaCharacter.ArenaCharacter;
-import arenaCharacter.Player;
-import javafx.scene.Group;
-import sprite.charSprite.CharacterSprite;
-import sprite.charSprite.PlayerSprite;
-
 /**
  * Program Name:    PlayerMovement.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a system for the
+ * 					playable character to move on the screen.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 20, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import arenaCharacter.Player;
 
 public class PlayerMovement extends Movement{
     /**

@@ -1,11 +1,10 @@
 package worldStage;
 
-import java.util.ArrayList;
-
 /**
  * Program Name:    WorldStage.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a system for all 
+ * 					stages to use to build a world for ARENA.
  *<p>
  * @version         0.0
  *<p>
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import arenaCharacter.ArenaCharacter;
 import collision.CollisionBox;
 import item.Item;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import window.Main;
 

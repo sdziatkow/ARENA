@@ -1,5 +1,20 @@
 package sprite;
 
+/**
+ * Program Name:    StoneTower.java
+ *<p>
+ * Purpose:         The purpose of this program is to create a stone tower image
+ * 					that can be placed anywhere on a WorldStage.
+ *<p>
+ * @version         0.0
+ *<p>
+ * Created:         May 19, 2025
+ *<p>
+ * Updated:         MONTH DD, YYYY
+ *<p>
+ * @author          Sean Dziatkowiec
+*/
+
 import collision.CollisionBox;
 import collision.CollisionBox.ColType;
 import javafx.scene.Group;
@@ -7,23 +22,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Rectangle;
-
-/**
- * Program Name:    StoneTower.java
- *<p>
- * Purpose:         The purpose of this program is to
- *<p>
- * @version         0.0
- *<p>
- * Created:         MONTH DD, YYYY
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
 
 public class StoneTower{
     /**

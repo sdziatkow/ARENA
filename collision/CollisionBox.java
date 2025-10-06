@@ -1,32 +1,23 @@
 package collision;
 
-import java.util.ArrayList;
-
-import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
 /**
  * Program Name:    CollisionBox.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create areas where objects
+ * 					within the world can interact with eachother in various ways.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 19, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import javafx.geometry.Bounds;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class CollisionBox{
     /**
@@ -58,18 +49,41 @@ public class CollisionBox{
     	colBox.setY(bounds[1]);
     	colBox.setWidth(bounds[2]);
     	colBox.setHeight(bounds[3]);
-    	colBox.setFill(Color.BLACK);
+    	
+    	
+    	switch (type) {
+    	case STAGEBOX:
+    		colBox.setFill(Color.GREY);
+    		break;
+    	case HURTBOX:
+    		colBox.setFill(Color.BLUE);
+    		break;
+    	case HITBOX:
+    		colBox.setFill(Color.RED);
+    		break;
+    	case INTERACTBOX:
+    		colBox.setFill(Color.PURPLE);
+    		break;
+    	case WORLDBOX:
+    		colBox.setFill(Color.BLACK);
+    		break;
+    		
+    	}
     	//colBox.setOpacity(0);
     	colBox.setCache(true);
     }
 
 //SETTERS--------------------------------------------------------------------------
 
-    public void setBounds(int[] bounds) {
+    public void setBounds(double[] bounds) {
         /**
          * Setter for field:
         */
 
+    	colBox.setX(bounds[0]);
+    	colBox.setY(bounds[1]);
+    	colBox.setWidth(bounds[2]);
+    	colBox.setHeight(bounds[3]);
     }
     
 

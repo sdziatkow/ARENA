@@ -1,19 +1,10 @@
 package arenaCharacter;
 
-import animate.Animate;
-import animate.PlayerAnimate;
-import movement.Movement;
-import movement.PlayerMovement;
-import sprite.charSprite.CharacterSprite;
-import sprite.charSprite.PlayerSprite;
-import window.Controller;
-import window.Main;
-import worldStage.WorldStage;
-
 /**
  * Program Name:    Player.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a playable character
+ * 					for ARENA.
  *<p>
  * @version         0.0
  *<p>
@@ -24,6 +15,15 @@ import worldStage.WorldStage;
  * @author          Sean Dziatkowiec
 */
 
+import animate.Animate;
+import animate.PlayerAnimate;
+import arenaCharacter.Stat.StatType;
+import movement.Movement;
+import movement.PlayerMovement;
+import sprite.charSprite.CharacterSprite;
+import sprite.charSprite.PlayerSprite;
+import window.Controller;
+import worldStage.WorldStage;
 
 public class Player extends ArenaCharacter{
     /**
@@ -95,7 +95,36 @@ public class Player extends ArenaCharacter{
     	if (getCntrl().getAttkDown()) {
     		setCharState(State.ATTK);
     		getCntrl().setAttkDown(false);
+    		
+    		if (!getSprite().getSpriteGroup().getChildren().contains(getSprite().getHitBox().getColBox())) {
+    			
+    			switch (getMvmnt().getDir()) {
+    			case 'w':
+    				getSprite().getHitBox().setBounds(new double[] {3.0, 1.0, 14.0, 7.0});
+    				break;
+    			case 'a':
+    				getSprite().getHitBox().setBounds(new double[] {-5.0, 12.0, 7.0, 12.0});
+    				break;
+    			case 's':
+    				getSprite().getHitBox().setBounds(new double[] {4.0, 24.0, 14.0, 7.0});
+    				break;
+    			case 'd':
+    				getSprite().getHitBox().setBounds(new double[] {16.0, 12.0, 7.0, 12.0});
+    				break;
+    			}
+    			
+    			getSprite().getSpriteGroup().getChildren().add(getSprite().getHitBox().getColBox());
+    			
+    			if (getSprite().getHitBox().getBounds().intersects(getStage().getNpc()[0].getSprite().getHurtBox().getBounds())) {
+    				getStage().getNpc()[0].stat(StatType.HP).dmg(10.0);
+    			}
+    		}
+    		
+    		System.out.println(getStage().getNpc()[0].stat(StatType.HP).getVal());
     	}
+    	
+ 
+    	
     }
     
 

@@ -1,13 +1,10 @@
 package item.weapon;
 
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
-
 /**
- * Program Name:    Bow.java
+ * Program Name:    WoodenBow.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a bow Weapon that 
+ * 					ArenaCharacters can use.
  *<p>
  * @version         0.0
  *<p>
@@ -18,6 +15,9 @@ import item.weapon.WeaponAttack.AttackType;
  * @author          Sean Dziatkowiec
 */
 
+import arenaCharacter.CharAttr.Attribute;
+import arenaCharacter.Stat.StatType;
+import item.weapon.WeaponAttack.AttackType;
 
 public class WoodenBow extends Weapon {
     /**

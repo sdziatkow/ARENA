@@ -1,19 +1,10 @@
 package window;
 
-import javafx.geometry.Bounds;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
-import javafx.scene.shape.Ellipse;
-import javafx.stage.Stage;
-import sprite.charSprite.CharacterSprite;
-import sprite.charSprite.PlayerSprite;
-import worldStage.WorldStage;
-
 /**
  * Program Name:    Controller.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a place for key-inputs
+ * 					to be mapped to functions.
  *<p>
  * @version         0.0
  *<p>
@@ -24,6 +15,8 @@ import worldStage.WorldStage;
  * @author          Sean Dziatkowiec
 */
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 
 public class Controller{
     /**

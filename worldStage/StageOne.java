@@ -1,27 +1,10 @@
 package worldStage;
 
-import java.util.ArrayList;
-
-import arenaCharacter.ArenaCharacter;
-import arenaCharacter.ArenaCharacter.CharClass;
-import arenaCharacter.ArenaCharacter.State;
-import arenaCharacter.Player;
-import arenaCharacter.npc.Wilhelm;
-import collision.CollisionBox;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import sprite.GroundTileSet;
-import sprite.StoneTower;
-import window.Main;
-
 /**
  * Program Name:    StageOne.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a specific stage 
+ * 					for the world of ARENA.
  *<p>
  * @version         0.0
  *<p>
@@ -31,6 +14,18 @@ import window.Main;
  *<p>
  * @author          Sean Dziatkowiec
 */
+
+import java.util.ArrayList;
+import arenaCharacter.ArenaCharacter;
+import arenaCharacter.ArenaCharacter.CharClass;
+import arenaCharacter.ArenaCharacter.State;
+import arenaCharacter.Player;
+import arenaCharacter.npc.Wilhelm;
+import collision.CollisionBox;
+import javafx.scene.Group;
+import sprite.GroundTileSet;
+import sprite.StoneTower;
+import window.Main;
 
 public class StageOne extends WorldStage{
     /**
@@ -114,8 +109,8 @@ public class StageOne extends WorldStage{
     	getNpc()[0].getMvmnt().setColBoxIndex(1);
     	
     	// Set to desired position
-    	getNpc()[0].getSprite().getSpriteGroup().setTranslateX(500);
-    	getNpc()[0].getSprite().getSpriteGroup().setTranslateY(25);
+    	getNpc()[0].getSprite().getSpriteGroup().setTranslateX(150);
+    	getNpc()[0].getSprite().getSpriteGroup().setTranslateY(50);
     	
     	towerObj1.getObjGroup().setTranslateX(50);
     	towerObj1.getObjGroup().setTranslateY(50);
@@ -229,6 +224,7 @@ public class StageOne extends WorldStage{
     		getNpc()[i].getAnim().animate();
     	}
     }
+    
     
     public void runPAttk() {
     	/*

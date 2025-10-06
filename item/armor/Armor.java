@@ -1,9 +1,10 @@
 package item.armor;
 
 /**
- * Program Name:    ClassTemplate.java
+ * Program Name:    Armor.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create armor items that can 
+ * 					be used by ArenaCharacters.
  *<p>
  * @version         0.0
  *<p>

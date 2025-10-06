@@ -1,23 +1,23 @@
 package animate;
 
-import arenaCharacter.ArenaCharacter.State;
-import movement.Movement;
-import sprite.charSprite.CharacterSprite;
-
 /**
  * Program Name:    Animate.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a general system for 
+ * 					handling animations of all types.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 20, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import arenaCharacter.ArenaCharacter.State;
+import movement.Movement;
+import sprite.charSprite.CharacterSprite;
 
 public abstract class Animate{
     /**
@@ -125,6 +125,7 @@ public abstract class Animate{
 		if (attkFrameCount >= maxFramePerDir) {
 			attkFrameCount = 0;
 			getMvmnt().getChar().setCharState(State.MOVE);
+			getMvmnt().getChar().getSprite().getSpriteGroup().getChildren().remove(getMvmnt().getChar().getSprite().getHitBox().getColBox());
 		}
     }
 

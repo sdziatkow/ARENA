@@ -3,7 +3,8 @@ package arenaCharacter.npc;
 /**
  * Program Name:    Wilhelm.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a non-playable
+ * 					character for ARENA.
  *<p>
  * @version         0.0
  *<p>
@@ -14,13 +15,9 @@ package arenaCharacter.npc;
  * @author          Sean Dziatkowiec
 */
 
-import arenaCharacter.*;
 import movement.NpcMovement;
 import sprite.charSprite.NpcTestSprite;
-import window.Controller;
 import worldStage.WorldStage;
-
-import java.util.Random;
 
 import animate.NpcAnimate;
 

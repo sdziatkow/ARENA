@@ -3,7 +3,8 @@ package backpack;
 /**
  * Program Name:    EquipSlots.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a place for
+ * 					ArenaCharacters to use certain items from Backpack.
  *<p>
  * @version         0.0
  *<p>
