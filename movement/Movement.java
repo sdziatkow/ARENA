@@ -1,26 +1,23 @@
 package movement;
 
-import java.util.ArrayList;
-
-import arenaCharacter.ArenaCharacter;
-import collision.CollisionBox;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-
 /**
  * Program Name:    Movement.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a system that all 
+ * 					moving world objects can use to move on the screen.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 20, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import arenaCharacter.ArenaCharacter;
+import collision.CollisionBox;
+import javafx.geometry.Bounds;
 
 public abstract class Movement{
     /**

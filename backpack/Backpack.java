@@ -3,7 +3,8 @@ package backpack;
 /**
  * Program Name:    Backpack.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a place for
+ * 					ArenaCharacters and world objects to store Items.
  *<p>
  * @version         0.0
  *<p>

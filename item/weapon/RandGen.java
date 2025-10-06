@@ -3,7 +3,8 @@ package item.weapon;
 /**
  * Program Name:    RandGen.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to generate random numbers for
+ * 					Weapon attacks.
  *<p>
  * @version         0.0
  *<p>

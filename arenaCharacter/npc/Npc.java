@@ -3,7 +3,8 @@ package arenaCharacter.npc;
 /**
  * Program Name:    Npc.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a base class that all
+ * 					non-playable characters will use.
  *<p>
  * @version         0.0
  *<p>

@@ -1,13 +1,10 @@
 package item.weapon;
 
-import arenaCharacter.ArenaCharacter.CharClass;
-import arenaCharacter.CharAttr.Attribute;
-import item.weapon.WeaponAttack.AttackType;
-
 /**
  * Program Name:    Martial.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a hand-to-hand 
+ * 					Weapon that ArenaCharacters can use.
  *<p>
  * @version         0.0
  *<p>
@@ -17,6 +14,10 @@ import item.weapon.WeaponAttack.AttackType;
  *<p>
  * @author          Sean Dziatkowiec
 */
+
+import arenaCharacter.ArenaCharacter.CharClass;
+import arenaCharacter.CharAttr.Attribute;
+import item.weapon.WeaponAttack.AttackType;
 
 public class Martial extends Weapon {
     /**

@@ -3,11 +3,12 @@ package movement;
 /**
  * Program Name:    NpcMovement.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a system for
+ * 					non-playable characters to move.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 20, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
@@ -17,7 +18,6 @@ package movement;
 import java.util.Random;
 
 import arenaCharacter.npc.Npc;
-import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
 

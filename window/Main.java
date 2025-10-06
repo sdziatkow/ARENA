@@ -3,19 +3,15 @@ package window;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import sprite.charSprite.CharacterSprite;
 import worldStage.StageOne;
 import worldStage.WorldStage;
 

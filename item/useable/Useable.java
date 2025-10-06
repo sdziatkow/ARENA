@@ -1,9 +1,10 @@
 package item.useable;
 
 /**
- * Program Name:    ClassTemplate.java
+ * Program Name:    Useable.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a base class that all
+ * 					non-armor and non-weapon usable items can use.
  *<p>
  * @version         0.0
  *<p>

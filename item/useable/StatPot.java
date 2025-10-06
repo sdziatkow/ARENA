@@ -1,9 +1,10 @@
 package item.useable;
 
 /**
- * Program Name:    ClassTemplate.java
+ * Program Name:    StatPot.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create potions that can 
+ * 					effect the ArenaCharacters HP, SP, or MP.
  *<p>
  * @version         0.0
  *<p>
@@ -14,9 +15,7 @@ package item.useable;
  * @author          Sean Dziatkowiec
 */
 
-import arenaCharacter.Stat;
-import item.Item;
-import arenaCharacter.Stat.StatType;;
+import arenaCharacter.Stat.StatType;
 
 public class StatPot extends Useable {
 	/**

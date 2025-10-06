@@ -3,7 +3,8 @@ package item;
 /**
  * Program Name:    Item.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a base class for all
+ * 					ARENA items.
  *<p>
  * @version         0.0
  *<p>

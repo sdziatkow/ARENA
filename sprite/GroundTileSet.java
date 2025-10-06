@@ -1,15 +1,16 @@
 package sprite;
 
 /**
- * Program Name:    ArenaCharacter.java
+ * Program Name:    GroundTileSet.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a large background
+ * 					with tiles for the main backdrop of a WorldStage
  *<p>
  * @version         0.0
  *<p>
- * Created:         February 27, 2025
+ * Created:         May 20, 2025
  *<p>
- * Updated:         May 12, 2025
+ * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */

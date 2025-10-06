@@ -1,13 +1,11 @@
 package arenaCharacter;
 
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import arenaCharacter.ArenaCharacter.CharClass;
-
 /**
- * Program Name:    CharacterAspect.java
+ * Program Name:    Charstate.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to combine both class Stat and
+ * 					class CharAttr into one class describing an ArenaCharacter's
+ * 					state.
  *<p>
  * @version         0.0
  *<p>
@@ -18,6 +16,9 @@ import arenaCharacter.ArenaCharacter.CharClass;
  * @author          Sean Dziatkowiec
 */
 
+import arenaCharacter.CharAttr.Attribute;
+import arenaCharacter.Stat.StatType;
+import arenaCharacter.ArenaCharacter.CharClass;
 
 public class CharState {
 	/**

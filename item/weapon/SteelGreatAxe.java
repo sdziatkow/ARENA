@@ -1,13 +1,10 @@
 package item.weapon;
 
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
-
 /**
- * Program Name:    GreatAxe.java
+ * Program Name:    SteelGreatAxe.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a large axe Weapon
+ * 					for ArenaCharacters to use.
  *<p>
  * @version         0.0
  *<p>
@@ -17,6 +14,10 @@ import item.weapon.WeaponAttack.AttackType;
  *<p>
  * @author          Sean Dziatkowiec
 */
+
+import arenaCharacter.CharAttr.Attribute;
+import arenaCharacter.Stat.StatType;
+import item.weapon.WeaponAttack.AttackType;
 
 public class SteelGreatAxe extends Weapon {
     /**

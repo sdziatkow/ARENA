@@ -1,21 +1,21 @@
 package sprite.charSprite;
 
-import collision.CollisionBox;
-
 /**
  * Program Name:    CharacterSprite.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create a system that all
+ * 					ArenaCharacter sprites can use to be easily managed.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 19, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import collision.CollisionBox;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,6 +47,8 @@ public abstract class CharacterSprite{
 	private Group     spriteGroup;
 	
 	private CollisionBox worldBox;
+	private CollisionBox hurtBox;
+	private CollisionBox hitBox;
 	
 	// Will store spriteView and worldBox.getColBox() -> Ellipse
 	private StackPane charPane;
@@ -109,7 +111,7 @@ public abstract class CharacterSprite{
 
     public void setUpSprite(int index, int[] coords) {
         /**
-         * Setter for field:
+         * Setter for field: upSprites.
         */
 
     	this.upSprites[index] = new WritableImage(
@@ -261,6 +263,22 @@ public abstract class CharacterSprite{
 		this.worldBox = worldBox;
 	}
 	
+	public void setHurtBox(CollisionBox hurtBox) {
+		/*
+		 * 
+		*/
+		
+		this.hurtBox = hurtBox;
+	}
+	
+	public void setHitBox(CollisionBox hitBox) {
+		/*
+		 * 
+		*/
+		
+		this.hitBox = hitBox;
+	}
+	
 	public void setSpriteGroup(Group spriteGroup) {
 		/**
 		 * 
@@ -369,6 +387,22 @@ public abstract class CharacterSprite{
 		*/
 		
 		return worldBox;
+	}
+	
+	public CollisionBox getHurtBox() {
+		/*
+		 * 
+		*/
+		
+		return hurtBox;
+	}
+	
+	public CollisionBox getHitBox() {
+		/*
+		 * 
+		*/
+		
+		return hitBox;
 	}
 	
 	public StackPane getCharPane() {

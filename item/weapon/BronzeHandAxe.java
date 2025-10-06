@@ -1,11 +1,10 @@
 package item.weapon;
 
-import item.weapon.WeaponAttack.AttackType;
-
 /**
- * Program Name:    HandAxe.java
+ * Program Name:    BronzeHandAxe.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to create an axe Weapon for 
+ * 					ArenaCharacters to use.
  *<p>
  * @version         0.0
  *<p>
@@ -15,6 +14,8 @@ import item.weapon.WeaponAttack.AttackType;
  *<p>
  * @author          Sean Dziatkowiec
 */
+
+import item.weapon.WeaponAttack.AttackType;
 
 public class BronzeHandAxe extends Weapon {
     /**

@@ -1,24 +1,23 @@
 package animate;
 
-import arenaCharacter.ArenaCharacter.State;
-import javafx.scene.image.WritableImage;
-import movement.Movement;
-import sprite.charSprite.CharacterSprite;
-
 /**
  * Program Name:    PlayerAnimate.java
  *<p>
- * Purpose:         The purpose of this program is to
+ * Purpose:         The purpose of this program is to have a system for animating
+ * 					the playable character.
  *<p>
  * @version         0.0
  *<p>
- * Created:         MONTH DD, YYYY
+ * Created:         May 20, 2025
  *<p>
  * Updated:         MONTH DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
+import javafx.scene.image.WritableImage;
+import movement.Movement;
+import sprite.charSprite.CharacterSprite;
 
 public class PlayerAnimate extends Animate{
     /**

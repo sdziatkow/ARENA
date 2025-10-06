@@ -1,29 +1,24 @@
 package sprite.charSprite;
 
-import collision.CollisionBox;
-import collision.CollisionBox.ColType;
-
 /**
- * Program Name:    ArenaCharacter.java
+ * Program Name:    NpcTestSprite.java
  *<p>
  * Purpose:         The purpose of this program is to
  *<p>
  * @version         0.0
  *<p>
- * Created:         May 12, 2025
+ * Created:         May 20, 2025
  *<p>
  * Updated:         Month DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
-
+import collision.CollisionBox;
+import collision.CollisionBox.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 
 public class NpcTestSprite extends CharacterSprite {
 	/**
@@ -37,6 +32,7 @@ public class NpcTestSprite extends CharacterSprite {
 	private int[][] rightCoords;
 	
 	double[] worldBoxBounds;
+	double[] hurtBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -83,12 +79,18 @@ public class NpcTestSprite extends CharacterSprite {
 		
 		setSpriteView(new ImageView(getDownSprite()[0]));
 		worldBoxBounds  = new double[] {0, 0, 9.0, 10.0};
+		hurtBoxBounds   = new double[] {0, 0, 9.0, 10.0};
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
+		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
 		
 		getCharPane().getChildren().add(getSpriteView());
 		getCharPane().getChildren().add(getWorldBox().getColBox());
+		getCharPane().getChildren().add(getHurtBox().getColBox());
 		getWorldBox().getColBox().setTranslateX(1);
 		getWorldBox().getColBox().setTranslateY(3);
+		
+		getHurtBox().getColBox().setTranslateX(1);
+		getHurtBox().getColBox().setTranslateY(3);
 		
 		setSpriteGroup(new Group(getCharPane()));
 	}

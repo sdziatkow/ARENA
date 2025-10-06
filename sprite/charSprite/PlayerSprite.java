@@ -1,31 +1,24 @@
 package sprite.charSprite;
 
-import collision.CollisionBox;
-import collision.CollisionBox.ColType;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-
 /**
- * Program Name:    ArenaCharacter.java
+ * Program Name:    PlayerSprite.java
  *<p>
  * Purpose:         The purpose of this program is to
  *<p>
  * @version         0.0
  *<p>
- * Created:         May 12, 2025
+ * Created:         May 08, 2025
  *<p>
  * Updated:         Month DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
-
+import collision.CollisionBox;
+import collision.CollisionBox.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 
 public class PlayerSprite extends CharacterSprite {
 	/**
@@ -45,6 +38,8 @@ public class PlayerSprite extends CharacterSprite {
 	
 	
 	double[] worldBoxBounds;
+	double[] hurtBoxBounds;
+	double[] hitBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -56,6 +51,7 @@ public class PlayerSprite extends CharacterSprite {
 		super();
 		setSpriteSheet(new Image("file:sprites/character.png"));
 		
+		// MOVEMENT COORDS
 		upCoords = new int[][] {
 			{ 0, 64, 15, 30},
 			{16, 64, 15, 30},
@@ -81,27 +77,25 @@ public class PlayerSprite extends CharacterSprite {
 			{48, 32, 15, 30}
 		};
 		
+		// ATTACK COORDS
 		upAttkCoords = new int[][] {
 			{ 8, 160, 20, 30},
 			{38, 160, 20, 30},
 			{68, 160, 20, 30},
 			{98, 160, 20, 30}
 		};
-		
 		leftAttkCoords = new int[][] {
 			{ 8, 224, 20, 30},
 			{38, 224, 20, 30},
 			{68, 224, 20, 30},
 			{98, 224, 20, 30},
 		};
-		
 		downAttkCoords = new int[][] {
 			{ 8, 128, 20, 30},
 			{38, 128, 20, 30},
 			{68, 128, 20, 30},
 			{98, 128, 20, 30}
 		};
-		
 		rightAttkCoords = new int[][] {
 			{ 8, 192, 20, 30},
 			{38, 192, 20, 30},
@@ -110,7 +104,7 @@ public class PlayerSprite extends CharacterSprite {
 		};
 		
 		
-		
+		// Set all coords to their array
 		for (int i = 0; i < upCoords.length; ++i) {
 			setUpSprite(i, upCoords[i]);
 			setLeftSprite(i, leftCoords[i]);
@@ -123,15 +117,25 @@ public class PlayerSprite extends CharacterSprite {
 			setRightAttkSprite(i, rightAttkCoords[i]);
 		}
 		
-		
+		// Set sprite view to default position
 		setSpriteView(new ImageView(getDownSprite()[0]));
+		
+		// Initialize world box bounds and set world box.
 		worldBoxBounds  = new double[] {0, 0, 7.0, 9.0};
+		hurtBoxBounds  = new double[] {0, 0, 7.0, 9.0};
+		hitBoxBounds  = new double[] {0, 0, 7.0, 9.0};
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
+		setHurtBox(new CollisionBox(ColType.HURTBOX, hurtBoxBounds));
+		setHitBox(new CollisionBox(ColType.HITBOX, hitBoxBounds));
 		
 		getCharPane().getChildren().add(getSpriteView());
 		getCharPane().getChildren().add(getWorldBox().getColBox());
+		getCharPane().getChildren().add(getHurtBox().getColBox());
 		getWorldBox().getColBox().setTranslateX(1);
 		getWorldBox().getColBox().setTranslateY(5);
+		
+		getHurtBox().getColBox().setTranslateX(1);
+		getHurtBox().getColBox().setTranslateY(5);
 		
 		setSpriteGroup(new Group(getCharPane()));
 	}
