@@ -17,7 +17,9 @@ package movement;
 
 import java.util.Random;
 
+import arenaCharacter.ArenaCharacter;
 import arenaCharacter.npc.Npc;
+import collision.CollisionBox;
 import javafx.animation.TranslateTransition;
 import javafx.util.Duration;
 
@@ -28,7 +30,6 @@ public class NpcMovement extends Movement{
 
 	private Random mvGen;
 	private int mv;
-	private int stepsPerDir;
 	private TranslateTransition moveX;
 	private TranslateTransition moveY;
 
@@ -88,47 +89,59 @@ public class NpcMovement extends Movement{
 
     }
 
-//
+//MOVEMENT-------------------------------------------------------------------------
+    
+    public void checkNextMove() {
+    	/*
+    	 * This method will check if the player is within detection range and
+    	 * move the NPC accordingly.
+    	*/
+    	
+    	ArenaCharacter player = getChar().getStage().getPlayer();
+    	CollisionBox npcBox = getChar().getSprite().getDetectBox();
+    	CollisionBox playerBox = player.getSprite().getHurtBox();
+    	
+    	if (!npcBox.getBounds().contains(playerBox.getBounds())) {
+    		move();
+    	}
+    	else {
+    		moveToPlayer(npcBox, playerBox);
+    	}
+
+    }
     
     public void move() {
     	/**
-    	 * 
+    	 * This method will move the NPC randomly.
     	*/
     	
-    	mv = mvGen.nextInt(5);
+    	mv = mvGen.nextInt(2000);
     	
-    	switch (mv) {
-    	
-    	default:
-    	case 0:
+    	if (mv > 1000) {
+    		setDir('s');
+    		setDx(0.0);
+    		setDy(0.0);
+    	}
+    	else if (mv > 750) {
     		setDir('w');
     		setDx(0.0);
     		setDy(-getMvRate());
-    		break;
     		
-    	case 1:
+    	}
+    	else if (mv > 500) {
     		setDir('a');
     		setDx(-getMvRate());
     		setDy(0.0);
-    		break;
-    		
-    	case 2:
+    	}
+    	else if (mv > 250) {
     		setDir('s');
     		setDx(0.0);
     		setDy(getMvRate());
-    		break;
-    		
-    	case 3:
+    	}
+    	else {
     		setDir('d');
     		setDx(getMvRate());
     		setDy(0.0);
-    		break;
-    		
-    	case 4:
-    		setDir('s');
-    		setDx(0.0);
-    		setDy(0.0);
-    		break;
     	}
     	
     	checkCollision();
@@ -142,6 +155,67 @@ public class NpcMovement extends Movement{
     	moveX.play();
     	moveY.play();
     	
+    }
+    
+    public void moveToPlayer(CollisionBox npcBox, CollisionBox playerBox) {
+    	/*
+    	 * This method will move the NPC towards the player.
+    	*/
+    	
+    	// used to make Npc's direction look more natural when moving towards 
+    	// player.
+    	double distDiffY;
+    	double distDiffX;
+
+    	distDiffY = Math.abs((npcBox.getMidY() - playerBox.getMidY()));
+    	distDiffX = Math.abs((npcBox.getMidX() - playerBox.getMidX()));
+    	
+    	// Set dx/dx based on position of player.
+    	if (npcBox.getMidY() < playerBox.getMidY()) { // Below - move down.
+    		setDy(getMvRate());
+    	}
+    	else if (npcBox.getMidY() > playerBox.getMidY()) { // Above - move up.
+    		setDy(-getMvRate());
+    	}
+    	
+    	if (npcBox.getMidX() > playerBox.getMidX()) { // Left - move left.
+    		setDx(-getMvRate());
+    	}
+    	else if (npcBox.getMidX() < playerBox.getMidX()) { // Right - move right.
+    		setDx(getMvRate());
+    	}
+    	
+    	checkCollision();
+    	
+    	// Use distY and distX to determine which direction to set.
+    	if (getDy() < 0.0 && distDiffY > distDiffX) {
+    		setDir('w');
+    	}
+    	else if (getDy() > 0.0 && distDiffY > distDiffX) {
+    		setDir('s');
+    	}
+    	
+    	else if (getDx() < 0.0 && distDiffY < distDiffX) {
+    		setDir('a');
+    	}
+    	else if (getDx() > 0.0 && distDiffY < distDiffX) {
+    		setDir('d');
+    	}
+    	
+    	// Normalize movement if moving diagonally.
+    	if (getDx() != 0.0 && getDy() != 0.0) {
+			setDx( getDx() * getNormalX() );
+			setDy( getDy() * getNormalY() );
+    	}
+    
+    	// Move the NPC towards the player.
+		moveX.setFromX(getChar().getSprite().getSpriteGroup().getTranslateX());
+		moveX.setToX(getChar().getSprite().getSpriteGroup().getTranslateX() + getDx());
+		
+		moveX.setFromY(getChar().getSprite().getSpriteGroup().getTranslateY());
+		moveX.setToY(getChar().getSprite().getSpriteGroup().getTranslateY() + getDy());
+    	
+    	moveX.play();
     }
 
 }

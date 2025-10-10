@@ -18,11 +18,9 @@ package worldStage;
 import java.util.ArrayList;
 import arenaCharacter.ArenaCharacter;
 import arenaCharacter.ArenaCharacter.CharClass;
-import arenaCharacter.ArenaCharacter.State;
 import arenaCharacter.Player;
 import arenaCharacter.npc.Wilhelm;
 import collision.CollisionBox;
-import javafx.scene.Group;
 import sprite.GroundTileSet;
 import sprite.StoneTower;
 import window.Main;
@@ -43,7 +41,6 @@ public class StageOne extends WorldStage{
 	private StoneTower towerObj1;
 	private StoneTower towerObj2;
 	private StoneTower towerObj3;
-	private final int totalWorldObj = 3;
 	
 	private CollisionBox[] worldBoxes;
 	
@@ -64,40 +61,23 @@ public class StageOne extends WorldStage{
     	// Players / NPCS
     	player = new Player(CharClass.BARBARIAN, this);
     	wilhelm = new Wilhelm(this);
-    	getArenaChars().getChildren().add(player.getSprite().getSpriteGroup());
-    	getArenaChars().getChildren().add(wilhelm.getSprite().getSpriteGroup());
+    	getWorldSpace().getChildren().add(player.getSprite().getSpriteGroup());
+    	getWorldSpace().getChildren().add(wilhelm.getSprite().getSpriteGroup());
     	
     	// World Objects
     	towerObj1 = new StoneTower();
     	towerObj2 = new StoneTower();
     	towerObj3 = new StoneTower();
-    	
-    	// ALL THINGS MUST BE IN ONE GROUP IN ORDER TO ORGANIZE VIEW ORDER ! ! !
-    	getArenaChars().getChildren().add(towerObj1.getObjGroup());
-    	getArenaChars().getChildren().add(towerObj2.getObjGroup());
-    	getArenaChars().getChildren().add(towerObj3.getObjGroup());
-//    	getWorldObjects().getChildren().add(towerObj1.getObjGroup());
-//    	getWorldObjects().getChildren().add(towerObj2.getObjGroup());
-//    	getWorldObjects().getChildren().add(towerObj3.getObjGroup());
+    	getWorldSpace().getChildren().add(towerObj1.getObjGroup());
+    	getWorldSpace().getChildren().add(towerObj2.getObjGroup());
+    	getWorldSpace().getChildren().add(towerObj3.getObjGroup());
     	
     	// Add all to grassBackground
-    	getBackground().getChildren().add(getArenaChars());
-    	getBackground().getChildren().add(getWorldObjects());
+    	getBackground().getChildren().add(getWorldSpace());
     	
     	
     	setPlayer(player);
     	setNpc(0, wilhelm);
-    }
-    
-    public StoneTower[] getTowers() {
-    	/*
-    	 * 
-    	*/
-    	
-    	StoneTower[] towers;
-    	towers = new StoneTower[] { towerObj1, towerObj2, towerObj3 };
-    	
-    	return towers;
     }
     
     public void onLaunch() {
@@ -122,27 +102,6 @@ public class StageOne extends WorldStage{
     	towerObj3.getObjGroup().setTranslateY(50);
     }
     
-    public void runPMvmnt() {
-    	/**
-    	 * 
-    	*/
-    	
-    	if (getPlayer().getCharState().equals(State.MOVE)) {
-    		getPlayer().getMvmnt().move();
-    	}
-    	
-    	getPlayer().attk();
-    	updateViewOrder();
-    }
-    
-    public void runNpcMvmnt() {
-    	
-    	for (int i = 0; i < TOTAL_WORLD_NPCS; ++i) {
-    		getNpc()[i].getMvmnt().move();
-    	}
-    	
-    }
-    
     public void updateViewOrder() {
     	/*
     	 *  
@@ -160,8 +119,6 @@ public class StageOne extends WorldStage{
     	boolean sorted;
     	double midy1;
     	double midy2;
-    	Group tempPane1;
-    	Group tempPane2;
     	
     	CollisionBox tempBox1;
     	CollisionBox tempBox2;
@@ -197,39 +154,20 @@ public class StageOne extends WorldStage{
     	
     }
     
-    public void runNpcCol() {
+    public void runPlayerStates() {
     	/**
     	 * 
     	*/
     	
-//    	for (int i = 0; i < TOTAL_WORLD_NPCS; ++i) {
-//    		getNpc()[i].getMvmnt().checkCollision();
-//    	}
+    	player.stateMachine();
     }
     
-    public void runAnim() {
-    	/**
-    	 * 
-    	*/
-    	
-    	if (getPlayer().getCharState().equals(State.MOVE)) {
-    		getPlayer().getAnim().animate();
-    	}
-    	else if (getPlayer().getCharState().equals(State.ATTK)) {
-    		getPlayer().getAnim().animateAttk();
-    		//getPlayer().setCharState(State.MOVE);
-    	}
+    public void runNpcStates() {
     	
     	for (int i = 0; i < TOTAL_WORLD_NPCS; ++i) {
-    		getNpc()[i].getAnim().animate();
+    		getNpc()[i].stateMachine();
     	}
-    }
-    
-    
-    public void runPAttk() {
-    	/*
-    	 * 
-    	*/
+    	
     }
     
     public void pause() {
@@ -249,6 +187,32 @@ public class StageOne extends WorldStage{
     		towerObj1.getWorldBox(),
     		towerObj2.getWorldBox(),
     		towerObj3.getWorldBox()
+    	};
+    	
+    	return worldBoxes;
+    }
+    
+    public CollisionBox[] getHurtBoxes() {
+    	/**
+    	 * 
+    	*/
+    	
+    	worldBoxes = new CollisionBox[]{
+    		player.getSprite().getHurtBox(),
+    		wilhelm.getSprite().getHurtBox(),
+    	};
+    	
+    	return worldBoxes;
+    }
+    
+    public CollisionBox[] getHitBoxes() {
+    	/**
+    	 * 
+    	*/
+    	
+    	worldBoxes = new CollisionBox[]{
+    		player.getSprite().getHitBox(),
+    		wilhelm.getSprite().getHitBox(),
     	};
     	
     	return worldBoxes;

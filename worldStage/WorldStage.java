@@ -34,9 +34,7 @@ public abstract class WorldStage{
 	
 	
 	private Group background;
-	private Group arenaChars;
-	private Group worldItems;
-	private Group worldObjects;
+	private Group worldSpace;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -50,14 +48,10 @@ public abstract class WorldStage{
     	this.items = new Item[totalItems];
     	
     	background = new Group();
-    	arenaChars = new Group();
-    	worldItems = new Group();
-    	worldObjects = new Group();
+    	worldSpace = new Group();
     	
     	background.setCache(true);
-    	arenaChars.setCache(true);
-    	worldItems.setCache(true);
-    	worldObjects.setCache(true);
+    	worldSpace.setCache(true);
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -95,31 +89,13 @@ public abstract class WorldStage{
     	background.setCache(true);
     }
     
-    public void setArenaChars(Group arenaChars) {
+    public void setWorldSpace(Group arenaChars) {
     	/**
     	 * Setter for field: arenaChars
     	*/
     	
-    	this.arenaChars = arenaChars;
-    	arenaChars.setCache(true);
-    }
-    
-    public void setWorldItems(Group worldItems) {
-    	/**
-    	 * Setter for field: worldItems
-    	*/
-    	
-    	this.worldItems = worldItems;
-    	worldItems.setCache(true);
-    }
-    
-    public void setWorldObjects(Group worldObjects) {
-    	/**
-    	 * Setter for field: worldObjects
-    	*/
-    	
-    	this.worldObjects = worldObjects;
-    	worldObjects.setCache(true);
+    	this.worldSpace = arenaChars;
+    	worldSpace.setCache(true);
     }
 
 //GETTERS--------------------------------------------------------------------------
@@ -164,39 +140,24 @@ public abstract class WorldStage{
     	return background;
     }
     
-    public Group getArenaChars() {
+    public Group getWorldSpace() {
     	/**
     	 * Getter for field: arenaChars
     	*/
     	
-    	return arenaChars;
-    }
-    
-    public Group getWorldItems() {
-    	/**
-    	 * Getter for field: worldItems
-    	*/
-    	
-    	return worldItems;
-    }
-    
-    public Group getWorldObjects() {
-    	/**
-    	 * Getter for field: worldObjects
-    	*/
-    	
-    	return worldObjects;
+    	return worldSpace;
     }
     
     public abstract CollisionBox[] getWorldBoxes();
+    public abstract CollisionBox[] getHurtBoxes();
+    public abstract CollisionBox[] getHitBoxes();
     
 //ON-LAUNCH------------------------------------------------------------------------
     
     public abstract void onLaunch();
-    public abstract void runPMvmnt();
-    public abstract void runNpcMvmnt();
-    public abstract void runNpcCol();
-    public abstract void runAnim();
+    public abstract void updateViewOrder();
+    public abstract void runPlayerStates();
+    public abstract void runNpcStates();
     public abstract void pause();
 
 }

@@ -33,6 +33,7 @@ public class NpcTestSprite extends CharacterSprite {
 	
 	double[] worldBoxBounds;
 	double[] hurtBoxBounds;
+	double[] detectBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -78,10 +79,14 @@ public class NpcTestSprite extends CharacterSprite {
 		
 		
 		setSpriteView(new ImageView(getDownSprite()[0]));
-		worldBoxBounds  = new double[] {0, 0, 9.0, 10.0};
+		
+		worldBoxBounds  = new double[] {0, 0, 7.0, 8.0};
 		hurtBoxBounds   = new double[] {0, 0, 9.0, 10.0};
+		detectBoxBounds = new double[] {-23.0, -15.0, 65.0, 65.0};
+		
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
 		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
+		setDetectBox(new CollisionBox(ColType.DETECTBOX, detectBoxBounds));
 		
 		getCharPane().getChildren().add(getSpriteView());
 		getCharPane().getChildren().add(getWorldBox().getColBox());
@@ -93,6 +98,14 @@ public class NpcTestSprite extends CharacterSprite {
 		getHurtBox().getColBox().setTranslateY(3);
 		
 		setSpriteGroup(new Group(getCharPane()));
+		
+		getSpriteGroup().getChildren().add(getDetectBox().getColBox());
+	}
+	
+	public double[] getHitBoxCoords(char dir) {
+		double[] coords = new double[] {0};
+		
+		return coords;
 	}
 	
 }

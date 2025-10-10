@@ -49,6 +49,7 @@ public abstract class CharacterSprite{
 	private CollisionBox worldBox;
 	private CollisionBox hurtBox;
 	private CollisionBox hitBox;
+	private CollisionBox detectBox;
 	
 	// Will store spriteView and worldBox.getColBox() -> Ellipse
 	private StackPane charPane;
@@ -279,6 +280,14 @@ public abstract class CharacterSprite{
 		this.hitBox = hitBox;
 	}
 	
+	public void setDetectBox(CollisionBox detectBox) {
+		/*
+		 * 
+		*/
+		
+		this.detectBox = detectBox;
+	}
+	
 	public void setSpriteGroup(Group spriteGroup) {
 		/**
 		 * 
@@ -405,6 +414,14 @@ public abstract class CharacterSprite{
 		return hitBox;
 	}
 	
+	public CollisionBox getDetectBox() {
+		/*
+		 * 
+		*/
+		
+		return detectBox;
+	}
+	
 	public StackPane getCharPane() {
 		/**
 		 * 
@@ -421,7 +438,20 @@ public abstract class CharacterSprite{
 		return spriteGroup;
 	}
 	
-
-//
+//HIT-BOX-PLACEMENT----------------------------------------------------------------
+	
+	public void placeHitBox(double[] coords) {
+		/*
+		 * 
+		*/
+		if (!getSpriteGroup().getChildren().contains(getHitBox().getColBox())) {
+			getHitBox().setBounds(coords);
+			getSpriteGroup().getChildren().add(getHitBox().getColBox());
+		}
+		
+		
+	}
+	
+	public abstract double[] getHitBoxCoords(char dir);
 
 }
