@@ -18,6 +18,8 @@ package arenaCharacter;
 import animate.Animate;
 import animate.PlayerAnimate;
 import arenaCharacter.Stat.StatType;
+import collision.CollisionBox;
+import javafx.animation.Animation;
 import movement.Movement;
 import movement.PlayerMovement;
 import sprite.charSprite.CharacterSprite;
@@ -31,11 +33,10 @@ public class Player extends ArenaCharacter{
      *  The only playable character in ARENA. Controlled by the user.
     */
 	
-	private WorldStage stage;
 	private CharacterSprite charSprite;
 	private Movement movement;
 	private Animate animate;
-
+	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
     public Player() {
@@ -73,6 +74,7 @@ public class Player extends ArenaCharacter{
     	setSprite(charSprite);
     	setMvmnt(movement);
     	setAnim(animate);
+    	
     }
     
 //GETTERS--------------------------------------------------------------------------
@@ -87,45 +89,69 @@ public class Player extends ArenaCharacter{
     
 //ACTION---------------------------------------------------------------------------
     
+    
+    public void stateMachine() {
+    	/*
+    	 * This method will continuosly run to switch the player between states. 
+    	*/
+    	
+    	// If the attack key is pressed, switch state to ATTK.
+    	if (getCntrl().getAttkDown()) {
+    		setCharState(State.ATTK);
+    	}
+    	
+    	// Switch the character's current state.
+    	switch (getCharState()) {
+    	case REST:
+    		break;
+    	case MOVE: // Move the character and play mvAnim given it is not already.
+    		getMvmnt().move();
+    		if (!getAnim().getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
+    			getAnim().getMvAnim().play();
+    		}
+    		break;
+    	case ATTK: // Need if here so it is only run once.
+    		if (getCntrl().getAttkDown()) {
+    			
+    			// Pause mvAnim, play attkAnim and run attk.
+    			getAnim().getMvAnim().pause();
+    			getAnim().getAttkAnim().play();
+    			attk();
+    			getCntrl().setAttkDown(false);
+    		}
+    		break;
+    	}
+    }
+    
     public void attk() {
     	/*
     	 * 
     	*/
     	
-    	if (getCntrl().getAttkDown()) {
-    		setCharState(State.ATTK);
-    		getCntrl().setAttkDown(false);
+    	int totalHurtBoxes = getStage().getHurtBoxes().length;
+    	CollisionBox hitBox = getSprite().getHitBox();
+    	CollisionBox hurtBox;
     		
-    		if (!getSprite().getSpriteGroup().getChildren().contains(getSprite().getHitBox().getColBox())) {
-    			
-    			switch (getMvmnt().getDir()) {
-    			case 'w':
-    				getSprite().getHitBox().setBounds(new double[] {3.0, 1.0, 14.0, 7.0});
-    				break;
-    			case 'a':
-    				getSprite().getHitBox().setBounds(new double[] {-5.0, 12.0, 7.0, 12.0});
-    				break;
-    			case 's':
-    				getSprite().getHitBox().setBounds(new double[] {4.0, 24.0, 14.0, 7.0});
-    				break;
-    			case 'd':
-    				getSprite().getHitBox().setBounds(new double[] {16.0, 12.0, 7.0, 12.0});
-    				break;
-    			}
-    			
-    			getSprite().getSpriteGroup().getChildren().add(getSprite().getHitBox().getColBox());
-    			
-    			if (getSprite().getHitBox().getBounds().intersects(getStage().getNpc()[0].getSprite().getHurtBox().getBounds())) {
-    				getStage().getNpc()[0].stat(StatType.HP).dmg(10.0);
+    	getSprite().placeHitBox(getSprite().getHitBoxCoords(getMvmnt().getDir()));
+    	
+    	for (int npc = 0; npc < totalHurtBoxes; ++npc) {
+    		
+    		if (npc != getMvmnt().getColBoxIndex()) {
+    			hurtBox = getStage().getHurtBoxes()[npc];
+    			if (hitBox.getBounds().intersects(hurtBox.getBounds())) {
+    				equipSlot().getWeapon().setTarget(getStage().getNpc()[0]);
+    				equipSlot().getWeapon().genAttk1();
+    				getStage().getNpc()[0].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
     			}
     		}
-    		
-    		System.out.println(getStage().getNpc()[0].stat(StatType.HP).getVal());
     	}
-    	
- 
-    	
+		
+//		System.out.println("NPC HP: " + getStage().getNpc()[0].stat(StatType.HP).getVal());
+//		System.out.println("PLAYER WEAPON: " + equipSlot().getWeapon().getName());
+//		System.out.println("WEAPON DMG: " + equipSlot().getWeapon().getAttkDmg());
+		
     }
+    	
     
 
 }

@@ -33,11 +33,6 @@ public abstract class Movement{
 	
 	private int colBoxIndex;
 	
-	private boolean checkW;
-	private boolean checkA;
-	private boolean checkS;
-	private boolean checkD;
-	
 	boolean contained = false;
 
 
@@ -53,11 +48,6 @@ public abstract class Movement{
     	dy = 0.0;
     	
     	direction = 'd';
-    	
-    	checkW = true;
-    	checkA = true;
-    	checkS = true;
-    	checkD = true;
     }
     
     public Movement(ArenaCharacter arenaChar, double mvRate) {
@@ -71,11 +61,6 @@ public abstract class Movement{
     	dy = 0.0;
     	
     	direction = 'd';
-    	
-    	checkW = true;
-    	checkA = true;
-    	checkS = true;
-    	checkD = true;
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -291,9 +276,12 @@ public abstract class Movement{
 		CollisionBox[] worldBoxes = getChar().getStage().getWorldBoxes();
 		int totalWorldBoxes = worldBoxes.length;
 		
-		// The amount that the Character will be pushed back upon colliding with 
+		// The modifier that the Character will be pushed back upon colliding with 
 		// another worldBox.
-		double bounce = 0.0;
+		double bounce = 0.1;
+		
+		// For intersection purposes allows greater detection range.
+		double pad = 3.0;
 		
 		for (int box = 0; box < totalWorldBoxes && !contained; ++box) {
 			
@@ -316,62 +304,56 @@ public abstract class Movement{
 				if (contained) {
 					
 					if (
-						(getDx() > 0.0 && (currX < checkX && minX < checkMinX)) 
+						(getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) 
 						&&
-						(getDy() > 0.0 && (currY < checkY && minY < checkMinY))
+						(getDy() > 0.0 && ( (maxY - pad) < checkMinY))
 						) { // right - down
 						
 						// go up - left
-						setDx( -getMvRate() * getNormalX() );
-						setDy( -getMvRate() * getNormalY() );
+						setDx(-getDx() * bounce);
+						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() > 0.0 && (currX < checkX && minX < checkMinX)) 
+							(getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) 
 							&&
-							(getDy() < 0.0 && (currY > checkY && maxY > checkMaxY))
+							(getDy() < 0.0 && ( (minY + pad) > checkMaxY))
 							) { // right - up
-						setDx( -getMvRate() * getNormalX() );
-						setDy(  getMvRate() * getNormalY() );
+						setDx(-getDx() * bounce);
+						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() < 0.0 && (currX > checkX && maxX > checkMaxX))
+							(getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX))
 							&&
-							(getDy() > 0.0 && (currY < checkY && minY < checkMinY))
+							(getDy() > 0.0 && ( (maxY - pad) < checkMinY))
 							) { // left - down
-						setDx(  getMvRate() * getNormalX() );
-						setDy( -getMvRate() * getNormalY() );
+						setDx(-getDx() * bounce);
+						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() < 0.0 && (currX > checkX && maxX > checkMaxX))
+							(getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX))
 							&&
-							(getDy() < 0.0 && (currY > checkY && maxY > checkMaxY))
+							(getDy() < 0.0 && ( (minY + pad) > checkMaxY))
 							) { // left - up
-						setDx( getMvRate() * getNormalX() );
-						setDy( getMvRate() * getNormalY() );
+						setDx(-getDx() * bounce);
+						setDy(-getDy() * bounce);
 					}
-					else if (getDx() > 0.0 && (currX < checkX && minX < checkMinX)) { // right
-						setDx(-getDx() - bounce);
+					else if (getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) { // right
+						setDx(-getDx() * bounce);
 					}
-					else if (getDx() < 0.0 && (currX > checkX && maxX > checkMaxX)) { //left
-						setDx(-getDx() + bounce);
+					else if (getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX)) { //left
+						setDx(-getDx() * bounce);
 					}
-					else if (getDy() < 0.0 && (currY > checkY && maxY > checkMaxY)) { //up
-						setDy(-getDy() + bounce);
+					else if (getDy() < 0.0 && ( (minY + pad) > checkMaxY)) { //up
+						setDy(-getDy() * bounce);
 					}
-					else if (getDy() > 0.0 && (currY < checkY && minY < checkMinY)) { //down
-						setDy(-getDy() - bounce);
+					else if (getDy() > 0.0 && ( (maxY - pad) < checkMinY)) { //down
+						setDy(-getDy() * bounce);
 					}
-					
-					
 				}
-				
 			}
 			
 			contained = false;
 		}
-	
-
-
 	}
 	
 }

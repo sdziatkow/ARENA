@@ -28,6 +28,7 @@ public class CollisionBox{
 		STAGEBOX,
 		HURTBOX,
 		HITBOX,
+		DETECTBOX,
 		INTERACTBOX,
 		WORLDBOX
 	}
@@ -36,10 +37,24 @@ public class CollisionBox{
 	private Rectangle colBox;
 
 //CONSTRUCTORS---------------------------------------------------------------------
+	
+	public CollisionBox() {
+		/*
+		 * Default Constructor for class CollisionBox. 
+		*/
+		
+		type = ColType.WORLDBOX;
+		
+    	colBox = new Rectangle();
+    	colBox.setX(0);
+    	colBox.setY(0);
+    	colBox.setWidth(0);
+    	colBox.setHeight(0);
+	}
 
     public CollisionBox(ColType type, double[] bounds) {
         /**
-         * Default Constructor for class
+         * Default Constructor for class CollisionBox
         */
     	
     	this.type = type;
@@ -50,25 +65,42 @@ public class CollisionBox{
     	colBox.setWidth(bounds[2]);
     	colBox.setHeight(bounds[3]);
     	
-    	
+    	// Give each collision box a different color for testing purposes.
+    	// Stroke/strokeWidth is the border color/border width.
     	switch (type) {
     	case STAGEBOX:
-    		colBox.setFill(Color.GREY);
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.GREY);
+    		colBox.setStrokeWidth(2);
     		break;
     	case HURTBOX:
-    		colBox.setFill(Color.BLUE);
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.BLUE);
+    		colBox.setStrokeWidth(2);
     		break;
     	case HITBOX:
-    		colBox.setFill(Color.RED);
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.RED);
+    		colBox.setStrokeWidth(4);
+    		break;
+    	case DETECTBOX:
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.PINK);
+    		colBox.setStrokeWidth(1.5);
     		break;
     	case INTERACTBOX:
-    		colBox.setFill(Color.PURPLE);
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.PURPLE);
+    		colBox.setStrokeWidth(2);
     		break;
     	case WORLDBOX:
-    		colBox.setFill(Color.BLACK);
+    		colBox.setFill(Color.TRANSPARENT);
+    		colBox.setStroke(Color.BLACK);
+    		colBox.setStrokeWidth(4);
     		break;
     		
     	}
+    	
     	//colBox.setOpacity(0);
     	colBox.setCache(true);
     }

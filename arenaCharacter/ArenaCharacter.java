@@ -64,6 +64,7 @@ public abstract class ArenaCharacter{
 		 * 
 		*/
 		
+		REST,
 		MOVE,
 		ATTK;
 	}
@@ -279,6 +280,7 @@ public abstract class ArenaCharacter{
     
     public abstract Controller getCntrl();
     public abstract void attk();
+    public abstract void stateMachine();
     
 //FLAGS----------------------------------------------------------------------------
     

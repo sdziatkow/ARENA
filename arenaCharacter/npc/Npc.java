@@ -16,6 +16,8 @@ package arenaCharacter.npc;
 */
 
 import arenaCharacter.*;
+import javafx.animation.Animation;
+import movement.NpcMovement;
 import window.Controller;
 import worldStage.WorldStage;
 
@@ -66,6 +68,26 @@ public abstract class Npc extends ArenaCharacter {
     }
 
 //STATES---------------------------------------------------------------------------
+    
+    public void stateMachine() {
+    	/*
+    	 * 
+    	*/
+    	
+    	switch (getCharState()) {
+    	case REST:
+    		break;
+    	case MOVE:
+    		((NpcMovement)getMvmnt()).checkNextMove();
+    		if (!getAnim().getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
+    			getAnim().getMvAnim().play();
+    		}
+    		break;
+    	case ATTK:
+    		break;
+    	}
+    	
+    }
 
 //DISPLAY--------------------------------------------------------------------------
 

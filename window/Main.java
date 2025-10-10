@@ -28,7 +28,7 @@ public class Main extends Application {
 	private EventHandler<KeyEvent> onPress;
 	private EventHandler<KeyEvent> onRelease;
 	private EventHandler<MouseEvent> onMouseClick;
-	Timer mvTimer;
+	Timer gameTimer;
 	
 	
 	public void init() {
@@ -96,6 +96,16 @@ public class Main extends Application {
 							currStage.getWorldBoxes()[box].getColBox().setOpacity(100);
 						}
 					}
+					
+					for (int box = 0; box < currStage.getHurtBoxes().length; ++box) {
+						
+						if (currStage.getHurtBoxes()[box].getColBox().getOpacity() != 0) {
+							currStage.getHurtBoxes()[box].getColBox().setOpacity(0);
+						}
+						else {
+							currStage.getHurtBoxes()[box].getColBox().setOpacity(100);
+						}
+					}
 					break;
 				default:
 					break;
@@ -125,31 +135,31 @@ public class Main extends Application {
         stage.show();
         
         
-        mvTimer = new Timer();
-        mvTimer.scheduleAtFixedRate(new TimerTask() {
+        gameTimer = new Timer();
+        gameTimer.scheduleAtFixedRate(new TimerTask() {
 
 			public void run() {
-				Platform.runLater(() -> currStage.runPMvmnt());
+				Platform.runLater(() -> currStage.runPlayerStates());
 			}
         	
         }, 0, 32);
         
-        mvTimer.scheduleAtFixedRate(new TimerTask() {
+        gameTimer.scheduleAtFixedRate(new TimerTask() {
 
 			public void run() {
-				Platform.runLater(() -> currStage.runNpcMvmnt());
+				Platform.runLater(() -> currStage.updateViewOrder());
+			}
+        	
+        }, 0, 32);
+        
+        gameTimer.scheduleAtFixedRate(new TimerTask() {
+
+			public void run() {
+				Platform.runLater(() -> currStage.runNpcStates());
 				
 			}
         	
-        }, 0, 750);
-        
-        mvTimer.scheduleAtFixedRate(new TimerTask() {
-
-			public void run() {
-				Platform.runLater(() -> currStage.runAnim());
-			}
-        	
-        }, 0, 128);
+        }, 0, 500);
         
         
         currStage.onLaunch();

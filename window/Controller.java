@@ -30,7 +30,6 @@ public class Controller{
 	
 	private boolean attkDown;
 
-
 //CONSTRUCTORS---------------------------------------------------------------------
 
     public Controller() {

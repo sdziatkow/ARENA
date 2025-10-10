@@ -121,7 +121,7 @@ public class PlayerSprite extends CharacterSprite {
 		setSpriteView(new ImageView(getDownSprite()[0]));
 		
 		// Initialize world box bounds and set world box.
-		worldBoxBounds  = new double[] {0, 0, 7.0, 9.0};
+		worldBoxBounds  = new double[] {0, 0, 5.0, 7.0};
 		hurtBoxBounds  = new double[] {0, 0, 7.0, 9.0};
 		hitBoxBounds  = new double[] {0, 0, 7.0, 9.0};
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
@@ -138,6 +138,35 @@ public class PlayerSprite extends CharacterSprite {
 		getHurtBox().getColBox().setTranslateY(5);
 		
 		setSpriteGroup(new Group(getCharPane()));
+	}
+	
+	public double[] getHitBoxCoords(char dir) {
+		/*
+		 * 
+		*/
+		
+		double coords[];
+			
+		switch (dir) {
+		case 'w':
+			coords = new double[] {3.0, 1.0, 14.0, 7.0};
+			break;
+		case 'a':
+			coords = new double[] {-5.0, 12.0, 7.0, 12.0};
+			break;
+		case 's':
+			coords = new double[] {4.0, 24.0, 14.0, 7.0};
+			break;
+		case 'd':
+			coords = new double[] {16.0, 12.0, 7.0, 12.0};
+			break;
+		default:
+			coords = new double[] {16.0, 12.0, 7.0, 12.0};
+			break;
+		}
+		
+		return coords;
+		
 	}
 	
 }

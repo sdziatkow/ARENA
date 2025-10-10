@@ -18,11 +18,19 @@ package animate;
 import arenaCharacter.ArenaCharacter.State;
 import movement.Movement;
 import sprite.charSprite.CharacterSprite;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.util.Duration;
 
 public abstract class Animate{
     /**
      *
     */
+	
+	// Base time for each KeyFrame to take.
+	private final int BASE_FRAME_RATE = 128;
 	
 	private CharacterSprite charSprite;
 	private Movement mvmnt;
@@ -31,10 +39,23 @@ public abstract class Animate{
 	private int lFrameCount;
 	private int dFrameCount;
 	private int rFrameCount;
-	
+
 	private int attkFrameCount;
-	
 	private int maxFramePerDir;
+	
+	// Timelines hold the keyframes
+	private Timeline mvAnim;
+	private Timeline attkAnim;
+	private KeyFrame mvFrame;
+	private KeyFrame attkFrame;
+	
+	// Associated with Timeline or KeyFrame.
+	private EventHandler<ActionEvent> onMvFrameFinish;
+	private EventHandler<ActionEvent> onAttkFinish;
+	private EventHandler<ActionEvent> onAttkFrameFinish;
+	
+	
+	
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -53,9 +74,52 @@ public abstract class Animate{
     	rFrameCount = 0;
     	
     	attkFrameCount = 0;
-    	
     	maxFramePerDir = charSprite.getFramesPerDir() - 1;
-
+    	
+    	onMvFrameFinish = new EventHandler<ActionEvent>() {
+    		/*
+    		 * Call the animate method each time a frame ends.
+    		*/
+    		
+    		public void handle(ActionEvent e) {
+    			animate();
+    		}
+    	};
+    	onAttkFrameFinish = new EventHandler<ActionEvent>() {
+    		/*
+    		 * Call the animateAttk method each time a frame ends. 
+    		*/
+    		
+    		public void handle(ActionEvent e) {
+    			animateAttk();
+    		}
+    	};
+    	onAttkFinish = new EventHandler<ActionEvent>() {
+    		/*
+    		 * This is called when attkAnim has passed through maxFramesPerDir
+    		 * KeyFrames.
+    		 * This method removes the hitbox from ArenaCharacter's Group and sets
+    		 * their state to MOVE.
+    		*/
+    		
+    		public void handle(ActionEvent e) {
+    			charSprite.getSpriteGroup().getChildren().remove(charSprite.getHitBox().getColBox());
+    			mvmnt.getChar().setCharState(State.MOVE);
+    		}
+    	};
+    	
+    	// Create new KeyFrames for moving and attacking.
+    	mvFrame = new KeyFrame(new Duration(BASE_FRAME_RATE), onMvFrameFinish);
+    	attkFrame = new KeyFrame(new Duration(BASE_FRAME_RATE), onAttkFrameFinish);
+    	
+    	// Create Timelines for moving and attacking.
+    	mvAnim = new Timeline(mvFrame);
+    	attkAnim = new Timeline(attkFrame);
+    	
+    	// Set the cycleCount and onFinished handler for each Timeline.
+    	mvAnim.setCycleCount(Timeline.INDEFINITE);
+    	attkAnim.setCycleCount(maxFramePerDir);
+    	attkAnim.setOnFinished(onAttkFinish);
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -124,8 +188,6 @@ public abstract class Animate{
 		
 		if (attkFrameCount >= maxFramePerDir) {
 			attkFrameCount = 0;
-			getMvmnt().getChar().setCharState(State.MOVE);
-			getMvmnt().getChar().getSprite().getSpriteGroup().getChildren().remove(getMvmnt().getChar().getSprite().getHitBox().getColBox());
 		}
     }
 
@@ -187,11 +249,20 @@ public abstract class Animate{
     	return attkFrameCount;
     }
     
-    public void get() {
+    public Timeline getMvAnim() {
         /**
          * Getter for field:
         */
-
+    	
+    	return mvAnim;
+    }
+    
+    public Timeline getAttkAnim() {
+        /**
+         * Getter for field:
+        */
+    	
+    	return attkAnim;
     }
 
 //
