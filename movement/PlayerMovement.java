@@ -1,5 +1,8 @@
 package movement;
 
+import animate.PlayerAnimate;
+import javafx.animation.Animation;
+
 /**
  * Program Name:    PlayerMovement.java
  *<p>
@@ -15,50 +18,55 @@ package movement;
  * @author          Sean Dziatkowiec
 */
 
-import arenaCharacter.Player;
+import sprite.charSprite.PlayerSprite;
+import window.Controller;
+import worldStage.WorldStage;
 
 public class PlayerMovement extends Movement{
     /**
      *
     */
+	
+	private Controller cntrl;
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
     public PlayerMovement() {
         /**
-         * Default Constructor for class
+         * Default Constructor for class PlayerMovement.
         */
     	
     	super();
     }
     
-    public PlayerMovement(Player player) {
+    public PlayerMovement(
+    		WorldStage stage,
+    		PlayerSprite sprite, 
+    		PlayerAnimate anim,
+    		Controller cntrl,
+    		double mvRate
+    	){
         /**
-         * Default Constructor for class
+         * Default Constructor for class PlayerMovement.
         */
     	
-    	super(player, 1.25);
-    }
-    
-    public PlayerMovement(Player player, double mvRate) {
-        /**
-         * Default Constructor for class
-        */
-    	
-    	super(player, mvRate);
+    	super(stage, sprite, anim, mvRate);
+    	this.cntrl = cntrl;
 
     }
     
-//GETTERS--------------------------------------------------------------------------
+//SETTERS--------------------------------------------------------------------------
     
-//    public Player getChar() {
-//    	/**
-//    	 * 
-//    	*/
-//    	
-//    	return (Player)getChar();
-//    }
+    public void setCntrl(Controller cntrl) {
+    	/*
+    	 * 
+    	*/
+    	
+    	this.cntrl = cntrl;
+    }
+    
+//GETTERS--------------------------------------------------------------------------
     
 //MOVEMENT-------------------------------------------------------------------------
     
@@ -67,58 +75,58 @@ public class PlayerMovement extends Movement{
     	 * 
     	*/
     	
-		// For setDir(
-		if (getChar().getCntrl().getADown()) {
+		// For setDir.
+		if (cntrl.getADown()) {
 			setDir('a');
 		}
-		else if(getChar().getCntrl().getDDown()) {
+		else if(cntrl.getDDown()) {
 			setDir('d');
 		}
-		else if (getChar().getCntrl().getWDown()) {
+		else if (cntrl.getWDown()) {
 			setDir('w');
 		}
-		else if(getChar().getCntrl().getSDown()) {
+		else if(cntrl.getSDown()) {
 			setDir('s');
 		}
     	
 		// Player does not move when no keys are not pressed.
-		if (!getChar().getCntrl().getWDown() && !getChar().getCntrl().getSDown()) {
+		if (!cntrl.getWDown() && !cntrl.getSDown()) {
 			setDy(0.0);
 		}
-		if (!getChar().getCntrl().getADown() && !getChar().getCntrl().getDDown()) {
+		if (!cntrl.getADown() && !cntrl.getDDown()) {
 			setDx(0.0);
 		}
 		
 		// Set dx, dy dependent on which keys are pressed down.
-		if (getChar().getCntrl().getWDown() && getChar().getCntrl().getADown()) {
+		if (cntrl.getWDown() && cntrl.getADown()) {
 			setDx( -getMvRate() * getNormalX() );
 			setDy( -getMvRate() * getNormalY() );
 		}
-		else if (getChar().getCntrl().getWDown() && getChar().getCntrl().getDDown()) {
+		else if (cntrl.getWDown() && cntrl.getDDown()) {
 			setDx(  getMvRate() * getNormalX() );
 			setDy( -getMvRate() * getNormalY() );
 		}
-		else if (getChar().getCntrl().getSDown() && getChar().getCntrl().getADown()) {
+		else if (cntrl.getSDown() && cntrl.getADown()) {
 			setDx( -getMvRate() * getNormalX() );
 			setDy(  getMvRate() * getNormalY() );
 		}
-		else if (getChar().getCntrl().getSDown() && getChar().getCntrl().getDDown()) {
+		else if (cntrl.getSDown() && cntrl.getDDown()) {
 			setDx( getMvRate() * getNormalX() );
 			setDy( getMvRate() * getNormalY() );
 		}
-		else if (getChar().getCntrl().getWDown()) {
+		else if (cntrl.getWDown()) {
 			setDx(0.0);
 			setDy( -getMvRate() );
 		}
-		else if (getChar().getCntrl().getADown()) {
+		else if (cntrl.getADown()) {
 			setDx( -getMvRate() );
 			setDy(0.0);
 		}
-		else if (getChar().getCntrl().getSDown()) {
+		else if (cntrl.getSDown()) {
 			setDx(0.0);
 			setDy( getMvRate() );
 		}
-		else if (getChar().getCntrl().getDDown()) {
+		else if (cntrl.getDDown()) {
 			setDx( getMvRate() );
 			setDy(0.0);
 		}
@@ -126,14 +134,18 @@ public class PlayerMovement extends Movement{
 		checkCollision();
 
 		// Move the getChar() group by translation
-		getChar().getSprite().getSpriteGroup().setTranslateY(
-				getChar().getSprite().getSpriteGroup().getTranslateY() + getDy()
+		getSprite().getSpriteGroup().setTranslateY(
+				getSprite().getSpriteGroup().getTranslateY() + getDy()
 				)
 		;
-		getChar().getSprite().getSpriteGroup().setTranslateX(
-				getChar().getSprite().getSpriteGroup().getTranslateX() + getDx()
+		getSprite().getSpriteGroup().setTranslateX(
+				getSprite().getSpriteGroup().getTranslateX() + getDx()
 				)
 		;
+		
+		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
+			getMvAnim().play();
+		}
     	
     }
 }

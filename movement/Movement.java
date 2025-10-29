@@ -1,5 +1,7 @@
 package movement;
 
+import animate.Animate;
+
 /**
  * Program Name:    Movement.java
  *<p>
@@ -17,14 +19,26 @@ package movement;
 
 import arenaCharacter.ArenaCharacter;
 import collision.CollisionBox;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.util.Duration;
+import sprite.charSprite.CharacterSprite;
+import worldStage.WorldStage;
 
 public abstract class Movement{
     /**
      *
     */
 	
-	private ArenaCharacter arenaChar;
+	private final int BASE_ANIM_FRAME_RATE = 128;
+	
+	private WorldStage stage;
+	private CharacterSprite sprite;
+	private Animate anim;
 	
 	private double mvRate;
 	private double dx;
@@ -34,33 +48,91 @@ public abstract class Movement{
 	private int colBoxIndex;
 	
 	boolean contained = false;
+	
+	// Timelines hold the keyframes
+	private Timeline mvAnim;
+	private Timeline attkAnim;
+	private KeyFrame mvFrame;
+	private KeyFrame attkFrame;
+	
+	// Associated with Timeline or KeyFrame.
+	private EventHandler<ActionEvent> onMvFrameFinish;
+	private EventHandler<ActionEvent> onAttkFrameFinish;
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
     public Movement() {
         /**
-         * Default Constructor for class
+         * Default Constructor for class Movement.
         */
     	
-    	mvRate = 1.25;
+    	this.mvRate = 1.25;
     	dx = 0.0;
     	dy = 0.0;
     	
     	direction = 'd';
     }
     
-    public Movement(ArenaCharacter arenaChar, double mvRate) {
+    public Movement(
+    		WorldStage stage, 
+    		CharacterSprite sprite, 
+    		Animate anim, 
+    		double mvRate
+    	){
         /**
-         * Constructor for class
+         * Constructor for class Movement.
         */
     	
-    	this.arenaChar = arenaChar;
+    	this.stage = stage;
+    	this.sprite = sprite;
+    	this.anim   = anim;
     	this.mvRate = mvRate;
     	dx = 0.0;
     	dy = 0.0;
     	
-    	direction = 'd';
+    	direction = 's';
+    	
+    	// Create event handler for when a movement frame is finished and for when
+    	// an attack frame is finished.
+    	onMvFrameFinish = new EventHandler<ActionEvent>() {
+    		/*
+    		 * Call the animate method each time a frame ends.
+    		*/
+    		
+    		public void handle(ActionEvent e) {
+    			
+    			boolean moving; 
+    			
+    			moving = (getDx() > 0.0 || getDx() < 0.0) ||
+    					 (getDy() > 0.0 || getDy() < 0.0);
+    			
+    			getAnim().animate(getSprite(), getDir(), moving);
+    		}
+    	};
+    	onAttkFrameFinish = new EventHandler<ActionEvent>() {
+    		/*
+    		 * Call the animateAttk method each time a frame ends. 
+    		*/
+    		
+    		public void handle(ActionEvent e) {
+    			getAnim().animateAttk(getSprite(), getDir());
+    		}
+    	};
+    	
+    	// Create new KeyFrames for moving and attacking.
+    	mvFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE), onMvFrameFinish);
+    	attkFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE), onAttkFrameFinish);
+    	
+    	
+    	
+    	// Create Timelines for moving and attacking.
+    	mvAnim = new Timeline(mvFrame);
+    	attkAnim = new Timeline(attkFrame);
+    	
+    	// Set the cycleCount and onFinished handler for each Timeline.
+    	mvAnim.setCycleCount(Timeline.INDEFINITE);
+    	attkAnim.setCycleCount(getSprite().getFramesPerDir());
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -104,7 +176,7 @@ public abstract class Movement{
     		break;
     		
     	default:
-    		this.direction = 'd';
+    		this.direction = 's';
     	}
 
     }
@@ -117,21 +189,54 @@ public abstract class Movement{
     	this.colBoxIndex = colBoxIndex;
     }
     
-    public void set() {
+    public void setStage(WorldStage stage) {
         /**
-         * Setter for field:
+         * Setter for field: stage
         */
-
+    	
+    	this.stage = stage;
+    }
+    
+    public void setSprite(CharacterSprite sprite) {
+        /**
+         * Setter for field: sprite
+        */
+    	
+    	this.sprite = sprite;
+    }
+    
+    public void setAnim(Animate anim) {
+        /**
+         * Setter for field: anim
+        */
+    	
+    	this.anim = anim;
     }
 
 //GETTERS--------------------------------------------------------------------------
     
-    public ArenaCharacter getChar() {
+    public WorldStage getStage() {
         /**
-         * Getter for field: arenaChar
+         * Getter for field: stage
+        */
+    	
+    	return stage;
+    }
+    
+    public CharacterSprite getSprite() {
+        /**
+         * Getter for field: sprite
         */
 
-    	return arenaChar;
+    	return sprite;
+    }
+    
+    public Animate getAnim() {
+        /**
+         * Getter for field: anim
+        */
+
+    	return anim;
     }
 
     public double getMvRate() {
@@ -240,6 +345,22 @@ public abstract class Movement{
     	return contained;
     }
     
+    public Timeline getMvAnim() {
+        /**
+         * Getter for field:
+        */
+
+    	return mvAnim;
+    }
+    
+    public Timeline getAttkAnim() {
+        /**
+         * Getter for field:
+        */
+
+    	return attkAnim;
+    }
+    
 //MOVEMENT-------------------------------------------------------------------------
     
     public abstract void move();
@@ -251,29 +372,29 @@ public abstract class Movement{
 		
 		
 		// Character's current worldBox bounds.
-		Bounds charBounds = getChar().getSprite().getWorldBox().getBounds();
+		Bounds charBounds = getSprite().getWorldBox().getBounds();
 		
 		// Will store the worldBox bounds of the worldBox being checked.
 		Bounds checkBounds;
 		
 		// Character's current center, min, and max X/Y values.
-		double currX = getChar().getSprite().getWorldBox().getMidX();
-		double currY = getChar().getSprite().getWorldBox().getMidY();
-		double maxX  = getChar().getSprite().getWorldBox().getMaxX();
-		double maxY  = getChar().getSprite().getWorldBox().getMaxY();
-		double minX  = getChar().getSprite().getWorldBox().getMinX();
-		double minY  = getChar().getSprite().getWorldBox().getMinY();
+		double currX = getSprite().getWorldBox().getMidX();
+//		double currY = getSprite().getWorldBox().getMidY();
+		double maxX  = getSprite().getWorldBox().getMaxX();
+		double maxY  = getSprite().getWorldBox().getMaxY();
+		double minX  = getSprite().getWorldBox().getMinX();
+		double minY  = getSprite().getWorldBox().getMinY();
 		
 		// Will store the center, min, and max X/Y values of the worldBox being checked.
 		double checkX;
-		double checkY;
+//		double checkY;
 		double checkMaxX;
 		double checkMaxY;
 		double checkMinX;
 		double checkMinY;
 		
 		// An array containing all worldBoxes in the character's stage.
-		CollisionBox[] worldBoxes = getChar().getStage().getWorldBoxes();
+		CollisionBox[] worldBoxes = getStage().getWorldBoxes();
 		int totalWorldBoxes = worldBoxes.length;
 		
 		// The modifier that the Character will be pushed back upon colliding with 
@@ -289,7 +410,7 @@ public abstract class Movement{
 			
 				checkBounds = worldBoxes[box].getBounds();
 				checkX = worldBoxes[box].getMidX();
-				checkY = worldBoxes[box].getMidY();
+//				checkY = worldBoxes[box].getMidY();
 				
 				checkMaxX = worldBoxes[box].getMaxX();
 				checkMaxY = worldBoxes[box].getMaxY();
@@ -303,50 +424,59 @@ public abstract class Movement{
 				
 				if (contained) {
 					
+					boolean w;
+					boolean a;
+					boolean s;
+					boolean d;
+					
+					// Will determine where the intersection is occuring.
+					w = (minY + pad) > checkMaxY;                     // up
+					a = (currX > checkX && (minX + pad) > checkMaxX); // left
+					s = (maxY - pad) < checkMinY;                     // down
+					d = currX < checkX && (maxX - pad) < checkMinX;   // right
+					
 					if (
-						(getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) 
+						(getDx() > 0.0 && d) 
 						&&
-						(getDy() > 0.0 && ( (maxY - pad) < checkMinY))
+						(getDy() > 0.0 && s)
 						) { // right - down
-						
-						// go up - left
 						setDx(-getDx() * bounce);
 						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) 
+							(getDx() > 0.0 && d) 
 							&&
-							(getDy() < 0.0 && ( (minY + pad) > checkMaxY))
+							(getDy() < 0.0 && w)
 							) { // right - up
 						setDx(-getDx() * bounce);
 						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX))
+							(getDx() < 0.0 && a)
 							&&
-							(getDy() > 0.0 && ( (maxY - pad) < checkMinY))
+							(getDy() > 0.0 && s)
 							) { // left - down
 						setDx(-getDx() * bounce);
 						setDy(-getDy() * bounce);
 					}
 					else if (
-							(getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX))
+							(getDx() < 0.0 && a)
 							&&
-							(getDy() < 0.0 && ( (minY + pad) > checkMaxY))
+							(getDy() < 0.0 && w)
 							) { // left - up
 						setDx(-getDx() * bounce);
 						setDy(-getDy() * bounce);
 					}
-					else if (getDx() > 0.0 && (currX < checkX && (maxX - pad) < checkMinX)) { // right
+					else if (getDx() > 0.0 && d) { // right
 						setDx(-getDx() * bounce);
 					}
-					else if (getDx() < 0.0 && (currX > checkX && (minX + pad) > checkMaxX)) { //left
+					else if (getDx() < 0.0 && a) { //left
 						setDx(-getDx() * bounce);
 					}
-					else if (getDy() < 0.0 && ( (minY + pad) > checkMaxY)) { //up
+					else if (getDy() < 0.0 && w) { //up
 						setDy(-getDy() * bounce);
 					}
-					else if (getDy() > 0.0 && ( (maxY - pad) < checkMinY)) { //down
+					else if (getDy() > 0.0 && s) { //down
 						setDy(-getDy() * bounce);
 					}
 				}

@@ -32,7 +32,7 @@ public class NpcTestSprite extends CharacterSprite {
 	private int[][] rightCoords;
 	
 	double[] worldBoxBounds;
-	double[] hurtBoxBounds;
+	double[] checkBoxBounds;
 	double[] detectBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -77,29 +77,37 @@ public class NpcTestSprite extends CharacterSprite {
 			setRightSprite(i, rightCoords[i]);
 		}
 		
-		
+		// Set sprite view to default position and add it to StackPane.
 		setSpriteView(new ImageView(getDownSprite()[0]));
-		
-		worldBoxBounds  = new double[] {0, 0, 7.0, 8.0};
-		hurtBoxBounds   = new double[] {0, 0, 9.0, 10.0};
+		getCharPane().getChildren().add(getSpriteView());
+
+		// Initialize CollisionBox bounds and set CollisionBoxes.
+		worldBoxBounds = new double[] {
+				getCharPane().getBoundsInParent().getCenterX() - 3.2,
+				getCharPane().getBoundsInParent().getCenterY() + 1.0,
+				getCharPane().getBoundsInParent().getCenterX() - 0.1,
+				getCharPane().getBoundsInParent().getCenterY() - 6.0
+			};
+		checkBoxBounds = new double[] {
+				getCharPane().getBoundsInParent().getCenterX() - 3.2,
+				getCharPane().getBoundsInParent().getCenterY() + 1.0,
+				getCharPane().getBoundsInParent().getCenterX() - 0.1,
+				getCharPane().getBoundsInParent().getCenterY() - 6.0
+			};
 		detectBoxBounds = new double[] {-23.0, -15.0, 65.0, 65.0};
-		
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
 		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
+		setCheckBox(new CollisionBox(ColType.CHECKBOX, checkBoxBounds));
 		setDetectBox(new CollisionBox(ColType.DETECTBOX, detectBoxBounds));
 		
-		getCharPane().getChildren().add(getSpriteView());
-		getCharPane().getChildren().add(getWorldBox().getColBox());
-		getCharPane().getChildren().add(getHurtBox().getColBox());
-		getWorldBox().getColBox().setTranslateX(1);
-		getWorldBox().getColBox().setTranslateY(3);
-		
-		getHurtBox().getColBox().setTranslateX(1);
-		getHurtBox().getColBox().setTranslateY(3);
-		
-		setSpriteGroup(new Group(getCharPane()));
-		
-		getSpriteGroup().getChildren().add(getDetectBox().getColBox());
+		// Create new Group with StackPane and CollisionBoxes.
+		setSpriteGroup(new Group(
+				getCharPane(),
+				getWorldBox().getColBox(),
+				getHurtBox().getColBox(),
+				getCheckBox().getColBox(),
+				getDetectBox().getColBox()
+		));
 	}
 	
 	public double[] getHitBoxCoords(char dir) {

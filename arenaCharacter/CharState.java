@@ -285,11 +285,12 @@ public class CharState {
 				)
 		;
 		speed().setVal(
-				DEF_SPEED_VAL + 
-				( 2.4 * dex().getVal() ) + 
-				( 0.6 * wp().getVal())
+				DEF_SPEED_VAL + 0.7 +
+				( 0.05 * dex().getVal() ) + 
+				( 0.05 * wp().getVal())
 				)
 		;
+		
 	}
 	
 	public void fullHealHpMpSp() {

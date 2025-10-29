@@ -54,19 +54,20 @@ public class StoneTower{
     			)
     	;
     	
+    	objPane.getChildren().add(obj);
     	obj.setCache(true);
     	objPane.setCache(true);
     	
-    	worldBoxBounds = new double[] {0, 0, 38.5, 25}; 
+		// Initialize CollisionBox bounds and set CollisionBoxes.
+		worldBoxBounds = new double[] {
+				objPane.getBoundsInParent().getCenterX() - 20.0,
+				objPane.getBoundsInParent().getCenterY() + 20.0,
+				objPane.getBoundsInParent().getCenterX() + 15.2,
+				objPane.getBoundsInParent().getCenterY() - 31.0
+			};
     	worldBox = new CollisionBox(ColType.WORLDBOX, worldBoxBounds);
     	
-    	objPane.getChildren().add(obj);
-    	objPane.getChildren().add(worldBox.getColBox());
-    	
-//    	worldBox.getColBox().setTranslateX(0);
-    	worldBox.getColBox().setTranslateY(30);
-    	
-    	objGroup = new Group(objPane);
+    	objGroup = new Group(objPane, worldBox.getColBox());
 
     }
 

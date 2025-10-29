@@ -36,6 +36,7 @@ public class Main extends Application {
 		 * Runs on program launch.
 		*/
 		
+		controller = new Controller();
 		currStage = new StageOne(this);
 		
 	}
@@ -48,8 +49,8 @@ public class Main extends Application {
 		// Create new scene with
 		scene = new Scene(currStage.getBackground(), 500, 500);
 		
-		// Create new Controller object and map keys.
-		controller = new Controller();
+//		// Create new Controller object and map keys.
+//		controller = new Controller();
 		
 		onPress = new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent event) {
@@ -86,7 +87,7 @@ public class Main extends Application {
 				case D:
 					controller.playerMovement(eventType, key);
 					break;
-				case V:
+				case V: // Toggle visibility of worldBoxes and hurtBoxes.
 					for (int box = 0; box < currStage.getWorldBoxes().length; ++box) {
 						
 						if (currStage.getWorldBoxes()[box].getColBox().getOpacity() != 0) {
@@ -105,6 +106,20 @@ public class Main extends Application {
 						else {
 							currStage.getHurtBoxes()[box].getColBox().setOpacity(100);
 						}
+					}
+					
+					if (currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().getOpacity() != 0) {
+						currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(0);
+					}
+					else {
+						currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(100);
+					}
+					
+					if (currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().getOpacity() != 0) {
+						currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(0);
+					}
+					else {
+						currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(100);
 					}
 					break;
 				default:
@@ -159,11 +174,10 @@ public class Main extends Application {
 				
 			}
         	
-        }, 0, 500);
+        }, 0, 32);
         
         
         currStage.onLaunch();
-        
     }
 
 //GETTERS--------------------------------------------------------------------------  
@@ -192,5 +206,10 @@ public class Main extends Application {
     	*/
     	
     	launch(args);
+    	
+    	//TODO: save the game.
+    	
+    	Platform.exit();
+    	System.exit(0);
     }
 }

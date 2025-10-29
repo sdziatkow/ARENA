@@ -59,10 +59,10 @@ public class StageOne extends WorldStage{
     	setBackground(groundTileSet.getTilePane());
     	
     	// Players / NPCS
-    	player = new Player(CharClass.BARBARIAN, this);
+    	player = new Player(CharClass.BARBARIAN, this, getWindow().getController());
     	wilhelm = new Wilhelm(this);
-    	getWorldSpace().getChildren().add(player.getSprite().getSpriteGroup());
-    	getWorldSpace().getChildren().add(wilhelm.getSprite().getSpriteGroup());
+    	getWorldSpace().getChildren().add(player.getMvmnt().getSprite().getSpriteGroup());
+    	getWorldSpace().getChildren().add(wilhelm.getMvmnt().getSprite().getSpriteGroup());
     	
     	// World Objects
     	towerObj1 = new StoneTower();
@@ -89,8 +89,8 @@ public class StageOne extends WorldStage{
     	getNpc()[0].getMvmnt().setColBoxIndex(1);
     	
     	// Set to desired position
-    	getNpc()[0].getSprite().getSpriteGroup().setTranslateX(150);
-    	getNpc()[0].getSprite().getSpriteGroup().setTranslateY(50);
+    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateX(150);
+    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateY(50);
     	
     	towerObj1.getObjGroup().setTranslateX(50);
     	towerObj1.getObjGroup().setTranslateY(50);
@@ -109,8 +109,8 @@ public class StageOne extends WorldStage{
     	
     	// Create array list of all world chars and objs
     	ArrayList<CollisionBox> boxes = new ArrayList<CollisionBox>();
-    	boxes.add(player.getSprite().getWorldBox());
-    	boxes.add(wilhelm.getSprite().getWorldBox());
+    	boxes.add(player.getMvmnt().getSprite().getWorldBox());
+    	boxes.add(wilhelm.getMvmnt().getSprite().getWorldBox());
     	boxes.add(towerObj1.getWorldBox());
     	boxes.add(towerObj2.getWorldBox());
     	boxes.add(towerObj3.getWorldBox());
@@ -146,7 +146,7 @@ public class StageOne extends WorldStage{
     	
     	for (int point = 0; point < boxes.size(); ++point) {
 			tempBox1 = boxes.get(point);
-			tempBox1.getColBox().getParent().getParent().setViewOrder(point);
+			tempBox1.getColBox().getParent().setViewOrder(point);
 //			System.out.print(tempBox1.getColBox().getParent().getParent().getViewOrder() + " ( ");
 //			System.out.print(tempBox1.getMidY()+ ") | ");
     	}
@@ -176,14 +176,26 @@ public class StageOne extends WorldStage{
     	*/
     }
     
+    public void save() {
+    	/**
+    	 * TODO: Save all ArenaCharacter, Item, and WorldObject data on a file.
+    	*/
+    }
+    
+    public void load() {
+    	/*
+    	 * TODO: Load all saved data and apply to stage. 
+    	*/
+    }
+    
     public CollisionBox[] getWorldBoxes() {
     	/**
     	 * 
     	*/
     	
     	worldBoxes = new CollisionBox[]{
-    		player.getSprite().getWorldBox(),
-    		wilhelm.getSprite().getWorldBox(),
+    		player.getMvmnt().getSprite().getWorldBox(),
+    		wilhelm.getMvmnt().getSprite().getWorldBox(),
     		towerObj1.getWorldBox(),
     		towerObj2.getWorldBox(),
     		towerObj3.getWorldBox()
@@ -198,8 +210,8 @@ public class StageOne extends WorldStage{
     	*/
     	
     	worldBoxes = new CollisionBox[]{
-    		player.getSprite().getHurtBox(),
-    		wilhelm.getSprite().getHurtBox(),
+    		player.getMvmnt().getSprite().getHurtBox(),
+    		wilhelm.getMvmnt().getSprite().getHurtBox(),
     	};
     	
     	return worldBoxes;
@@ -211,8 +223,8 @@ public class StageOne extends WorldStage{
     	*/
     	
     	worldBoxes = new CollisionBox[]{
-    		player.getSprite().getHitBox(),
-    		wilhelm.getSprite().getHitBox(),
+    		player.getMvmnt().getSprite().getHitBox(),
+    		wilhelm.getMvmnt().getSprite().getHitBox(),
     	};
     	
     	return worldBoxes;

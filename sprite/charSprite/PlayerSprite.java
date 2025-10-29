@@ -117,27 +117,28 @@ public class PlayerSprite extends CharacterSprite {
 			setRightAttkSprite(i, rightAttkCoords[i]);
 		}
 		
-		// Set sprite view to default position
+		// Set sprite view to default position and add it to StackPane.
 		setSpriteView(new ImageView(getDownSprite()[0]));
+		getCharPane().getChildren().add(getSpriteView());
 		
-		// Initialize world box bounds and set world box.
-		worldBoxBounds  = new double[] {0, 0, 5.0, 7.0};
-		hurtBoxBounds  = new double[] {0, 0, 7.0, 9.0};
+		// Initialize CollisionBox bounds and set CollisionBoxes.
+		worldBoxBounds = new double[] {
+				getCharPane().getBoundsInParent().getCenterX() - 3.2,
+				getCharPane().getBoundsInParent().getCenterY() + 1.0,
+				getCharPane().getBoundsInParent().getCenterX() - 0.2,
+				getCharPane().getBoundsInParent().getCenterY() - 6.0
+			};
 		hitBoxBounds  = new double[] {0, 0, 7.0, 9.0};
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
-		setHurtBox(new CollisionBox(ColType.HURTBOX, hurtBoxBounds));
+		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
 		setHitBox(new CollisionBox(ColType.HITBOX, hitBoxBounds));
 		
-		getCharPane().getChildren().add(getSpriteView());
-		getCharPane().getChildren().add(getWorldBox().getColBox());
-		getCharPane().getChildren().add(getHurtBox().getColBox());
-		getWorldBox().getColBox().setTranslateX(1);
-		getWorldBox().getColBox().setTranslateY(5);
-		
-		getHurtBox().getColBox().setTranslateX(1);
-		getHurtBox().getColBox().setTranslateY(5);
-		
-		setSpriteGroup(new Group(getCharPane()));
+		// Create new Group with StackPane and CollisionBoxes.
+		setSpriteGroup(new Group(
+				getCharPane(), 
+				getWorldBox().getColBox(),
+				getHurtBox().getColBox()
+		));
 	}
 	
 	public double[] getHitBoxCoords(char dir) {
