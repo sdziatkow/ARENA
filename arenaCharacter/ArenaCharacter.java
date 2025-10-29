@@ -93,14 +93,15 @@ public abstract class ArenaCharacter{
     // character's stats and do various actions such as attacking.
     private EquipSlots equipSlot;
     
-    private WorldStage stage;
-    private CharacterSprite charSprite;
+    // Will be used to move the character on the screen.
     private Movement movement;
-    private Animate animate;
+    
+    // Stage that holds all arenaCharacters, Item's etc.
+    private WorldStage stage;
     
     protected ArenaCharacter() {
         /**
-         *
+         * Default constructor for class ArenaCharacter.
         */
     	
     	this.charType = CharType.NPC;
@@ -156,28 +157,12 @@ public abstract class ArenaCharacter{
     	this.stage = stage;
     }
     
-    public void setSprite(CharacterSprite charSprite) {
-    	/**
-    	 * Setter for field: charSprite
-    	*/
-    	
-    	this.charSprite = charSprite;
-    }
-    
     public void setMvmnt(Movement movement) {
     	/**
     	 * Setter for field: movement
     	*/
     	
     	this.movement = movement;
-    }
-
-    public void setAnim(Animate animate) {
-    	/**
-    	 * Setter for field: animate
-    	*/
-    	
-    	this.animate = animate;
     }
     
 //GETTERS--------------------------------------------------------------------------
@@ -254,14 +239,6 @@ public abstract class ArenaCharacter{
     	return equipSlot().getWeapon();
     }
     
-    public CharacterSprite getSprite() {
-    	/**
-    	 * Getter for field: charSprite
-    	*/
-    	
-    	return charSprite;
-    }
-    
     public Movement getMvmnt() {
     	/**
     	 * Getter for field: movement
@@ -269,18 +246,11 @@ public abstract class ArenaCharacter{
     	
     	return movement;
     }
-
-    public Animate getAnim() {
-    	/**
-    	 * Setter for field: animate
-    	*/
-    	
-    	return animate;
-    }
     
     public abstract Controller getCntrl();
     public abstract void attk();
     public abstract void stateMachine();
+    public abstract void hurt(Weapon weapon);
     
 //FLAGS----------------------------------------------------------------------------
     

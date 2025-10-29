@@ -159,5 +159,6 @@ public abstract class WorldStage{
     public abstract void runPlayerStates();
     public abstract void runNpcStates();
     public abstract void pause();
+    public abstract void save();
 
 }

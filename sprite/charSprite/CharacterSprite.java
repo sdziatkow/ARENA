@@ -50,6 +50,7 @@ public abstract class CharacterSprite{
 	private CollisionBox hurtBox;
 	private CollisionBox hitBox;
 	private CollisionBox detectBox;
+	private CollisionBox checkBox;
 	
 	// Will store spriteView and worldBox.getColBox() -> Ellipse
 	private StackPane charPane;
@@ -288,6 +289,14 @@ public abstract class CharacterSprite{
 		this.detectBox = detectBox;
 	}
 	
+	public void setCheckBox(CollisionBox checkBox) {
+		/*
+		 * 
+		*/
+		
+		this.checkBox = checkBox;
+	}
+	
 	public void setSpriteGroup(Group spriteGroup) {
 		/**
 		 * 
@@ -420,6 +429,14 @@ public abstract class CharacterSprite{
 		*/
 		
 		return detectBox;
+	}
+	
+	public CollisionBox getCheckBox() {
+		/*
+		 * 
+		*/
+		
+		return checkBox;
 	}
 	
 	public StackPane getCharPane() {

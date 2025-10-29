@@ -16,7 +16,6 @@ package animate;
 */
 
 import javafx.scene.image.WritableImage;
-import movement.Movement;
 import sprite.charSprite.CharacterSprite;
 
 public class NpcAnimate extends Animate{
@@ -26,40 +25,42 @@ public class NpcAnimate extends Animate{
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
-    public NpcAnimate(CharacterSprite charSprite, Movement mvmnt) {
+    public NpcAnimate(int framesPerDir) {
         /**
          * Default Constructor for class
         */
     	
-    	super(charSprite, mvmnt);
+    	super(framesPerDir);
 
     }
 
 //ANIMATE--------------------------------------------------------------------------
     
-	public void animate() {
+	public void animate(CharacterSprite sprite, char dir, boolean move) {
 		/**
 		 * 
 		*/
 		
-		if (getMvmnt().getDx() != 0 || getMvmnt().getDy() != 0) {
-			getCharSprite().setSpriteImg(getNextFrame());
+		if (move) {
+			sprite.setSpriteImg(getNextFrame(sprite, dir));
 		}
 		else {
-			getCharSprite().setSpriteImg(getIdleFrame());
+			sprite.setSpriteImg(getIdleFrame(sprite, dir));
 		}
 
 	}
 	
-	public void animateAttk() {
+	public void animateAttk(CharacterSprite sprite, char dir) {
 		/*
 		 * 
 		*/
+		
+		sprite.setSpriteImg(getNextAttkFrame(sprite, dir));
 	}
 
 //GETTERS--------------------------------------------------------------------------
 
-	public WritableImage getIdleFrame() {
+	public WritableImage getIdleFrame(CharacterSprite sprite, char dir) {
 		/**
 		 * 
 		*/
@@ -69,21 +70,21 @@ public class NpcAnimate extends Animate{
 		
 		// Set nextFrame based on direction.
 		idleFrame = null;
-		switch (getMvmnt().getDir()) {
+		switch (dir) {
 		case 'w':
-			idleFrame = getCharSprite().getUpSprite()[0];
+			idleFrame = sprite.getUpSprite()[0];
 			break;
 			
 		case 'a':
-			idleFrame = getCharSprite().getLeftSprite()[0];
+			idleFrame = sprite.getLeftSprite()[0];
 			break;
 			
 		case 's':
-			idleFrame = getCharSprite().getDownSprite()[0];
+			idleFrame = sprite.getDownSprite()[0];
 			break;
 			
 		case 'd':
-			idleFrame = getCharSprite().getRightSprite()[0];
+			idleFrame = sprite.getRightSprite()[0];
 			break;
 			
 		}
@@ -92,7 +93,7 @@ public class NpcAnimate extends Animate{
 		
 	}
 	
-	private WritableImage getNextFrame() {
+	private WritableImage getNextFrame(CharacterSprite sprite, char dir) {
 		/**
 		 * This method will return the next image that the player's sprite will be
 		 * changed to.
@@ -103,12 +104,12 @@ public class NpcAnimate extends Animate{
 		
 		// Set nextFrame based on direction and xFrameCount.
 		nextFrame = null;
-		switch (getMvmnt().getDir()) {
+		switch (dir) {
 		
 		//UP----------------
 		case 'w':
 			
-			nextFrame = getCharSprite().getUpSprite()[getUCount()];
+			nextFrame = sprite.getUpSprite()[getUCount()];
 			incUCount();
 			
 			break;
@@ -116,14 +117,14 @@ public class NpcAnimate extends Animate{
 		//LEFT--------------
 		case 'a':
 
-			nextFrame = getCharSprite().getLeftSprite()[getLCount()];
+			nextFrame = sprite.getLeftSprite()[getLCount()];
 			incLCount();
 			break;
 		
 		//DOWN------------------
 		case 's':
 			
-			nextFrame = getCharSprite().getDownSprite()[getDCount()];
+			nextFrame = sprite.getDownSprite()[getDCount()];
 			incDCount();
 			
 			break;
@@ -131,11 +132,61 @@ public class NpcAnimate extends Animate{
 		//RIGHT--------------------
 		case 'd':
 			
-			nextFrame = getCharSprite().getRightSprite()[getRCount()];
+			nextFrame = sprite.getRightSprite()[getRCount()];
 			incRCount();
 			
 			break;
 		}
+
+		return nextFrame;
+	}
+	
+	private WritableImage getNextAttkFrame(CharacterSprite sprite, char dir) {
+		/*
+		 * 
+		*/
+		
+		WritableImage nextFrame;
+		nextFrame = null;
+		
+		// Set nextFrame based on direction and xFrameCount.
+		nextFrame = null;
+		switch (dir) {
+		
+		//UP----------------
+		case 'w':
+			
+			nextFrame = sprite.getUpAttkSprite()[getAttkCount()];
+			incAttkCount();
+			
+			break;
+		
+		//LEFT--------------
+		case 'a':
+
+			nextFrame = sprite.getLeftAttkSprite()[getAttkCount()];
+			incAttkCount();
+			break;
+		
+		//DOWN------------------
+		case 's':
+			
+			nextFrame = sprite.getDownAttkSprite()[getAttkCount()];
+			incAttkCount();
+			
+			break;
+			
+		//RIGHT--------------------
+		case 'd':
+			
+			nextFrame = sprite.getRightAttkSprite()[getAttkCount()];
+			incAttkCount();
+			
+			break;
+		}
+		
+		
+		
 		return nextFrame;
 	}
 

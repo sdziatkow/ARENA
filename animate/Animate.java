@@ -15,25 +15,12 @@ package animate;
  * @author          Sean Dziatkowiec
 */
 
-import arenaCharacter.ArenaCharacter.State;
-import movement.Movement;
 import sprite.charSprite.CharacterSprite;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.util.Duration;
 
 public abstract class Animate{
     /**
      *
     */
-	
-	// Base time for each KeyFrame to take.
-	private final int BASE_FRAME_RATE = 128;
-	
-	private CharacterSprite charSprite;
-	private Movement mvmnt;
 	
 	private int uFrameCount;
 	private int lFrameCount;
@@ -43,30 +30,16 @@ public abstract class Animate{
 	private int attkFrameCount;
 	private int maxFramePerDir;
 	
-	// Timelines hold the keyframes
-	private Timeline mvAnim;
-	private Timeline attkAnim;
-	private KeyFrame mvFrame;
-	private KeyFrame attkFrame;
-	
-	// Associated with Timeline or KeyFrame.
-	private EventHandler<ActionEvent> onMvFrameFinish;
-	private EventHandler<ActionEvent> onAttkFinish;
-	private EventHandler<ActionEvent> onAttkFrameFinish;
-	
 	
 	
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
-    public Animate(CharacterSprite charSprite, Movement mvmnt) {
+    public Animate(int maxFramesPerDir) {
         /**
          * Default Constructor for class
         */
-    	
-    	this.charSprite = charSprite;
-    	this.mvmnt = mvmnt;
     	
     	uFrameCount = 0;
     	lFrameCount = 0;
@@ -74,52 +47,8 @@ public abstract class Animate{
     	rFrameCount = 0;
     	
     	attkFrameCount = 0;
-    	maxFramePerDir = charSprite.getFramesPerDir() - 1;
+    	maxFramePerDir = maxFramesPerDir;
     	
-    	onMvFrameFinish = new EventHandler<ActionEvent>() {
-    		/*
-    		 * Call the animate method each time a frame ends.
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			animate();
-    		}
-    	};
-    	onAttkFrameFinish = new EventHandler<ActionEvent>() {
-    		/*
-    		 * Call the animateAttk method each time a frame ends. 
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			animateAttk();
-    		}
-    	};
-    	onAttkFinish = new EventHandler<ActionEvent>() {
-    		/*
-    		 * This is called when attkAnim has passed through maxFramesPerDir
-    		 * KeyFrames.
-    		 * This method removes the hitbox from ArenaCharacter's Group and sets
-    		 * their state to MOVE.
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			charSprite.getSpriteGroup().getChildren().remove(charSprite.getHitBox().getColBox());
-    			mvmnt.getChar().setCharState(State.MOVE);
-    		}
-    	};
-    	
-    	// Create new KeyFrames for moving and attacking.
-    	mvFrame = new KeyFrame(new Duration(BASE_FRAME_RATE), onMvFrameFinish);
-    	attkFrame = new KeyFrame(new Duration(BASE_FRAME_RATE), onAttkFrameFinish);
-    	
-    	// Create Timelines for moving and attacking.
-    	mvAnim = new Timeline(mvFrame);
-    	attkAnim = new Timeline(attkFrame);
-    	
-    	// Set the cycleCount and onFinished handler for each Timeline.
-    	mvAnim.setCycleCount(Timeline.INDEFINITE);
-    	attkAnim.setCycleCount(maxFramePerDir);
-    	attkAnim.setOnFinished(onAttkFinish);
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -192,22 +121,6 @@ public abstract class Animate{
     }
 
 //GETTERS--------------------------------------------------------------------------
-    
-    public CharacterSprite getCharSprite() {
-    	/**
-    	 * 
-    	*/
-    	
-    	return charSprite;
-    }
-    
-    public Movement getMvmnt() {
-    	/**
-    	 * 
-    	*/
-    	
-    	return mvmnt;
-    }
 
     public int getUCount() {
         /**
@@ -248,26 +161,10 @@ public abstract class Animate{
     	
     	return attkFrameCount;
     }
-    
-    public Timeline getMvAnim() {
-        /**
-         * Getter for field:
-        */
-    	
-    	return mvAnim;
-    }
-    
-    public Timeline getAttkAnim() {
-        /**
-         * Getter for field:
-        */
-    	
-    	return attkAnim;
-    }
 
 //
     
-    public abstract void animate();
-    public abstract void animateAttk();
+    public abstract void animate(CharacterSprite sprite, char dir, boolean move);
+    public abstract void animateAttk(CharacterSprite sprite, char dir);
 
 }

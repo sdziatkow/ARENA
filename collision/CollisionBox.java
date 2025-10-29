@@ -25,12 +25,22 @@ public class CollisionBox{
     */
 	
 	public enum ColType {
+		/**
+		 * @const STAGEBOX: The bounds of the stage itself.
+		 * @const HURTBOX: Takes damage if hitbox enters bounds.
+		 * @const HITBOX: Deals damage if entering a hurtbox.
+		 * @const DETECTBOX: For detection of other boxes from far away.
+		 * @const INTERACTBOX: Can interact if within bounds.
+		 * @const WORLDBOX: General collision for anything with collision.
+		 * @const CHECKBOX: Used to check for moving and or attacking.
+		*/
 		STAGEBOX,
 		HURTBOX,
 		HITBOX,
 		DETECTBOX,
 		INTERACTBOX,
-		WORLDBOX
+		WORLDBOX,
+		CHECKBOX
 	}
 
 	private ColType type;
@@ -64,39 +74,38 @@ public class CollisionBox{
     	colBox.setY(bounds[1]);
     	colBox.setWidth(bounds[2]);
     	colBox.setHeight(bounds[3]);
+		colBox.setFill(Color.TRANSPARENT);
     	
     	// Give each collision box a different color for testing purposes.
     	// Stroke/strokeWidth is the border color/border width.
     	switch (type) {
     	case STAGEBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.GREY);
     		colBox.setStrokeWidth(2);
     		break;
     	case HURTBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.BLUE);
     		colBox.setStrokeWidth(2);
     		break;
     	case HITBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.RED);
-    		colBox.setStrokeWidth(4);
+    		colBox.setStrokeWidth(1);
     		break;
     	case DETECTBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.PINK);
     		colBox.setStrokeWidth(1.5);
     		break;
     	case INTERACTBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.PURPLE);
     		colBox.setStrokeWidth(2);
     		break;
     	case WORLDBOX:
-    		colBox.setFill(Color.TRANSPARENT);
     		colBox.setStroke(Color.BLACK);
     		colBox.setStrokeWidth(4);
+    		break;
+    	case CHECKBOX:
+    		colBox.setStroke(Color.WHITE);
+    		colBox.setStrokeWidth(3);
     		break;
     		
     	}
