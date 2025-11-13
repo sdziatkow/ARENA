@@ -18,6 +18,7 @@ package item.weapon;
 import arenaCharacter.CharAttr.Attribute;
 import arenaCharacter.Stat.StatType;
 import item.weapon.WeaponAttack.AttackType;
+import sprite.weaponSprite.WeaponSprite;
 
 public class SteelGreatAxe extends Weapon {
     /**

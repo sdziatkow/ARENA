@@ -19,10 +19,13 @@ import java.util.ArrayList;
 import arenaCharacter.ArenaCharacter;
 import arenaCharacter.ArenaCharacter.CharClass;
 import arenaCharacter.Player;
+import arenaCharacter.npc.Elm;
 import arenaCharacter.npc.Wilhelm;
 import collision.CollisionBox;
 import sprite.GroundTileSet;
 import sprite.StoneTower;
+import ui.Overlay;
+import ui.StatBar;
 import window.Main;
 
 public class StageOne extends WorldStage{
@@ -30,13 +33,14 @@ public class StageOne extends WorldStage{
      *
     */
 	
-	public final static int TOTAL_WORLD_NPCS = 1;
+	public final static int TOTAL_WORLD_NPCS = 2;
 	public final static int TOTAL_WORLD_ITEMS = 1;
 	
 	private GroundTileSet groundTileSet;
 	
 	private ArenaCharacter player;
 	private ArenaCharacter wilhelm;
+	private ArenaCharacter elm;
 	
 	private StoneTower towerObj1;
 	private StoneTower towerObj2;
@@ -61,8 +65,10 @@ public class StageOne extends WorldStage{
     	// Players / NPCS
     	player = new Player(CharClass.BARBARIAN, this, getWindow().getController());
     	wilhelm = new Wilhelm(this);
+    	elm = new Elm(this);
     	getWorldSpace().getChildren().add(player.getMvmnt().getSprite().getSpriteGroup());
     	getWorldSpace().getChildren().add(wilhelm.getMvmnt().getSprite().getSpriteGroup());
+    	getWorldSpace().getChildren().add(elm.getMvmnt().getSprite().getSpriteGroup());
     	
     	// World Objects
     	towerObj1 = new StoneTower();
@@ -78,6 +84,10 @@ public class StageOne extends WorldStage{
     	
     	setPlayer(player);
     	setNpc(0, wilhelm);
+    	setNpc(1, elm);
+    	
+    	getOverlay().updateStatBars(getPlayer().state(), getPlayer().lvl());
+    	getWorldSpace().getChildren().add(getOverlay().getOverlayGroup());
     }
     
     public void onLaunch() {
@@ -85,21 +95,30 @@ public class StageOne extends WorldStage{
     	 * 
     	*/
     	
+    	getOverlay().getOverlayGroup().setViewOrder(1);
+    	
     	getPlayer().getMvmnt().setColBoxIndex(0);
     	getNpc()[0].getMvmnt().setColBoxIndex(1);
+    	getNpc()[1].getMvmnt().setColBoxIndex(2);
     	
     	// Set to desired position
-    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateX(150);
-    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateY(50);
+    	getPlayer().getMvmnt().getSprite().getSpriteGroup().setTranslateX(1100);
+    	getPlayer().getMvmnt().getSprite().getSpriteGroup().setTranslateY(1100);
     	
-    	towerObj1.getObjGroup().setTranslateX(50);
-    	towerObj1.getObjGroup().setTranslateY(50);
+    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateX(1000);
+    	getNpc()[0].getMvmnt().getSprite().getSpriteGroup().setTranslateY(1000);
     	
-    	towerObj2.getObjGroup().setTranslateX(200);
-    	towerObj2.getObjGroup().setTranslateY(50);
+    	getNpc()[1].getMvmnt().getSprite().getSpriteGroup().setTranslateX(1200);
+    	getNpc()[1].getMvmnt().getSprite().getSpriteGroup().setTranslateY(1200);
     	
-    	towerObj3.getObjGroup().setTranslateX(300);
-    	towerObj3.getObjGroup().setTranslateY(50);
+    	towerObj1.getObjGroup().setTranslateX(1000);
+    	towerObj1.getObjGroup().setTranslateY(900);
+    	
+    	towerObj2.getObjGroup().setTranslateX(1100);
+    	towerObj2.getObjGroup().setTranslateY(900);
+    	
+    	towerObj3.getObjGroup().setTranslateX(1200);
+    	towerObj3.getObjGroup().setTranslateY(850);
     }
     
     public void updateViewOrder() {
@@ -111,6 +130,7 @@ public class StageOne extends WorldStage{
     	ArrayList<CollisionBox> boxes = new ArrayList<CollisionBox>();
     	boxes.add(player.getMvmnt().getSprite().getWorldBox());
     	boxes.add(wilhelm.getMvmnt().getSprite().getWorldBox());
+    	boxes.add(elm.getMvmnt().getSprite().getWorldBox());
     	boxes.add(towerObj1.getWorldBox());
     	boxes.add(towerObj2.getWorldBox());
     	boxes.add(towerObj3.getWorldBox());
@@ -146,11 +166,8 @@ public class StageOne extends WorldStage{
     	
     	for (int point = 0; point < boxes.size(); ++point) {
 			tempBox1 = boxes.get(point);
-			tempBox1.getColBox().getParent().setViewOrder(point);
-//			System.out.print(tempBox1.getColBox().getParent().getParent().getViewOrder() + " ( ");
-//			System.out.print(tempBox1.getMidY()+ ") | ");
+			tempBox1.getColBox().getParent().setViewOrder(point + 2);
     	}
-//    	System.out.println();
     	
     }
     
@@ -196,6 +213,7 @@ public class StageOne extends WorldStage{
     	worldBoxes = new CollisionBox[]{
     		player.getMvmnt().getSprite().getWorldBox(),
     		wilhelm.getMvmnt().getSprite().getWorldBox(),
+    		elm.getMvmnt().getSprite().getWorldBox(),
     		towerObj1.getWorldBox(),
     		towerObj2.getWorldBox(),
     		towerObj3.getWorldBox()
@@ -212,6 +230,7 @@ public class StageOne extends WorldStage{
     	worldBoxes = new CollisionBox[]{
     		player.getMvmnt().getSprite().getHurtBox(),
     		wilhelm.getMvmnt().getSprite().getHurtBox(),
+    		elm.getMvmnt().getSprite().getHurtBox(),
     	};
     	
     	return worldBoxes;

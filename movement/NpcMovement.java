@@ -20,10 +20,8 @@ import java.util.Random;
 import animate.NpcAnimate;
 import collision.CollisionBox;
 import javafx.animation.Animation;
-import javafx.animation.TranslateTransition;
-import javafx.util.Duration;
+import javafx.geometry.Bounds;
 import sprite.charSprite.CharacterSprite;
-import sprite.charSprite.NpcTestSprite;
 import worldStage.WorldStage;
 
 public class NpcMovement extends Movement{
@@ -35,9 +33,6 @@ public class NpcMovement extends Movement{
 	private Random mvGen;
 	private int mv;
 	
-	// Object that controls sprite's position on screen.
-	private TranslateTransition pos;
-	
 	// Increment mvRate plus incMvrate until decreased to minimum 0.0 or exceeds
 	// maxMvRate.
 	private double incMvRate;
@@ -45,6 +40,13 @@ public class NpcMovement extends Movement{
 	
 	// If true then state will be set to attack.
 	boolean attkHurtBox;
+	
+	// Will be used to determine when Npc should move around a worldBox.
+	int cantMvToCnt;
+	boolean canMvTo;
+	
+	// For random movement.
+	private int tempDirCount;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -55,6 +57,9 @@ public class NpcMovement extends Movement{
     	
     	super();
     	attkHurtBox = false;
+    	cantMvToCnt = 0;
+    	canMvTo = true;
+    	genMv();
     }
 
     public NpcMovement(
@@ -68,25 +73,21 @@ public class NpcMovement extends Movement{
         */
 
     	super(stage, sprite, anim, mvRate);
-    	setMvRate(5.50);
+    	setMvRate(1.25);
+    	setColBounce(1.0);
     	mvGen = new Random();
     	
-    	pos = new TranslateTransition();
-    	pos.setNode(getSprite().getSpriteGroup());
-    	
     	maxMvRate = getMvRate();
-    	incMvRate = getMvRate() / (getMvRate() / 1.5 );
+    	incMvRate = getMvRate() / (getMvRate() / 2.0 );
     	attkHurtBox = false;
+    	
+    	tempDirCount = 0;
+    	cantMvToCnt = 0;
+    	canMvTo = true;
+    	genMv();
     }
 
 //SETTERS--------------------------------------------------------------------------
-
-    public void set() {
-        /**
-         * Setter for field:
-        */
-
-    }
     
     public void toggleAttkHurtBox() {
         /**
@@ -97,13 +98,6 @@ public class NpcMovement extends Movement{
     }
 
 //GETTERS--------------------------------------------------------------------------
-
-    public void get() {
-        /**
-         * Getter for field:
-        */
-
-    }
     
     public boolean getAttkHurtBox() {
         /**
@@ -111,6 +105,16 @@ public class NpcMovement extends Movement{
         */
     	
     	return attkHurtBox;
+    }
+    
+    public int genMv() {
+        /**
+         * Will generate and return a random positive integer between 0-49.
+        */
+    	
+    	int gen = Math.abs((mvGen.nextInt())) % 50;
+    	
+    	return gen;
     }
 
 //MOVEMENT-------------------------------------------------------------------------
@@ -142,28 +146,50 @@ public class NpcMovement extends Movement{
         	}
     	}
     	
+    	// If animation is not playing, play it.
+		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
+			getMvAnim().play();
+		}
+		
     	// If Npc is to move randomly, call moveRandom().
     	if (mvRand) {
+    		cantMvToCnt = 0;
     		moveRandom();
     	}
     	
     	// If boxNum was set and not moving randomly
     	else if (boxNum != -1){ 
+    		
     		moveToHurtBox(npcBox, hurtBoxes[boxNum]);
     	}
+    }
+    
+    public void translate() {
+    	/*
+    	 * This method will move the Npc's sprite group on the stage and increment
+    	 * its mvRate.
+    	*/
+
+		getSprite().getSpriteGroup().setTranslateY(
+				getSprite().getSpriteGroup().getTranslateY() + getDy()
+				)
+		;
+		getSprite().getSpriteGroup().setTranslateX(
+				getSprite().getSpriteGroup().getTranslateX() + getDx()
+				)
+		;
+		
+    	setMvRate(getMvRate() + incMvRate);
     	
-    	// If animation is not playing, play it.
-		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
-			getMvAnim().play();
-		}
+    	if (getMvRate() > maxMvRate) {
+    		setMvRate(maxMvRate);
+    	}
     }
     
     public boolean canMove() {
     	/*
-    	 * IT WORKS
-    	 * 
-    	 * NEED TO MAKE IT SCALE LESS???
-    	 * NEED TO MAKE IT SCALE LESS ONLY FOR WORLD BOXES???
+    	 * This method will return true if the Npc's checkBox bounds do not 
+    	 * intersect with any worldBox on the stage. 
     	*/
     	
     	boolean can;
@@ -171,38 +197,50 @@ public class NpcMovement extends Movement{
     	CollisionBox[] boxes = getStage().getWorldBoxes();
     	CollisionBox checkBox = getSprite().getCheckBox();
     	
-    	checkBox.getColBox().setScaleX(1.7);
-    	checkBox.getColBox().setScaleY(1.7);
+    	double ogMinX = checkBox.getOriginalBounds().getMinX();
+    	double ogMinY = checkBox.getOriginalBounds().getMinY();
+    	double ogMaxX = checkBox.getOriginalBounds().getMaxX();
+    	double ogMaxY = checkBox.getOriginalBounds().getMaxY();
     	
-    	checkBox.getColBox().setTranslateX(-getDx());
-    	checkBox.getColBox().setTranslateY(-getDy());
+    	double minX = ogMinX;
+    	double minY = ogMinY;
+    	double maxX = ogMaxX;
+    	double maxY = ogMaxY;
+    	double pad  = 1.0;
+    	double[] checkBounds;
+    	
+    	if (getDy() > 0.0) {
+    		maxY += (getDy() * pad);
+    	}
+    	else {
+    		minY += (getDy() * pad);
+    	}
+    	
+    	if (getDx() > 0.0) {
+    		maxX += (getDx() * pad);
+    	}
+    	else {
+    		minX += (getDx() *  (pad / 1.0));
+    	}
+    	
+    	checkBounds = new double[] {minX, minY, maxX, maxY};
+    	checkBox.setBounds(checkBounds);
+    	
     	
     	can = true;
     	for (int box = 0; box < boxes.length && can; ++box) { 
-    		
+
     		if (box != getColBoxIndex()) {
-    			if (checkBox.getBounds().intersects(boxes[box].getBounds())) {
+				if (checkBox.getBounds().intersects(boxes[box].getBounds())) {
 	    			setMvRate(getMvRate() - incMvRate);
 	    			can = false;
-//	    			System.out.println("CAN NOT MOVE");
-    			}
+				}
     		}
     	}
-    	
-    	
-    	
-    	//System.out.println(getMvRate());
     	
     	if (getMvRate() < 0.0) {
     		setMvRate(incMvRate);
     	}
-    	
-    	
-    	checkBox.getColBox().setTranslateX(getDx());
-    	checkBox.getColBox().setTranslateY(getDy());
-    	
-    	checkBox.getColBox().setScaleX(1.0);
-    	checkBox.getColBox().setScaleY(1.0);
     	
     	return can;
     }
@@ -212,123 +250,263 @@ public class NpcMovement extends Movement{
     	 * This method will move the NPC randomly.
     	*/
     	
-    	mv = mvGen.nextInt(8000);
-    	
-    	if (mv > 1000) {
-    		setDx(0.0);
-    		setDy(0.0);
-    	}
-    	else if (mv > 750) {
-    		setDir('w');
+    	++tempDirCount;
+
+		if (mv < 2) {
     		setDx(0.0);
     		setDy(-getMvRate());
-    		
-    	}
-    	else if (mv > 500) {
-    		setDir('a');
-    		setDx(-getMvRate());
-    		setDy(0.0);
-    	}
-    	else if (mv > 250) {
-    		setDir('s');
-    		setDx(0.0);
-    		setDy(getMvRate());
-    	}
-    	else {
-    		setDir('d');
+		}
+		else if (mv < 4){
     		setDx(getMvRate());
     		setDy(0.0);
+		}
+		else if (mv < 6) {
+			setDx(0.0);
+			setDy(getMvRate());
+		}
+		else if (mv < 8) {
+			setDx(-getMvRate());
+			setDy(0.0);
+		}
+		else {
+			setDx(0.0);
+			setDy(0.0);
+		}
+		
+    	if (tempDirCount > 10) {
+    		tempDirCount = 0;
+        	mv = genMv();
     	}
     	
-    	//checkCollision();
-    	if (canMove() && !pos.getStatus().equals(Animation.Status.RUNNING)) {
-    		
-			pos.setFromX(getSprite().getSpriteGroup().getTranslateX());
-			pos.setToX(getSprite().getSpriteGroup().getTranslateX() + getDx());
-			
-			pos.setFromY(getSprite().getSpriteGroup().getTranslateY());
-			pos.setToY(getSprite().getSpriteGroup().getTranslateY() + getDy());
-	    	
-	    	pos.play();
-	    	
-	    	setMvRate(getMvRate() + incMvRate);
-	    	
-	    	if (getMvRate() > maxMvRate) {
-	    		setMvRate(maxMvRate);
-	    	}
+    	
+    	if (!canMove()) {
+    		checkCollision();
+    	}
+    	else {
+    		setDir();
+    		translate();
     	}
     }
     
-    public void moveToHurtBox(CollisionBox npcBox, CollisionBox playerBox) {
+    public void moveToHurtBox(CollisionBox npcBox, CollisionBox hurtBox) {
     	/*
-    	 * This method will move the NPC towards the player.
+    	 * This method will move the NPC towards a hurtBox.
     	*/
     	
     	// used to make Npc's direction look more natural when moving towards 
     	// player.
     	double distDiffY;
     	double distDiffX;
-
-    	distDiffY = Math.abs((npcBox.getMidY() - playerBox.getMidY()));
-    	distDiffX = Math.abs((npcBox.getMidX() - playerBox.getMidX()));
+    	double absDistX;
+    	double absDistY;
+    	
+    	distDiffY = npcBox.getMidY() - hurtBox.getMidY();
+    	distDiffX = npcBox.getMidX() - hurtBox.getMidX();
+    	absDistX  = Math.abs(Math.abs(npcBox.getMidX()) - Math.abs(hurtBox.getMidX()));
+    	absDistY  = Math.abs(Math.abs(npcBox.getMidY()) - Math.abs(hurtBox.getMidY()));
     	
     	// Set dx/dx based on position of player.
-    	if (npcBox.getMidY() < playerBox.getMidY()) { // Below - move down.
+    	if (distDiffY < -3.0) { // Below - move down.
     		setDy(getMvRate());
     	}
-    	else if (npcBox.getMidY() > playerBox.getMidY()) { // Above - move up.
+    	else if (distDiffY > 3.0) { // Above - move up.
     		setDy(-getMvRate());
     	}
     	
-    	if (npcBox.getMidX() > playerBox.getMidX()) { // Left - move left.
+    	if (distDiffX > 3.0) { // Left - move left.
     		setDx(-getMvRate());
     	}
-    	else if (npcBox.getMidX() < playerBox.getMidX()) { // Right - move right.
+    	else if (distDiffX < -3.0) { // Right - move right.
     		setDx(getMvRate());
     	}
     	
-    	//checkCollision();
-    	
     	// Use distY and distX to determine which direction to set.
-    	if (getDy() < 0.0 && distDiffY > distDiffX) {
-    		setDir('w');
-    	}
-    	else if (getDy() > 0.0 && distDiffY > distDiffX) {
-    		setDir('s');
-    	}
-    	
-    	else if (getDx() < 0.0 && distDiffY < distDiffX) {
-    		setDir('a');
-    	}
-    	else if (getDx() > 0.0 && distDiffY < distDiffX) {
-    		setDir('d');
-    	}
+    	setMoveToDir(distDiffX, distDiffY, absDistX, absDistY);
     	
     	// Normalize movement if moving diagonally.
-    	if (getDx() != 0.0 && getDy() != 0.0) {
+    	if (Math.abs(getDx()) > 0.0 && Math.abs(getDy()) > 0.0) {
 			setDx( getDx() * getNormalX() );
 			setDy( getDy() * getNormalY() );
     	}
     	
-    	if (canMove() && !pos.getStatus().equals(Animation.Status.RUNNING)) {
-    		
-	    	// Move the NPC towards the player.
-			pos.setFromX(getSprite().getSpriteGroup().getTranslateX());
-			pos.setToX(getSprite().getSpriteGroup().getTranslateX() + getDx());
-			
-			pos.setFromY(getSprite().getSpriteGroup().getTranslateY());
-			pos.setToY(getSprite().getSpriteGroup().getTranslateY() + getDy());
-	    	
-	    	pos.play();
-	    	setMvRate(getMvRate() + incMvRate);
-	    	
-	    	if (getMvRate() > maxMvRate) {
-	    		setMvRate(maxMvRate);
-	    	}
+    	if (canMove() && mv > 10) {
+    		translate();
     	}
-    	else if (!canMove() && (distDiffY < 10.0 || distDiffX < 10.0)){
+    	else if (!canMove() && (absDistY < 25.0 && absDistX < 25.0)){
+    		
+    		setMoveToDir(distDiffX, distDiffY, absDistX, absDistY);
     		attkHurtBox = true;
     	}
+    	else if (!canMove() && !(absDistY < 25.0 && absDistX < 25.0)) {
+    		moveAround();
+    	}
+    	
+    	mv = genMv();
     }
+    
+    public void setMoveToDir(
+    		double distDiffX, 
+    		double distDiffY,
+    		double absDistX,
+    		double absDistY
+    	){
+    	/**
+    	 * This method will set the Npc's direction based on where it is moving to
+    	 * given the difference of the Npc's and its target's 2D position.
+    	 * 
+    	 * @param distDiffX: The difference between the Npc's and its target's X 
+    	 * 					 position. 
+    	 * @param distDiffY: The difference between the Npc's and its target's Y 
+    	 * 					 position. 
+    	 * @param absDistX: The absolute value of distDiffX.
+    	 * @param absDistY: The absolute value of distDiffY.
+    	*/
+    	
+		if (distDiffY > 0.0 && absDistY > absDistX) {
+			forceDir(Going.N);
+		}
+		else if (distDiffY < 0.0 && absDistY > absDistX) {
+			forceDir(Going.S);
+		}
+		else if (distDiffX > 0.0 && absDistX > absDistY) {
+			forceDir(Going.W);
+		}
+		else if (distDiffX < 0.0 && absDistX > absDistY) {
+			forceDir(Going.E);
+		}
+    }
+    
+	public void moveAround() {
+		/**
+		 * works fairly decent. 
+		 * Not 100% as intended.
+		 * Main issue is getting stuck on corners and in the middle.
+		*/
+		
+		
+		// Character's current checkBox bounds.
+		Bounds charBounds = getSprite().getCheckBox().getBounds();
+		
+		// Will store the worldBox bounds of the worldBox being checked.
+		Bounds checkBounds;
+		
+		// Character's current center, min, and max X/Y values.
+		double currX = getSprite().getCheckBox().getMidX();
+		double currY = getSprite().getCheckBox().getMidY();
+		double maxX  = getSprite().getCheckBox().getMaxX();
+		double maxY  = getSprite().getCheckBox().getMaxY();
+		double minX  = getSprite().getCheckBox().getMinX();
+		double minY  = getSprite().getCheckBox().getMinY();
+		
+		// Will store the center, min, and max X/Y values of the worldBox being checked.
+		double checkX;
+		//double checkY;
+		double checkMaxX;
+		double checkMaxY;
+		double checkMinX;
+		double checkMinY;
+		
+		// An array containing all worldBoxes in the character's stage.
+		CollisionBox[] worldBoxes = getStage().getWorldBoxes();
+		int totalWorldBoxes = worldBoxes.length;
+		
+		// The modifier that the Character will be pushed back upon colliding with 
+		// another worldBox.
+		double bounce = 0.1;
+		
+		// For intersection purposes allows greater detection range.
+		double pad = 3.0;
+		
+		for (int box = 0; box < totalWorldBoxes && !contained; ++box) {
+			
+			if (box != getColBoxIndex()) {
+			
+				checkBounds = worldBoxes[box].getBounds();
+				checkX = worldBoxes[box].getMidX();
+				//checkY = worldBoxes[box].getMidY();
+				
+				checkMaxX = worldBoxes[box].getMaxX();
+				checkMaxY = worldBoxes[box].getMaxY();
+				
+				checkMinX = worldBoxes[box].getMinX();
+				checkMinY = worldBoxes[box].getMinY();
+				
+				if (charBounds.intersects(checkBounds)) {
+					contained = true;
+				}
+				
+				if (contained) {
+					
+					boolean w;
+					boolean a;
+					boolean s;
+					boolean d;
+					
+					// Will determine where the intersection is occuring.
+					w = (minY + pad) > checkMaxY;                     // up
+					a = (currX > checkX && (minX + pad) > checkMaxX); // left
+					s = (maxY - pad) < checkMinY;                     // down
+					d = currX < checkX && (maxX - pad) < checkMinX;   // right
+					
+					// right or left
+					if ((getDx() > 0.0 && d) || (getDx() < 0.0 && a)) {
+						
+						setDx(-getDx() * bounce);
+						
+						if (canMvTo) {
+							if (currY > checkMaxY) {
+								setDy(maxMvRate);
+							}
+							else if (currY < checkMinY){
+								setDy(-maxMvRate);
+							}
+							else if (getDy() > 0.0) {
+								setDy(maxMvRate);
+							}
+							else if (getDy() < 0.0) {
+								setDy(-maxMvRate);
+							}
+						}
+					}
+					
+					// Up or down.
+					else if ((getDy() < 0.0 && w) || (getDy() > 0.0 && s)) {
+						setDy(-getDy() * bounce);
+						
+						if (canMvTo) {
+							if (currX > checkMaxX) {
+								setDx(maxMvRate);
+							}
+							else if (currX < checkMinX){
+								setDx(-maxMvRate);
+							}
+							else if (getDx() > 0.0) {
+								setDx(maxMvRate);
+							}
+							else if (getDx() < 0.0) {
+								setDx(-maxMvRate);
+							}
+						}
+					}
+				}
+			}
+			
+			contained = false;
+		}
+		
+    	if (canMove()) {
+	    	translate();
+	    	
+	    	++cantMvToCnt;
+	    	if (cantMvToCnt > 25 && !canMvTo) {
+	    		cantMvToCnt = 0;
+	    		canMvTo = true;
+	    	}
+	    	else if (cantMvToCnt > 25) {
+	    		cantMvToCnt = 0;
+	    		canMvTo = false;
+	    	}
+    	}
+	}
 
 }

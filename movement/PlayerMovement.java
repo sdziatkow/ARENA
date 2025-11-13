@@ -2,6 +2,7 @@ package movement;
 
 import animate.PlayerAnimate;
 import javafx.animation.Animation;
+import movement.Movement.Going;
 
 /**
  * Program Name:    PlayerMovement.java
@@ -75,20 +76,6 @@ public class PlayerMovement extends Movement{
     	 * 
     	*/
     	
-		// For setDir.
-		if (cntrl.getADown()) {
-			setDir('a');
-		}
-		else if(cntrl.getDDown()) {
-			setDir('d');
-		}
-		else if (cntrl.getWDown()) {
-			setDir('w');
-		}
-		else if(cntrl.getSDown()) {
-			setDir('s');
-		}
-    	
 		// Player does not move when no keys are not pressed.
 		if (!cntrl.getWDown() && !cntrl.getSDown()) {
 			setDy(0.0);
@@ -131,6 +118,8 @@ public class PlayerMovement extends Movement{
 			setDy(0.0);
 		}
 		
+		setDir();
+		
 		checkCollision();
 
 		// Move the getChar() group by translation
@@ -142,6 +131,18 @@ public class PlayerMovement extends Movement{
 				getSprite().getSpriteGroup().getTranslateX() + getDx()
 				)
 		;
+		
+		getStage().getOverlay().getOverlayGroup().setTranslateX(getSprite().getSpriteGroup().getTranslateX());
+		getStage().getOverlay().getOverlayGroup().setTranslateY(getSprite().getSpriteGroup().getTranslateY());
+		
+		getStage().getOverlay().getOverlayGroup().setLayoutX(-(getStage().getWindow().getRoot().getWidth() / 2));
+		getStage().getOverlay().getOverlayGroup().setLayoutY(-(getStage().getWindow().getRoot().getHeight() / 2));
+		
+		getStage().getWindow().getCam().setTranslateX(getSprite().getSpriteGroup().getTranslateX());
+		getStage().getWindow().getCam().setTranslateY(getSprite().getSpriteGroup().getTranslateY());
+		
+		getStage().getWindow().getCam().setLayoutX(-(getStage().getWindow().getRoot().getWidth() / 2));
+		getStage().getWindow().getCam().setLayoutY(-(getStage().getWindow().getRoot().getHeight() / 2));
 		
 		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
 			getMvAnim().play();

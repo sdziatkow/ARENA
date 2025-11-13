@@ -19,10 +19,8 @@ import backpack.Backpack;
 import backpack.EquipSlots;
 import item.weapon.Weapon;
 import movement.Movement;
-import sprite.charSprite.CharacterSprite;
 import window.Controller;
 import worldStage.WorldStage;
-import animate.Animate;
 import arenaCharacter.CharAttr.Attribute;
 import arenaCharacter.Stat.StatType;
 
@@ -84,6 +82,7 @@ public abstract class ArenaCharacter{
     
     // All character stats and attributes.
     private CharState state;
+    private Level lvl;
 
     // Object of class Backpack; used to store items.
     private Backpack backpack;
@@ -108,7 +107,8 @@ public abstract class ArenaCharacter{
     	this.charClass = CharClass.BRUTE;
     	this.charState = State.MOVE;
     	
-    	this.state = new CharState(this);
+    	this.state = new CharState();
+    	this.lvl = new Level();
         this.backpack = new Backpack(this);
         this.equipSlot = new EquipSlots(this, backpack);
         
@@ -124,7 +124,8 @@ public abstract class ArenaCharacter{
     	this.charClass = charClass;
     	this.charState = State.MOVE;
     	
-        this.state = new CharState(this);
+        this.state = new CharState();
+        this.lvl = new Level();
         this.backpack = new Backpack(this);
         this.equipSlot = new EquipSlots(this, backpack);
         
@@ -213,6 +214,14 @@ public abstract class ArenaCharacter{
         */
 
         return state;
+    }
+    
+    public Level lvl() {
+        /**
+         * Getter for field: health
+        */
+
+        return lvl;
     }
 
     public Backpack bp() {
