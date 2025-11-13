@@ -1,54 +1,45 @@
 package arenaCharacter.npc;
 
 /**
- * Program Name:    Wilhelm.java
+ * Program Name:    Elm.java
  *<p>
- * Purpose:         The purpose of this program is to create a non-playable
- * 					character for ARENA.
+ * Purpose:         The purpose of this program is to
  *<p>
  * @version         0.0
  *<p>
- * Created:         February 23, 2025
+ * Created:         November 12, 2025
  *<p>
- * Updated:         MONTH DD, YYYY
+ * Updated:         Month DD, YYYY
  *<p>
  * @author          Sean Dziatkowiec
 */
 
-import movement.NpcMovement;
-import sprite.charSprite.EnemyTestSprite;
-import worldStage.WorldStage;
-
 import animate.NpcAnimate;
 import arenaCharacter.Stat.StatType;
-import item.weapon.SteelGreatAxe;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import movement.NpcMovement;
+import sprite.charSprite.ElmSprite;
+import worldStage.WorldStage;
 
-
-public class Wilhelm extends Npc {
-    /**
-     *
-    */
-
-	EnemyTestSprite sprite;
+public class Elm extends Npc{
+	/*
+	 * 
+	*/
+	
+	ElmSprite sprite;
 	NpcAnimate anim;
 	
-
-//CONSTRUCTORS---------------------------------------------------------------------
-
-    public Wilhelm(
-    		WorldStage stage
-    ){
-        /**
-         *
-        */
-    	
-    	super(CharClass.BARBARIAN);
+	public Elm(WorldStage stage) {
+		/*
+		 * 
+		*/
+		
+	   	super(CharClass.MONK);
     	setStage(stage);
-    	setName("Wilhelm");
+    	setName("Elm");
     	
-    	sprite = new EnemyTestSprite();
+    	sprite = new ElmSprite();
     	anim = new NpcAnimate(sprite.getFramesPerDir());
     	setMvmnt(new NpcMovement(
     			getStage(),
@@ -79,16 +70,6 @@ public class Wilhelm extends Npc {
     			setCharState(State.MOVE);
     		}
     	});
-    	
-    	bp().addItem(new SteelGreatAxe());
-    	equipSlot().equipWeapon(0);
-    	equipSlot().getWeapon().setAttk(2);
-    	
-    }
-
-//GETTERS--------------------------------------------------------------------------
-
-
-//DISPLAY--------------------------------------------------------------------------
+	}
 
 }

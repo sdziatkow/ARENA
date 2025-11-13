@@ -16,11 +16,14 @@ package sprite.charSprite;
 */
 
 import collision.CollisionBox;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
+import movement.Movement.Going;
+import sprite.weaponSprite.WeaponSprite;
 
 public abstract class CharacterSprite{
     /**
@@ -54,6 +57,8 @@ public abstract class CharacterSprite{
 	
 	// Will store spriteView and worldBox.getColBox() -> Ellipse
 	private StackPane charPane;
+	
+	private WeaponSprite weaponSprite;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -74,8 +79,10 @@ public abstract class CharacterSprite{
     	downAttkSprites = new WritableImage[framesPerDir];
     	rightAttkSprites = new WritableImage[framesPerDir];
     	
+    	weaponSprite = new WeaponSprite();
+    	
     	charPane = new StackPane();
-    	charPane.setCache(true);
+    	charPane.setCache(false);
 
     }
     
@@ -96,8 +103,10 @@ public abstract class CharacterSprite{
     	downAttkSprites = new WritableImage[framesPerDir];
     	rightAttkSprites = new WritableImage[framesPerDir];
     	
+    	weaponSprite = new WeaponSprite();
+    	
     	charPane = new StackPane();
-    	charPane.setCache(true);
+    	charPane.setCache(false);
 
     }
 
@@ -111,124 +120,68 @@ public abstract class CharacterSprite{
     	this.spriteSheet = spriteSheet;
     }
 
-    public void setUpSprite(int index, int[] coords) {
+    public void setUpSprite(WritableImage[] frames) {
         /**
          * Setter for field: upSprites.
         */
-
-    	this.upSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	
+    	this.upSprites = frames;
     }
     
-    public void setLeftSprite(int index, int[] coords) {
+    public void setLeftSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.leftSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.leftSprites = frames;
     }
     
-    public void setDownSprite(int index, int coords[]) {
+    public void setDownSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.downSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.downSprites = frames;
     }
     
-    public void setRightSprite(int index, int coords[]) {
+    public void setRightSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.rightSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.rightSprites = frames;
     }
     
-    public void setUpAttkSprite(int index, int[] coords) {
+    public void setUpAttkSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.upAttkSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.upAttkSprites = frames;
     }
     
-    public void setLeftAttkSprite(int index, int[] coords) {
+    public void setLeftAttkSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.leftAttkSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.leftAttkSprites = frames;
     }
     
-    public void setDownAttkSprite(int index, int[] coords) {
+    public void setDownAttkSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.downAttkSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.downAttkSprites = frames;
     }
     
-    public void setRightAttkSprite(int index, int[] coords) {
+    public void setRightAttkSprite(WritableImage[] frames) {
         /**
          * Setter for field:
         */
 
-    	this.rightAttkSprites[index] = new WritableImage(
-    			spriteSheet.getPixelReader(), 
-    			coords[0], 
-    			coords[1], 
-    			coords[2], 
-    			coords[3]
-    			)
-    	;
+    	this.rightAttkSprites = frames;
     }
     
 	public void setSpriteView(ImageView spriteView) {
@@ -241,7 +194,7 @@ public abstract class CharacterSprite{
 		
 		this.spriteView = spriteView;
 		
-		this.spriteView.setCache(true);
+		this.spriteView.setCache(false);
 		
 	}
     
@@ -305,6 +258,14 @@ public abstract class CharacterSprite{
 		this.spriteGroup = spriteGroup;
 		
 		this.spriteGroup.setCache(true);
+	}
+	
+	public void setWeaponSprite(WeaponSprite sprite) {
+		/*
+		 * 
+		*/
+		
+		this.weaponSprite = sprite;
 	}
 
 //GETTERS--------------------------------------------------------------------------
@@ -455,20 +416,46 @@ public abstract class CharacterSprite{
 		return spriteGroup;
 	}
 	
-//HIT-BOX-PLACEMENT----------------------------------------------------------------
-	
-	public void placeHitBox(double[] coords) {
+	public WeaponSprite getWeaponSprite() {
 		/*
 		 * 
 		*/
+		
+		return weaponSprite;
+	}
+	
+//HIT-BOX-PLACEMENT----------------------------------------------------------------
+	
+	public void placeHitBox(Going dir) {
+		/*
+		 * 
+		*/
+		
+		double[] coords = getWeaponSprite().getHitBoxCoords(dir);
+		
 		if (!getSpriteGroup().getChildren().contains(getHitBox().getColBox())) {
 			getHitBox().setBounds(coords);
 			getSpriteGroup().getChildren().add(getHitBox().getColBox());
 		}
 		
+		if (!getCharPane().getChildren().contains(getWeaponSprite().getSpriteView())) {
+			getCharPane().getChildren().add(getWeaponSprite().getSpriteView());
+			
+			switch (dir) {
+			case N:
+				getCharPane().getChildren().getFirst().setViewOrder(1);
+				getCharPane().getChildren().getLast().setViewOrder(0);
+				break;
+			case E:
+			case S:
+			case W:
+				getCharPane().getChildren().getFirst().setViewOrder(0);
+				getCharPane().getChildren().getLast().setViewOrder(1);
+				break;
+			default:
+			}
+		}
+		
 		
 	}
-	
-	public abstract double[] getHitBoxCoords(char dir);
-
 }

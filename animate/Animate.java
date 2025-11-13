@@ -1,5 +1,7 @@
 package animate;
 
+import movement.Movement.Going;
+
 /**
  * Program Name:    Animate.java
  *<p>
@@ -164,7 +166,7 @@ public abstract class Animate{
 
 //
     
-    public abstract void animate(CharacterSprite sprite, char dir, boolean move);
-    public abstract void animateAttk(CharacterSprite sprite, char dir);
+    public abstract void animate(CharacterSprite sprite, Going dir, boolean move);
+    public abstract void animateAttk(CharacterSprite sprite, Going dir);
 
 }

@@ -19,7 +19,6 @@ import animate.PlayerAnimate;
 import arenaCharacter.Stat.StatType;
 import collision.CollisionBox;
 import item.weapon.Weapon;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -98,6 +97,7 @@ public class Player extends ArenaCharacter{
     			*/
     			
     			// Remove hitBox from spriteGroup
+    			sprite.getCharPane().getChildren().remove(sprite.getWeaponSprite().getSpriteView());
     			sprite.getSpriteGroup().getChildren().remove(
     					sprite.getHitBox().getColBox()
     			);
@@ -150,6 +150,7 @@ public class Player extends ArenaCharacter{
     			*/
     			
     			// Remove hitBox from spriteGroup
+    			sprite.getCharPane().getChildren().remove(sprite.getWeaponSprite().getSpriteView());
     			sprite.getSpriteGroup().getChildren().remove(
     					sprite.getHitBox().getColBox()
     			);
@@ -214,9 +215,7 @@ public class Player extends ArenaCharacter{
     	CollisionBox hurtBox;
     	
     	// Place the Player's hitBox.
-    	getMvmnt().getSprite().placeHitBox(
-    			getMvmnt().getSprite().getHitBoxCoords(getMvmnt().getDir())
-    	);
+    	getMvmnt().getSprite().placeHitBox(getMvmnt().getSimpleDir());
     	
     	// For each hurtBox on the stage.
     	for (int npc = 0; npc < totalHurtBoxes; ++npc) {
@@ -229,9 +228,9 @@ public class Player extends ArenaCharacter{
     			if (hitBox.getBounds().intersects(hurtBox.getBounds())) {
     				
     				// Damage the hurtBox.
-    				equipSlot().getWeapon().setTarget(getStage().getNpc()[0]);
+    				equipSlot().getWeapon().setTarget(getStage().getAllChars()[npc]);
     				equipSlot().getWeapon().genAttk1();
-    				getStage().getNpc()[0].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
+    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
     			}
     		}
     	}
@@ -247,46 +246,7 @@ public class Player extends ArenaCharacter{
     	 * 
     	*/
     	
-    	Text dispDmg = new Text();
-    	Timeline dispLen;
-    	KeyFrame second;
-    	
-    	second = new KeyFrame(Duration.millis(1000));
-    	dispLen = new Timeline(second);
-    	dispLen.setCycleCount(1);
-    	
-    	dispLen.setOnFinished(new EventHandler<ActionEvent>() {
-    		/*
-    		 * This is called when attkAnim has passed through maxFramesPerDir
-    		 * KeyFrames.
-    		 * This method removes the hitbox from ArenaCharacter's Group and sets
-    		 * their state to MOVE.
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			/*
-    			 * 
-    			*/
-    			
-    			// Remove hitBox from spriteGroup
-    			getMvmnt().getSprite().getSpriteGroup().getChildren().remove(
-    					dispDmg
-    			);
-    		}
-    	});
-    	
-    	dispDmg.setText("-" + (int)weapon.getAttkDmg());
-    	dispDmg.setFill(Color.RED);
-    	
-    	getMvmnt().getSprite().getSpriteGroup().getChildren().add(dispDmg);
-    	dispLen.play();
-    	
-    	if (!isAlive()) {
-    		setCharState(State.REST);
-    		getMvmnt().getSprite().getSpriteGroup().setTranslateX(-500);
-    		getMvmnt().getSprite().getSpriteGroup().setTranslateY(-500);
-    		getStage().getWorldSpace().getChildren().remove(getMvmnt().getSprite().getSpriteGroup());
-    	}
+    	getStage().getOverlay().updateStatBars(state(), lvl());
     }
     
 

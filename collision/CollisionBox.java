@@ -45,6 +45,7 @@ public class CollisionBox{
 
 	private ColType type;
 	private Rectangle colBox;
+	private Bounds originalBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -60,6 +61,8 @@ public class CollisionBox{
     	colBox.setY(0);
     	colBox.setWidth(0);
     	colBox.setHeight(0);
+    	
+    	originalBounds = getBounds();
 	}
 
     public CollisionBox(ColType type, double[] bounds) {
@@ -75,6 +78,8 @@ public class CollisionBox{
     	colBox.setWidth(bounds[2]);
     	colBox.setHeight(bounds[3]);
 		colBox.setFill(Color.TRANSPARENT);
+		
+		originalBounds = getBounds();
     	
     	// Give each collision box a different color for testing purposes.
     	// Stroke/strokeWidth is the border color/border width.
@@ -201,6 +206,14 @@ public class CollisionBox{
     	*/
     	
     	return colBox.localToScene(colBox.getBoundsInLocal());
+    }
+    
+    public Bounds getOriginalBounds() {
+    	/**
+    	 * Will return a Bounds object of rectangle.
+    	*/
+    	
+    	return originalBounds;
     }
 
 //COLLISION------------------------------------------------------------------------

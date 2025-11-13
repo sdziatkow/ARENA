@@ -5,29 +5,21 @@ import collision.CollisionBox.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import movement.Movement.Going;
+import sprite.FrameGen;
 
 public class EnemyTestSprite extends CharacterSprite {
 	/**
 	 * 
 	*/
 	
-	// Will store sprites for each mvmnt direction.
-	private int[][] upCoords;
-	private int[][] leftCoords;
-	private int[][] downCoords;
-	private int[][] rightCoords;
+	private FrameGen frameGen;
 	
-	private int[][] upAttkCoords;
-	private int[][] leftAttkCoords;
-	private int[][] downAttkCoords;
-	private int[][] rightAttkCoords;
-	
-	
-	double[] worldBoxBounds;
-	double[] hurtBoxBounds;
-	double[] hitBoxBounds;
-	double[] detectBoxBounds;
-	double[] checkBoxBounds;
+	private double[] worldBoxBounds;
+	private double[] hurtBoxBounds;
+	private double[] hitBoxBounds;
+	private double[] detectBoxBounds;
+	private double[] checkBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -36,91 +28,49 @@ public class EnemyTestSprite extends CharacterSprite {
 		 * 
 		*/
 		
-		super();
 		setSpriteSheet(new Image("file:sprites/enemy_test.png"));
+		frameGen = new FrameGen(getSpriteSheet());
 		
-		// MOVEMENT COORDS
-		upCoords = new int[][] {
-			{ 0, 64, 15, 30},
-			{16, 64, 15, 30},
-			{32, 64, 15, 30},
-			{48, 64, 15, 30}
-		};
-		leftCoords = new int[][] {
-			{ 0, 96, 15, 30},
-			{16, 96, 15, 30},
-			{32, 96, 15, 30},
-			{48, 96, 15, 30}
-		};
-		downCoords = new int[][] {
-			{ 0,  0, 15, 30},
-			{16,  0, 15, 30},
-			{32,  0, 15, 30},
-			{48,  0, 15, 30}
-		};
-		rightCoords = new int[][] {
-			{ 0, 32, 15, 30},
-			{16, 32, 15, 30},
-			{32, 32, 15, 30},
-			{48, 32, 15, 30}
-		};
+		frameGen.setTotalDirections(4);
+		frameGen.setFramesPerDirection(new int[] { 4, 4, 4, 4} );
+		frameGen.setXOffset(0);
+		frameGen.setYOffset(0);
+		frameGen.setFrameWidth(16);
+		frameGen.setFrameHeight(32);
+		frameGen.genFrames();
 		
-		// ATTACK COORDS
-		upAttkCoords = new int[][] {
-			{ 8, 160, 20, 30},
-			{38, 160, 20, 30},
-			{68, 160, 20, 30},
-			{98, 160, 20, 30}
-		};
-		leftAttkCoords = new int[][] {
-			{ 8, 224, 20, 30},
-			{38, 224, 20, 30},
-			{68, 224, 20, 30},
-			{98, 224, 20, 30},
-		};
-		downAttkCoords = new int[][] {
-			{ 8, 128, 20, 30},
-			{38, 128, 20, 30},
-			{68, 128, 20, 30},
-			{98, 128, 20, 30}
-		};
-		rightAttkCoords = new int[][] {
-			{ 8, 192, 20, 30},
-			{38, 192, 20, 30},
-			{68, 192, 20, 30},
-			{98, 192, 20, 30}
-		};
+		setDownSprite(frameGen.getAllFrames()[0]);
+		setRightSprite(frameGen.getAllFrames()[1]);
+		setUpSprite(frameGen.getAllFrames()[2]);
+		setLeftSprite(frameGen.getAllFrames()[3]);
 		
+		frameGen.setXOffset(8);
+		frameGen.setYOffset(128);
+		frameGen.genFrames(true);
 		
-		// Set all coords to their array
-		for (int i = 0; i < upCoords.length; ++i) {
-			setUpSprite(i, upCoords[i]);
-			setLeftSprite(i, leftCoords[i]);
-			setDownSprite(i, downCoords[i]);
-			setRightSprite(i, rightCoords[i]);
-			
-			setUpAttkSprite(i, upAttkCoords[i]);
-			setLeftAttkSprite(i, leftAttkCoords[i]);
-			setDownAttkSprite(i, downAttkCoords[i]);
-			setRightAttkSprite(i, rightAttkCoords[i]);
-		}
-		
+		setDownAttkSprite(frameGen.getAllFrames()[0]);
+		setUpAttkSprite(frameGen.getAllFrames()[1]);
+		setRightAttkSprite(frameGen.getAllFrames()[2]);
+		setLeftAttkSprite(frameGen.getAllFrames()[3]);
+	
 		// Set sprite view to default position and add it to StackPane.
 		setSpriteView(new ImageView(getDownSprite()[0]));
 		getCharPane().getChildren().add(getSpriteView());
+		getCharPane().setMinHeight(32);
+		getCharPane().setMinWidth(32);
 		
 		// Initialize CollisionBox bounds and set CollisionBoxes.
 		worldBoxBounds = new double[] {
-				getCharPane().getBoundsInParent().getCenterX() - 3.2,
-				getCharPane().getBoundsInParent().getCenterY() + 1.0,
-				getCharPane().getBoundsInParent().getCenterX() - 0.2,
-				getCharPane().getBoundsInParent().getCenterY() - 6.0
+				getCharPane().getBoundsInParent().getCenterX() + 4.3,
+				getCharPane().getBoundsInParent().getCenterY() + 1.3,
+				getCharPane().getBoundsInParent().getCenterX() - 1.0,
+				getCharPane().getBoundsInParent().getCenterY() - 7.0
 			};
 		checkBoxBounds = new double[] {
-				getCharPane().getBoundsInParent().getCenterX() - 3.2,
-				getCharPane().getBoundsInParent().getCenterY() + 1.0,
-				getCharPane().getBoundsInParent().getCenterX() - 0.1,
-				getCharPane().getBoundsInParent().getCenterY() - 6.0
+				getCharPane().getBoundsInParent().getCenterX() + 0.5,
+				getCharPane().getBoundsInParent().getCenterY() - 6.0,
+				getCharPane().getBoundsInParent().getCenterX() - 0.2,
+				getCharPane().getBoundsInParent().getCenterY() - 7.0
 			};
 		hitBoxBounds  = new double[] {0, 0, 7.0, 9.0};
 		detectBoxBounds = new double[] {
@@ -144,34 +94,4 @@ public class EnemyTestSprite extends CharacterSprite {
 				getDetectBox().getColBox()
 		));
 	}
-	
-	public double[] getHitBoxCoords(char dir) {
-		/*
-		 * 
-		*/
-		
-		double coords[];
-			
-		switch (dir) {
-		case 'w':
-			coords = new double[] {3.0, 1.0, 14.0, 7.0};
-			break;
-		case 'a':
-			coords = new double[] {-5.0, 12.0, 7.0, 12.0};
-			break;
-		case 's':
-			coords = new double[] {4.0, 24.0, 14.0, 10.0};
-			break;
-		case 'd':
-			coords = new double[] {16.0, 12.0, 7.0, 12.0};
-			break;
-		default:
-			coords = new double[] {16.0, 12.0, 7.0, 12.0};
-			break;
-		}
-		
-		return coords;
-		
-	}
-
 }

@@ -22,6 +22,7 @@ public class CharAttr {
 	
 	public enum Attribute {
 		/**
+		 * @const LEVEL: Level of character.
 		 * @const VIGOR: Determines max HP.
 		 * @const WILLPOWER: Determins HP and SP.
 		 * @const INTELLIGENCE: Determins MP.

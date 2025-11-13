@@ -17,11 +17,9 @@ import animate.Animate;
  * @author          Sean Dziatkowiec
 */
 
-import arenaCharacter.ArenaCharacter;
 import collision.CollisionBox;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -34,6 +32,28 @@ public abstract class Movement{
      *
     */
 	
+	public enum Going {
+		/*
+		 * Associated with dx/dy 
+		*/
+		N,
+		E,
+		S,
+		W,
+		
+		NE,
+		NW,
+		
+		EN,
+		ES,
+		
+		SE,
+		SW,
+		
+		WN,
+		WS
+	}
+	
 	private final int BASE_ANIM_FRAME_RATE = 128;
 	
 	private WorldStage stage;
@@ -43,9 +63,10 @@ public abstract class Movement{
 	private double mvRate;
 	private double dx;
 	private double dy;
-	private char direction;
+	private Going dir;
 	
 	private int colBoxIndex;
+	private double colBounce;
 	
 	boolean contained = false;
 	
@@ -70,8 +91,9 @@ public abstract class Movement{
     	this.mvRate = 1.25;
     	dx = 0.0;
     	dy = 0.0;
+    	colBounce = 0.1;
     	
-    	direction = 'd';
+    	dir = Going.S;
     }
     
     public Movement(
@@ -90,8 +112,9 @@ public abstract class Movement{
     	this.mvRate = mvRate;
     	dx = 0.0;
     	dy = 0.0;
+    	colBounce = 0.1;
     	
-    	direction = 's';
+    	dir = Going.S;
     	
     	// Create event handler for when a movement frame is finished and for when
     	// an attack frame is finished.
@@ -107,7 +130,7 @@ public abstract class Movement{
     			moving = (getDx() > 0.0 || getDx() < 0.0) ||
     					 (getDy() > 0.0 || getDy() < 0.0);
     			
-    			getAnim().animate(getSprite(), getDir(), moving);
+    			getAnim().animate(getSprite(), getSimpleDir(), moving);
     		}
     	};
     	onAttkFrameFinish = new EventHandler<ActionEvent>() {
@@ -116,7 +139,7 @@ public abstract class Movement{
     		*/
     		
     		public void handle(ActionEvent e) {
-    			getAnim().animateAttk(getSprite(), getDir());
+    			getAnim().animateAttk(getSprite(), getSimpleDir());
     		}
     	};
     	
@@ -161,24 +184,73 @@ public abstract class Movement{
     	this.dy = dy;
     }
     
-    public void setDir(char direction) {
+    public void setDir() {
         /**
          * Setter for field: direction
         */
     	
-    	switch (direction) {
+    	double absDx = Math.abs(getDx());
+    	double absDy = Math.abs(getDy());
     	
-    	case 'w':
-    	case 'a':
-    	case 's':
-    	case 'd':
-    		this.direction = direction;
-    		break;
+    	if (getDx() > 0.0 && getDy() < 0.0) {
     		
-    	default:
-    		this.direction = 's';
+    		if (absDy > absDx) {
+    			dir = Going.NE;
+    		}
+    		else {
+    			dir = Going.EN;
+    		}
+    	}
+    	else if (getDx() < 0.0 && getDy() < 0.0) {
+    		
+    		if (absDy > absDx) {
+    			dir = Going.NW;
+    		}
+    		else {
+    			dir = Going.WN;
+    		}
+    	}
+    	
+    	else if (getDx() > 0.0 && getDy() > 0.0) {
+    		
+    		if (absDy > absDx) {
+    			dir = Going.SE;
+    		}
+    		else {
+    			dir = Going.ES;
+    		}
+    	}
+    	else if (getDx() < 0.0 && getDy() > 0.0) {
+    		
+    		if (absDy > absDx) {
+    			dir = Going.SW;
+    		}
+    		else {
+    			dir = Going.WS;
+    		}
+    	}
+    	
+    	else if (getDy() < 0.0) {
+    		dir = Going.N;
+    	}
+    	else if (getDx() > 0.0) {
+    		dir = Going.E;
+    	}
+    	else if (getDy() > 0.0) {
+    		dir = Going.S;
+    	}
+    	else if (getDx() < 0.0) {
+    		dir = Going.W;
     	}
 
+    }
+    
+    public void forceDir(Going dir) {
+    	/*
+    	 * 
+    	*/
+    	
+    	this.dir = dir;
     }
     
     public void setColBoxIndex(int colBoxIndex) {
@@ -187,6 +259,14 @@ public abstract class Movement{
         */
 
     	this.colBoxIndex = colBoxIndex;
+    }
+    
+    public void setColBounce(double colBounce) {
+        /**
+         * Setter for field:
+        */
+
+    	this.colBounce = colBounce;
     }
     
     public void setStage(WorldStage stage) {
@@ -263,12 +343,33 @@ public abstract class Movement{
     	return dy;
     }
     
-    public char getDir() {
+    public Going getDir() {
         /**
          * Getter for field: direction
         */
     	
-    	return direction;
+    	return dir;
+    }
+    
+    public Going getSimpleDir() {
+        /**
+         * Getter for field: direction
+        */
+    	
+    	if (dir == Going.NE || dir == Going.NW) {
+    		dir = Going.N;
+    	}
+    	else if (dir == Going.EN || dir == Going.ES) {
+    		dir = Going.E;
+    	}
+    	else if (dir == Going.SE || dir == Going.SW) {
+    		dir = Going.S;
+    	}
+    	else if (dir == Going.WN || dir == Going.WS) {
+    		dir = Going.W;
+    	}
+    	
+    	return dir;
     }
     
 	public double getNormalX() {
@@ -337,6 +438,15 @@ public abstract class Movement{
 
     }
     
+    public double getColBounce() {
+        /**
+         * Getter for field:
+        */
+    	
+    	return colBounce;
+
+    }
+    
     public boolean getContained() {
         /**
          * Getter for field:
@@ -399,7 +509,7 @@ public abstract class Movement{
 		
 		// The modifier that the Character will be pushed back upon colliding with 
 		// another worldBox.
-		double bounce = 0.1;
+		double bounce = getColBounce();
 		
 		// For intersection purposes allows greater detection range.
 		double pad = 3.0;

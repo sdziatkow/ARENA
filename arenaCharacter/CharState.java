@@ -26,8 +26,6 @@ public class CharState {
 	 * ArenaCharacter can be accessed from an object of this class.
 	*/
 	
-	private ArenaCharacter character;
-	
 	private Stat hp;
 	private Stat mp;
 	private Stat sp;
@@ -43,6 +41,7 @@ public class CharState {
 	private CharAttr dex;
 	
 	// Default values.
+	final double DEF_XP_MAX = 100.0;
 	final double DEF_HP_MAX = 100.0;
 	final double DEF_MP_MAX = 100.0;
 	final double DEF_SP_MAX = 100.0;
@@ -59,14 +58,6 @@ public class CharState {
 		/**
 		 * 
 		*/
-	}
-	
-	public CharState(ArenaCharacter character) {
-		/**
-		 * 
-		*/
-		
-		this.character = character;
 		
 		// Initialize new stats.
 		hp = new Stat(StatType.HP);
@@ -86,7 +77,7 @@ public class CharState {
 	}
 	
 //GETTERS--------------------------------------------------------------------------
-		
+
 	public Stat hp() {
 		/**
 		 * Getter for field: hp

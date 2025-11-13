@@ -19,6 +19,8 @@ import collision.CollisionBox.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import movement.Movement.Going;
+import sprite.FrameGen;
 
 public class NpcTestSprite extends CharacterSprite {
 	/**
@@ -26,14 +28,11 @@ public class NpcTestSprite extends CharacterSprite {
 	*/
 	
 	// Will store sprites for each mvmnt direction.
-	private int[][] upCoords;
-	private int[][] leftCoords;
-	private int[][] downCoords;
-	private int[][] rightCoords;
+	private FrameGen frameGen;
 	
-	double[] worldBoxBounds;
-	double[] checkBoxBounds;
-	double[] detectBoxBounds;
+	private double[] worldBoxBounds;
+	private double[] checkBoxBounds;
+	private double[] detectBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -44,38 +43,20 @@ public class NpcTestSprite extends CharacterSprite {
 		
 		super();
 		setSpriteSheet(new Image("file:sprites/NPC_test.png"));
+		frameGen = new FrameGen(getSpriteSheet());
 		
-		upCoords = new int[][] {
-			{ 0, 64, 15, 30},
-			{16, 64, 15, 30},
-			{32, 64, 15, 30},
-			{48, 64, 15, 30}
-		};
-		leftCoords = new int[][] {
-			{ 0, 96, 15, 30},
-			{16, 96, 15, 30},
-			{32, 96, 15, 30},
-			{48, 96, 15, 30}
-		};
-		downCoords = new int[][] {
-			{ 0,  0, 15, 30},
-			{16,  0, 15, 30},
-			{32,  0, 15, 30},
-			{48,  0, 15, 30}
-		};
-		rightCoords = new int[][] {
-			{ 0, 32, 15, 30},
-			{16, 32, 15, 30},
-			{32, 32, 15, 30},
-			{48, 32, 15, 30}
-		};
+		frameGen.setTotalDirections(4);
+		frameGen.setFramesPerDirection(new int[] { 4, 4, 4, 4} );
+		frameGen.setXOffset(0);
+		frameGen.setYOffset(0);
+		frameGen.setFrameWidth(16);
+		frameGen.setFrameHeight(32);
+		frameGen.genFrames();
 		
-		for (int i = 0; i < upCoords.length; ++i) {
-			setUpSprite(i, upCoords[i]);
-			setLeftSprite(i, leftCoords[i]);
-			setDownSprite(i, downCoords[i]);
-			setRightSprite(i, rightCoords[i]);
-		}
+		setDownSprite(frameGen.getAllFrames()[0]);
+		setRightSprite(frameGen.getAllFrames()[1]);
+		setUpSprite(frameGen.getAllFrames()[2]);
+		setLeftSprite(frameGen.getAllFrames()[3]);
 		
 		// Set sprite view to default position and add it to StackPane.
 		setSpriteView(new ImageView(getDownSprite()[0]));
@@ -110,7 +91,7 @@ public class NpcTestSprite extends CharacterSprite {
 		));
 	}
 	
-	public double[] getHitBoxCoords(char dir) {
+	public double[] getHitBoxCoords(Going dir) {
 		double[] coords = new double[] {0};
 		
 		return coords;

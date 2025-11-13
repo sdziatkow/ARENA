@@ -16,26 +16,18 @@ package arenaCharacter.npc;
 */
 
 import arenaCharacter.*;
-import arenaCharacter.ArenaCharacter.CharClass;
-import arenaCharacter.ArenaCharacter.State;
 import arenaCharacter.Stat.StatType;
 import collision.CollisionBox;
 import item.weapon.Weapon;
-import javafx.animation.Animation;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import movement.Movement;
 import movement.NpcMovement;
-import movement.PlayerMovement;
 import sprite.charSprite.NpcTestSprite;
-import sprite.charSprite.PlayerSprite;
 import window.Controller;
 import worldStage.WorldStage;
-
 import java.util.Random;
-
 import animate.NpcAnimate;
-import animate.PlayerAnimate;
 
 
 public abstract class Npc extends ArenaCharacter {
@@ -115,6 +107,7 @@ public abstract class Npc extends ArenaCharacter {
     			*/
     			
     			// Remove hitBox from spriteGroup
+    			sprite.getCharPane().getChildren().remove(sprite.getWeaponSprite().getSpriteView());
     			sprite.getSpriteGroup().getChildren().remove(
     					sprite.getHitBox().getColBox()
     			);
@@ -182,24 +175,22 @@ public abstract class Npc extends ArenaCharacter {
     	CollisionBox hitBox = getMvmnt().getSprite().getHitBox();
     	CollisionBox hurtBox;
     		
-    	getMvmnt().getSprite().placeHitBox(
-    			getMvmnt().getSprite().getHitBoxCoords(getMvmnt().getDir())
-    	);
+    	getMvmnt().getSprite().placeHitBox(getMvmnt().getDir());
     	
     	for (int npc = 0; npc < totalHurtBoxes; ++npc) {
     		
     		if (npc != getMvmnt().getColBoxIndex()) {
     			hurtBox = getStage().getHurtBoxes()[npc];
     			if (hitBox.getBounds().intersects(hurtBox.getBounds())) {
-    				equipSlot().getWeapon().setTarget(getStage().getNpc()[0]);
+    				equipSlot().getWeapon().setTarget(getStage().getAllChars()[npc]);
     				equipSlot().getWeapon().genAttk2();
-    				getStage().getPlayer().stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
-    				getStage().getPlayer().hurt(equipSlot().getWeapon());
+    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
+    				getStage().getAllChars()[npc].hurt(equipSlot().getWeapon());
     				System.out.println(
-    						"PLAYER HP: [" + 
-    						(int)getStage().getPlayer().stat(StatType.HP).getVal() +
+    						getStage().getAllChars()[npc].getName() + " HP: [" + 
+    						(int)getStage().getAllChars()[npc].stat(StatType.HP).getVal() +
     						" / " +
-    						(int)getStage().getPlayer().stat(StatType.HP).getMaxVal() +
+    						(int)getStage().getAllChars()[npc].stat(StatType.HP).getMaxVal() +
     						"]"
     						);
     			}

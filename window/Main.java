@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.scene.ParallelCamera;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,13 +23,15 @@ public class Main extends Application {
 	
 	private WorldStage currStage;
 	
+	private Stage stage;
 	private Scene  scene;
+	private ParallelCamera cam;
 	
 	private Controller controller;
 	private EventHandler<KeyEvent> onPress;
 	private EventHandler<KeyEvent> onRelease;
 	private EventHandler<MouseEvent> onMouseClick;
-	Timer gameTimer;
+	private Timer gameTimer;
 	
 	
 	public void init() {
@@ -36,21 +39,29 @@ public class Main extends Application {
 		 * Runs on program launch.
 		*/
 		
+		cam = new ParallelCamera();
 		controller = new Controller();
 		currStage = new StageOne(this);
 		
 	}
 	
-    public void start(Stage stage) throws IOException {
+    public void start(Stage s) throws IOException {
     	/**
     	 * Runs after init() 
     	*/
 		
 		// Create new scene with
-		scene = new Scene(currStage.getBackground(), 500, 500);
+    	stage = s;
+		scene = new Scene(currStage.getBackground(), 30000, 30000, true);
+		scene.setCamera(cam);
 		
-//		// Create new Controller object and map keys.
-//		controller = new Controller();
+		//cam.setClip(currStage.getPlayer().getMvmnt().getSprite().getWorldBox().getColBox());
+//		currStage.getOverlay().getOverlayGroup().setTranslateX(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateX() - (scene.getWidth() / 2));
+//		currStage.getOverlay().getOverlayGroup().setTranslateY(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateY() - (scene.getHeight() / 2));
+//		cam.setTranslateX(-scene.getWidth() / 2);
+//		cam.setTranslateY(-scene.getHeight() / 2);
+		//currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getChildren().add(cam);
+		
 		
 		onPress = new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent event) {
@@ -64,6 +75,10 @@ public class Main extends Application {
 				case S:
 				case D:
 					controller.playerMovement(eventType, key);
+					break;
+				case I:
+					controller.togglePlayerMenu();
+					currStage.dispPlayerMenu();
 					break;
 				default:
 					break;
@@ -108,18 +123,22 @@ public class Main extends Application {
 						}
 					}
 					
-					if (currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().getOpacity() != 0) {
-						currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(0);
-					}
-					else {
-						currStage.getNpc()[0].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(100);
-					}
-					
-					if (currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().getOpacity() != 0) {
-						currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(0);
-					}
-					else {
-						currStage.getNpc()[0].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(100);
+					for (int box = 0; box < currStage.getNpc().length; ++box) {
+						
+						if (currStage.getNpc()[box].getMvmnt().getSprite().getCheckBox().getColBox().getOpacity() != 0) {
+							currStage.getNpc()[box].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(0);
+						}
+						else {
+							currStage.getNpc()[box].getMvmnt().getSprite().getCheckBox().getColBox().setOpacity(100);
+						}
+						
+						if (currStage.getNpc()[box].getMvmnt().getSprite().getDetectBox().getColBox().getOpacity() != 0) {
+							currStage.getNpc()[box].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(0);
+						}
+						else {
+							currStage.getNpc()[box].getMvmnt().getSprite().getDetectBox().getColBox().setOpacity(100);
+						}
+						
 					}
 					break;
 				default:
@@ -146,7 +165,12 @@ public class Main extends Application {
 		
         stage.setTitle("ARENA");
         stage.setScene(scene);
-        stage.sizeToScene();
+        stage.setWidth(500);
+        stage.setHeight(500);
+        stage.setMinWidth(0);
+        stage.setMinHeight(0);
+        stage.setMaxWidth(30000);
+        stage.setMaxHeight(30000);
         stage.show();
         
         
@@ -176,11 +200,35 @@ public class Main extends Application {
         	
         }, 0, 32);
         
+		currStage.onLaunch();
         
-        currStage.onLaunch();
     }
 
 //GETTERS--------------------------------------------------------------------------  
+    
+    public Stage getRoot() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return stage;
+    }
+    
+    public Scene getScene() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return scene;
+    }
+    
+    public ParallelCamera getCam() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return cam;
+    }
     
     public Controller getController() {
     	/**

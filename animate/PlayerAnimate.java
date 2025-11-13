@@ -16,6 +16,7 @@ package animate;
 */
 
 import javafx.scene.image.WritableImage;
+import movement.Movement.Going;
 import sprite.charSprite.CharacterSprite;
 
 public class PlayerAnimate extends Animate{
@@ -37,7 +38,7 @@ public class PlayerAnimate extends Animate{
 
 //ANIMATE--------------------------------------------------------------------------
     
-	public void animate(CharacterSprite sprite, char dir, boolean move) {
+	public void animate(CharacterSprite sprite, Going dir, boolean move) {
 		/**
 		 * 
 		*/
@@ -49,7 +50,7 @@ public class PlayerAnimate extends Animate{
 		}
 	}
 	
-	public void animateAttk(CharacterSprite sprite, char dir) {
+	public void animateAttk(CharacterSprite sprite, Going dir) {
 		/*
 		 * 
 		*/
@@ -59,7 +60,7 @@ public class PlayerAnimate extends Animate{
 
 //GETTERS--------------------------------------------------------------------------
 
-	public WritableImage getIdleFrame(CharacterSprite sprite, char dir) {
+	public WritableImage getIdleFrame(CharacterSprite sprite, Going dir) {
 		/**
 		 * 
 		*/
@@ -69,30 +70,25 @@ public class PlayerAnimate extends Animate{
 		
 		// Set nextFrame based on direction.
 		idleFrame = null;
-		switch (dir) {
-		case 'w':
+
+		if (dir == Going.N) {
 			idleFrame = sprite.getUpSprite()[0];
-			break;
-			
-		case 'a':
+		}
+		else if (dir == Going.W) {
 			idleFrame = sprite.getLeftSprite()[0];
-			break;
-			
-		case 's':
+		}
+		else if (dir == Going.S) {
 			idleFrame = sprite.getDownSprite()[0];
-			break;
-			
-		case 'd':
+		}
+		else if (dir == Going.E) {
 			idleFrame = sprite.getRightSprite()[0];
-			break;
-			
 		}
 		
 		return idleFrame;
 		
 	}
 	
-	private WritableImage getNextFrame(CharacterSprite sprite, char dir) {
+	private WritableImage getNextFrame(CharacterSprite sprite, Going dir) {
 		/**
 		 * This method will return the next image that the player's sprite will be
 		 * changed to.
@@ -103,87 +99,56 @@ public class PlayerAnimate extends Animate{
 		
 		// Set nextFrame based on direction and xFrameCount.
 		nextFrame = null;
-		switch (dir) {
-		
-		//UP----------------
-		case 'w':
 			
+		if (dir == Going.N) {
 			nextFrame = sprite.getUpSprite()[getUCount()];
 			incUCount();
-			
-			break;
-		
-		//LEFT--------------
-		case 'a':
-
+		}
+		else if (dir == Going.W) {
 			nextFrame = sprite.getLeftSprite()[getLCount()];
 			incLCount();
-			break;
-		
-		//DOWN------------------
-		case 's':
-			
+		}
+		else if (dir == Going.S) {
 			nextFrame = sprite.getDownSprite()[getDCount()];
 			incDCount();
-			
-			break;
-			
-		//RIGHT--------------------
-		case 'd':
-			
+		}
+		else if (dir == Going.E) {
 			nextFrame = sprite.getRightSprite()[getRCount()];
-			incRCount();
-			
-			break;
+			incRCount();	
 		}
 		return nextFrame;
 	}
 	
-	private WritableImage getNextAttkFrame(CharacterSprite sprite, char dir) {
+	private WritableImage getNextAttkFrame(CharacterSprite sprite, Going dir) {
 		/*
 		 * 
 		*/
 		
 		WritableImage nextFrame;
-		nextFrame = null;
-		
+	
 		// Set nextFrame based on direction and xFrameCount.
 		nextFrame = null;
-		switch (dir) {
-		
-		//UP----------------
-		case 'w':
-			
+		if (dir == Going.N) {
 			nextFrame = sprite.getUpAttkSprite()[getAttkCount()];
+			sprite.getWeaponSprite().setSpriteImg(sprite.getWeaponSprite().getUpSprite()[getAttkCount()]);
 			incAttkCount();
-			
-			break;
-		
-		//LEFT--------------
-		case 'a':
+		}
+		else if (dir == Going.W) {
 
 			nextFrame = sprite.getLeftAttkSprite()[getAttkCount()];
+			sprite.getWeaponSprite().setSpriteImg(sprite.getWeaponSprite().getLeftSprite()[getAttkCount()]);
 			incAttkCount();
-			break;
-		
-		//DOWN------------------
-		case 's':
-			
-			nextFrame = sprite.getDownAttkSprite()[getAttkCount()];
-			incAttkCount();
-			
-			break;
-			
-		//RIGHT--------------------
-		case 'd':
-			
-			nextFrame = sprite.getRightAttkSprite()[getAttkCount()];
-			incAttkCount();
-			
-			break;
 		}
-		
-		
+		else if (dir == Going.S) {
+			nextFrame = sprite.getDownAttkSprite()[getAttkCount()];
+			sprite.getWeaponSprite().setSpriteImg(sprite.getWeaponSprite().getDownSprite()[getAttkCount()]);
+			incAttkCount();
+		}
+		else if (dir == Going.E) {
+			nextFrame = sprite.getRightAttkSprite()[getAttkCount()];
+			sprite.getWeaponSprite().setSpriteImg(sprite.getWeaponSprite().getRightSprite()[getAttkCount()]);
+			incAttkCount();
+		}
 		
 		return nextFrame;
 	}

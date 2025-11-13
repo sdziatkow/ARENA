@@ -19,6 +19,7 @@ import item.*;
 import arenaCharacter.*;
 import arenaCharacter.Stat.StatType;
 import item.weapon.WeaponAttack.AttackType;
+import sprite.weaponSprite.WeaponSprite;
 
 public abstract class Weapon extends Item{
     /**
@@ -38,6 +39,8 @@ public abstract class Weapon extends Item{
 
     private ArenaCharacter target;
     private ArenaCharacter self;
+    
+    private WeaponSprite sprite;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -47,6 +50,7 @@ public abstract class Weapon extends Item{
         */
 
         super(ItemType.WEAPON);
+        sprite = new WeaponSprite();
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -113,6 +117,14 @@ public abstract class Weapon extends Item{
 
         this.attkDmg = attkDmg;
     }
+    
+    public void setSprite(WeaponSprite sprite) {
+    	/*
+    	 * 
+    	*/
+    	
+    	this.sprite = sprite;
+    }
 
 //GETTERS--------------------------------------------------------------------------
     
@@ -177,6 +189,14 @@ public abstract class Weapon extends Item{
         */
 
         return attkDmg;
+    }
+    
+    public WeaponSprite getSprite() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return sprite;
     }
 
 //ATTACK---------------------------------------------------------------------------
