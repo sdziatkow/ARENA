@@ -30,7 +30,8 @@ public class Controller{
 	
 	private boolean attkDown;
 	
-	private boolean playerMenu;
+	private boolean invMenu;
+	private boolean statMenu;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -46,7 +47,7 @@ public class Controller{
     	
     	attkDown = false;
     	
-    	playerMenu = false;
+    	invMenu = false;
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -66,12 +67,20 @@ public class Controller{
     	this.attkDown = attkDown;
     }
     
-    public void togglePlayerMenu() {
+    public void toggleInvMenu() {
     	/*
     	 * 
     	*/
     	
-    	playerMenu = !playerMenu;
+    	invMenu = !invMenu;
+    }
+    
+    public void toggleStatMenu() {
+    	/*
+    	 * 
+    	*/
+    	
+    	statMenu = !statMenu;
     }
 
 //GETTERS--------------------------------------------------------------------------
@@ -116,12 +125,20 @@ public class Controller{
     	return attkDown;
     }
     
-    public boolean showPlayerMenu() {
+    public boolean showingInvMenu() {
     	/*
     	 * 
     	*/
     	
-    	return playerMenu;
+    	return invMenu;
+    }
+    
+    public boolean showingStatMenu() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return statMenu;
     }
     
 //PLAYER-MOVEMENTS-----------------------------------------------------------------

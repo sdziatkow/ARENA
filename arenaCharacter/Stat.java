@@ -1,5 +1,7 @@
 package arenaCharacter;
 
+import java.util.ArrayList;
+
 /**
  * Program Name:    Stat.java
  *<p>
@@ -54,6 +56,8 @@ public class Stat{
     // These will store the last value that changed the stat.
     private double lastHeal;
     private double lastDmg;
+    
+    private ArrayList<String> info;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -72,6 +76,9 @@ public class Stat{
         dmgRate  = 0.01;
         lastHeal = 0.0;
         lastDmg = 0.0;
+        
+        info = new ArrayList<String>();
+        setInfo();
     }
 
     public Stat(StatType statType){
@@ -91,6 +98,9 @@ public class Stat{
         dmgRate  = 0.01;
         lastHeal = 0.0;
         lastDmg = 0.0;
+        
+        info = new ArrayList<String>();
+        setInfo();
     }
 
 //SETTERS--------------------------------------------------------------------------
@@ -123,6 +133,7 @@ public class Stat{
         if (maxVal > minVal){
             this.maxVal = maxVal;
         }
+        setInfo();
     }
 
     public void setVal(double val){
@@ -142,6 +153,7 @@ public class Stat{
                 this.val = maxVal;
             }
         }
+        setInfo();
     }
 
     public void immune(boolean immune) {
@@ -375,8 +387,39 @@ public class Stat{
         System.out.println("WEAK: " + isWeak());
         System.out.println("HEAL_RATE: " + getHealRate());
         System.out.println("DMG_RATE: " + getDmgRate());
-
-
-
+    }
+    
+    public void setInfo() {
+    	/*
+    	 * 
+    	*/
+    	
+    	String valInfo;
+    	
+    	getInfo().clear();
+    	getInfo().add(getStatType().toString() + ":");
+    	
+    	valInfo = "[ " + String.format("%.2f", getVal());
+    	
+    	switch (getStatType()) {
+    	case HP:
+    	case MP:
+    	case SP: 
+    		valInfo += " / " + String.format("%.2f", getMaxVal());
+    		valInfo += " ]";
+    		break;
+		default: valInfo += " ]";
+			break;
+    	}
+    	
+    	getInfo().add(valInfo);
+    }
+    
+    public ArrayList<String> getInfo() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return info;
     }
 }

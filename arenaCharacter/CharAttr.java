@@ -1,5 +1,7 @@
 package arenaCharacter;
 
+import java.util.ArrayList;
+
 /**
  * Program Name:    CharAttr.java
  *<p>
@@ -22,7 +24,6 @@ public class CharAttr {
 	
 	public enum Attribute {
 		/**
-		 * @const LEVEL: Level of character.
 		 * @const VIGOR: Determines max HP.
 		 * @const WILLPOWER: Determins HP and SP.
 		 * @const INTELLIGENCE: Determins MP.
@@ -35,10 +36,13 @@ public class CharAttr {
 		DEXTERITY;
 	}
 	
+	public final int TOTAL_ATTR = 4;
 	private Attribute attribute;
 	private int minVal;
 	private int maxVal;
 	private int val;
+	
+	ArrayList<String> info;
 	
 	
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -52,6 +56,9 @@ public class CharAttr {
 		minVal = 0;
 		maxVal = 100;
 		val = 0;
+		
+		info = new ArrayList<String>();
+		setInfo();
 	}
 	
 	public CharAttr(Attribute attribute) {
@@ -63,6 +70,9 @@ public class CharAttr {
 		this.minVal = 0;
 		this.maxVal = 100;
 		this.val = 0;
+		
+		info = new ArrayList<String>();
+		setInfo();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
@@ -83,9 +93,36 @@ public class CharAttr {
 		else if (val >= getMinVal() && val <= getMaxVal()) {
 			this.val = val;
 		}
+		setInfo();
+	}
+	
+	public void setMinVal(int val) {
+		/*
+		 * 
+		*/
+		
+		minVal = val;
+	}
+	
+	public void setInfo() {
+		/*
+		 * 
+		*/
+		
+		getInfo().clear();
+		getInfo().add(attribute.toString() + ":");
+		getInfo().add(String.valueOf(getVal()));
 	}
 	
 //GETTERS--------------------------------------------------------------------------
+	
+	public String getName() {
+		/*
+		 * 
+		*/
+		
+		return attribute.toString();
+	}
 	
 	public int getVal() {
 		/**
@@ -95,7 +132,7 @@ public class CharAttr {
 		return val;
 	}
 	
-	private int getMinVal() {
+	public int getMinVal() {
 		/**
 		 * Getter for field: minVal
 		*/
@@ -103,12 +140,20 @@ public class CharAttr {
 		return minVal;
 	}
 
-	private int getMaxVal() {
+	public int getMaxVal() {
 		/**
 		 * Getter for field: maxVal
 		*/
 		
 		return maxVal;
+	}
+	
+	public ArrayList<String> getInfo() {
+		/*
+		 * 
+		*/
+		
+		return info;
 	}
 
 //MODIFY---------------------------------------------------------------------------
@@ -127,7 +172,7 @@ public class CharAttr {
 		*/
 		
 		for (int num = 0; num < amnt; ++num) {
-			setVal(getVal() + 1);
+			incAttr();
 		}
 	}
 	
@@ -145,7 +190,7 @@ public class CharAttr {
 		*/
 		
 		for (int num = 0; num < amnt; ++num) {
-			setVal(getVal() - 1);
+			decAttr();
 		}
 	}
 	

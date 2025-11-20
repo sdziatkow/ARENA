@@ -47,6 +47,8 @@ public class Martial extends Weapon {
         setBaseDmg(10.0);
         setAttk1(punch);
         setAttk2(kick);
+        
+        setInfo();
     }
 
     public void genAttk1() {

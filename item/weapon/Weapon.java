@@ -38,7 +38,6 @@ public abstract class Weapon extends Item{
     private double attkDmg;
 
     private ArenaCharacter target;
-    private ArenaCharacter self;
     
     private WeaponSprite sprite;
 
@@ -54,6 +53,23 @@ public abstract class Weapon extends Item{
     }
 
 //SETTERS--------------------------------------------------------------------------
+    
+    public void setInfo() {
+    	/*
+    	 * 
+    	*/
+    	
+    	getInfo().clear();
+        getInfo().add(getName());
+        getInfo().add("DAMAGE TYPE:");
+        getInfo().add(getAttk1().getType().toString());
+        getInfo().add("DAMAGE:");
+        getInfo().add(
+        		getAttk1().getMinDmg() +
+        		" - "                  +
+				getAttk1().getMaxDmg()
+		);
+    }
     
     public void setBaseDmg(double baseDmg) {
     	/**
@@ -100,14 +116,6 @@ public abstract class Weapon extends Item{
         */
 
         this.target = target;
-    }
-
-    public void setSelf(ArenaCharacter self) {
-        /**
-         * Setter for field: target
-        */
-
-        this.self = self;
     }
 
     public void setAttkDmg(double attkDmg) {
@@ -173,14 +181,6 @@ public abstract class Weapon extends Item{
         */
 
         return target;
-    }
-
-    public ArenaCharacter getSelf() {
-        /**
-         * Getter for field: target
-        */
-
-        return self;
     }
 
     public double getAttkDmg() {

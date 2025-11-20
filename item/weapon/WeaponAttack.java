@@ -136,6 +136,22 @@ public class WeaponAttack {
 
         return name;
     }
+    
+    public double getMinDmg() {
+        /**
+         * Getter for field: dmg
+        */
+
+        return minDmg;
+    }
+    
+    public double getMaxDmg() {
+        /**
+         * Getter for field: dmg
+        */
+
+        return maxDmg;
+    }
 
     public double getDmg() {
         /**

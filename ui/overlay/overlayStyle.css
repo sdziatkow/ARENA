@@ -1,0 +1,29 @@
+.bar-pane {
+	-fx-padding: 3 0 0 3;
+}
+.progress-bar {
+	-fx-text-box-border: darkslategray;
+	-fx-control-inner-background: transparent;
+	-fx-padding: 0 0 3 0;
+}
+.progress-bar .bar {
+	
+	/* Makes the border transparent */
+    -fx-background-color:
+        -fx-box-border,
+        linear-gradient(to bottom, derive(-fx-accent,95%), derive(-fx-accent,10%)),
+        transparent;
+    -fx-background-insets: 0, 1, 2;
+}
+.hp-bar {
+	-fx-accent: maroon;
+}
+.mp-bar {
+	-fx-accent: darkblue;
+}
+.sp-bar {
+	-fx-accent: darkgreen;
+}
+.xp-bar {
+	-fx-accent: thistle;
+}

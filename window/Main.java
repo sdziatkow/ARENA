@@ -3,6 +3,10 @@ package window;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import item.Item;
+import item.Item.ItemType;
+import item.useable.Useable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -52,15 +56,8 @@ public class Main extends Application {
 		
 		// Create new scene with
     	stage = s;
-		scene = new Scene(currStage.getBackground(), 30000, 30000, true);
+		scene = new Scene(currStage.getBackground(), 3000, 3000, true);
 		scene.setCamera(cam);
-		
-		//cam.setClip(currStage.getPlayer().getMvmnt().getSprite().getWorldBox().getColBox());
-//		currStage.getOverlay().getOverlayGroup().setTranslateX(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateX() - (scene.getWidth() / 2));
-//		currStage.getOverlay().getOverlayGroup().setTranslateY(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateY() - (scene.getHeight() / 2));
-//		cam.setTranslateX(-scene.getWidth() / 2);
-//		cam.setTranslateY(-scene.getHeight() / 2);
-		//currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getChildren().add(cam);
 		
 		
 		onPress = new EventHandler<KeyEvent>() {
@@ -77,8 +74,20 @@ public class Main extends Application {
 					controller.playerMovement(eventType, key);
 					break;
 				case I:
-					controller.togglePlayerMenu();
-					currStage.dispPlayerMenu();
+					controller.toggleInvMenu();
+					currStage.dispInvMenu();
+					break;
+				case Q:
+					
+					Item useable = currStage.getPlayer().equipSlot().getEquipped(ItemType.USEABLE);
+					if (useable != null && !controller.showingInvMenu() && !controller.showingStatMenu()) {
+						((Useable)currStage.getPlayer().equipSlot().getEquipped(ItemType.USEABLE)).use();
+					}
+					break;
+					
+				case U:
+					controller.toggleStatMenu();
+					currStage.dispStatMenu();
 					break;
 				default:
 					break;
@@ -165,12 +174,12 @@ public class Main extends Application {
 		
         stage.setTitle("ARENA");
         stage.setScene(scene);
-        stage.setWidth(500);
+        stage.setWidth(1440);
         stage.setHeight(500);
         stage.setMinWidth(0);
         stage.setMinHeight(0);
-        stage.setMaxWidth(30000);
-        stage.setMaxHeight(30000);
+        stage.setMaxWidth(3000);
+        stage.setMaxHeight(3000);
         stage.show();
         
         

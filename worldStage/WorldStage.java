@@ -1,5 +1,7 @@
 package worldStage;
 
+import java.util.ArrayList;
+
 /**
  * Program Name:    WorldStage.java
  *<p>
@@ -18,9 +20,22 @@ package worldStage;
 import arenaCharacter.ArenaCharacter;
 import collision.CollisionBox;
 import item.Item;
+import item.Item.ItemType;
+import item.useable.Useable;
+import item.weapon.Weapon;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
-import ui.Overlay;
-import ui.PlayerMenu;
+import javafx.scene.control.Button;
+import ui.invMenu.InventoryEvent;
+import ui.invMenu.InventoryMenu;
+import ui.overlay.Overlay;
+import ui.statMenu.StatEvent;
+import ui.statMenu.StatMenu;
 import window.Main;
 
 public abstract class WorldStage{
@@ -39,7 +54,11 @@ public abstract class WorldStage{
 	private Group background;
 	private Group worldSpace;
 	private Overlay overlay;
-	private PlayerMenu pMenu;
+	
+	private InventoryEvent iEvent;
+	private InventoryMenu iMenu;
+	private StatEvent sEvent;
+	private StatMenu sMenu;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -56,7 +75,9 @@ public abstract class WorldStage{
     	background = new Group();
     	worldSpace = new Group();
     	overlay = new Overlay();
-    	pMenu = new PlayerMenu();
+    	
+    	iMenu = new InventoryMenu();
+    	sMenu = new StatMenu();
     	
     	background.setCache(true);
     	worldSpace.setCache(true);
@@ -127,6 +148,22 @@ public abstract class WorldStage{
     	
     	this.overlay = overlay;
     }
+    
+    public void setIEvent() {
+    	/*
+    	 * 
+    	*/
+    	
+    	iEvent = new InventoryEvent(this, iMenu, getPlayer());
+    }
+    
+    public void setSEvent() {
+    	/*
+    	 * 
+    	*/
+    	
+    	sEvent = new StatEvent(this, sMenu, getPlayer());
+    }
 
 //GETTERS--------------------------------------------------------------------------
     
@@ -196,29 +233,112 @@ public abstract class WorldStage{
     	return overlay;
     }
     
+    public InventoryEvent getIEvent() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return iEvent;
+    }
+    
     public abstract CollisionBox[] getWorldBoxes();
     public abstract CollisionBox[] getHurtBoxes();
     public abstract CollisionBox[] getHitBoxes();
     
 //MENUS----------------------------------------------------------------------------
     
-    public void dispPlayerMenu() {
+    public void dispInvMenu() {
     	/*
     	 * 
     	*/
     	
-    	if (getWorldSpace().getChildren().contains(pMenu.getMenu())) {
-    		getWorldSpace().getChildren().remove(pMenu.getMenu());
-    	}
-    	else {
-        	getWorldSpace().getChildren().add(pMenu.getMenu());
-        	pMenu.getMenu().setViewOrder(0);
-    		pMenu.getMenu().setTranslateX(getOverlay().getOverlayGroup().getTranslateX());
-    		pMenu.getMenu().setTranslateY(getOverlay().getOverlayGroup().getTranslateY());
-    		pMenu.getMenu().setLayoutX(-(getWindow().getRoot().getWidth() / 2));
-    		pMenu.getMenu().setLayoutY(-(getWindow().getRoot().getHeight() / 2));
+    	pause();
+    	
+    	// If menu is already there, remove it.
+    	if (getWorldSpace().getChildren().contains(iMenu.getMenu())) {
+    		getWorldSpace().getChildren().remove(iMenu.getMenu());
+    		play();
+    		return;
     	}
     	
+    	if (getWorldSpace().getChildren().contains(sMenu.getMenu())) {
+    		getWorldSpace().getChildren().remove(sMenu.getMenu());
+    		getWindow().getController().toggleStatMenu();
+    	}
+    	
+    	// Otherwise place the menu on the screen and update it.
+    	getWorldSpace().getChildren().add(iMenu.getMenu());
+    	iMenu.getMenu().setViewOrder(0);
+		iMenu.getMenu().setTranslateX(getOverlay().getOverlayGroup().getTranslateX());
+		iMenu.getMenu().setTranslateY(getOverlay().getOverlayGroup().getTranslateY());
+		iMenu.getMenu().setLayoutX(-(getWindow().getRoot().getWidth() / 2));
+		iMenu.getMenu().setLayoutY(-(getWindow().getRoot().getHeight() / 2));
+		
+		iMenu.resetBpMenu();
+		iMenu.getBpMenu().getBpList().getSelectionModel().selectedItemProperty().addListener(iEvent.getBpTypeLstn());
+		
+		iMenu.getBpMenu().getBpList().getSelectionModel().select(0);
+		iMenu.resetEqMenu(getPlayer().equipSlot().getEquipped());
+		
+    }
+    
+    public void dispStatMenu() {
+    	/*
+    	 * 
+    	*/
+    	
+    	pause();
+    	
+    	// If menu is already there, remove it and return.
+    	if (getWorldSpace().getChildren().contains(sMenu.getMenu())) {
+			sEvent.keepShowing(false);
+			getPlayer().getStats().setAttrMins();
+    		getWorldSpace().getChildren().remove(sMenu.getMenu());
+    		play();
+    		return;
+    	}
+    	
+    	// If invMenu is there, remove it.
+    	if (getWorldSpace().getChildren().contains(iMenu.getMenu())) {
+    		getWorldSpace().getChildren().remove(iMenu.getMenu());
+    		getWindow().getController().toggleInvMenu();
+    	}
+    	
+    	// Otherwise place the menu on the screen relative to Player.
+    	getWorldSpace().getChildren().add(sMenu.getMenu());
+    	sMenu.getMenu().setViewOrder(0);
+		sMenu.getMenu().setTranslateX(getOverlay().getOverlayGroup().getTranslateX());
+		sMenu.getMenu().setTranslateY(getOverlay().getOverlayGroup().getTranslateY());
+		sMenu.getMenu().setLayoutX(-(getWindow().getRoot().getWidth() / 2));
+		sMenu.getMenu().setLayoutY(-(getWindow().getRoot().getHeight() / 2));
+		
+		// Reset all Displays.
+		sMenu.setAttrDisp(getPlayer().getStats().getAllAttr());
+		sMenu.setStatDisp(getPlayer().getStats().getAllStats());
+		sMenu.setLvlDisp(getPlayer().lvl().getInfo());
+		
+		// If skillPoints available, show inc/dec Buttons and keepShowing until 
+		// closed.
+		if (getPlayer().lvl().getSkillPoints() > 0) {
+			sMenu.getAttrDisp().setButtons();
+			
+			ArrayList<Button> currSet;
+			for (int s = 0; s < sMenu.getAttrDisp().getButtons().size(); ++s) {
+				currSet = sMenu.getAttrDisp().getButtons().get(s);
+				
+				for (int b = 0; b < currSet.size(); ++b) {
+					currSet.get(b).setOnAction(sEvent.getAttrBtnOnActn());
+				}
+			}
+			
+			sEvent.keepShowing(true);
+		}
+		
+		// If level up is ready show lvlUp Button.
+		if (getPlayer().lvl().isLvlUpReady()) {
+			sMenu.getLvlDisp().setLvlUpBtn();
+			sMenu.getLvlDisp().getLvlUpBtn().setOnAction(sEvent.getLvlBtnOnActn());
+		}
     }
     
 //ON-LAUNCH------------------------------------------------------------------------
@@ -229,6 +349,7 @@ public abstract class WorldStage{
     public abstract void runPlayerStates();
     public abstract void runNpcStates();
     public abstract void pause();
+    public abstract void play();
     public abstract void save();
 
 }

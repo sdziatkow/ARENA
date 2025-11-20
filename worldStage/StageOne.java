@@ -18,14 +18,19 @@ package worldStage;
 import java.util.ArrayList;
 import arenaCharacter.ArenaCharacter;
 import arenaCharacter.ArenaCharacter.CharClass;
+import arenaCharacter.ArenaCharacter.State;
 import arenaCharacter.Player;
+import arenaCharacter.Stat.StatType;
 import arenaCharacter.npc.Elm;
 import arenaCharacter.npc.Wilhelm;
 import collision.CollisionBox;
+import item.armor.ClothClothes;
+import item.armor.SteelArmor;
+import item.useable.StatPot;
+import item.weapon.CrystalSceptre;
+import item.weapon.SteelRapier;
 import sprite.GroundTileSet;
 import sprite.StoneTower;
-import ui.Overlay;
-import ui.StatBar;
 import window.Main;
 
 public class StageOne extends WorldStage{
@@ -63,7 +68,7 @@ public class StageOne extends WorldStage{
     	setBackground(groundTileSet.getTilePane());
     	
     	// Players / NPCS
-    	player = new Player(CharClass.BARBARIAN, this, getWindow().getController());
+    	player = new Player(CharClass.RANGER, this, getWindow().getController());
     	wilhelm = new Wilhelm(this);
     	elm = new Elm(this);
     	getWorldSpace().getChildren().add(player.getMvmnt().getSprite().getSpriteGroup());
@@ -95,6 +100,13 @@ public class StageOne extends WorldStage{
     	 * 
     	*/
     	
+    	getPlayer().bp().addItem(new SteelRapier());
+    	getPlayer().bp().addItem(new CrystalSceptre());
+    	getPlayer().bp().addItem(new SteelArmor());
+    	getPlayer().bp().addItem(new StatPot(1, StatType.HP, 20.0));
+    	getPlayer().bp().addItem(new StatPot(5, StatType.SP, 20.0));
+    	getPlayer().lvl().incXp(100000, false);
+    	
     	getOverlay().getOverlayGroup().setViewOrder(1);
     	
     	getPlayer().getMvmnt().setColBoxIndex(0);
@@ -119,6 +131,9 @@ public class StageOne extends WorldStage{
     	
     	towerObj3.getObjGroup().setTranslateX(1200);
     	towerObj3.getObjGroup().setTranslateY(850);
+    	
+    	setIEvent();
+    	setSEvent();
     }
     
     public void updateViewOrder() {
@@ -191,6 +206,20 @@ public class StageOne extends WorldStage{
     	/**
     	 * 
     	*/
+    	
+    	for (int c = 0; c < getAllChars().length; ++c) {
+    		getAllChars()[c].setCharState(State.REST);
+    	}
+    }
+    
+    public void play() {
+    	/*
+    	 * 
+    	*/
+    	
+    	for (int c = 0; c < getAllChars().length; ++c) {
+    		getAllChars()[c].setCharState(State.MOVE);
+    	}
     }
     
     public void save() {

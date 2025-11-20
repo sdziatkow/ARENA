@@ -17,6 +17,7 @@ package arenaCharacter;
 
 import backpack.Backpack;
 import backpack.EquipSlots;
+import item.Item.ItemType;
 import item.weapon.Weapon;
 import movement.Movement;
 import window.Controller;
@@ -110,7 +111,7 @@ public abstract class ArenaCharacter{
     	this.state = new CharState();
     	this.lvl = new Level();
         this.backpack = new Backpack(this);
-        this.equipSlot = new EquipSlots(this, backpack);
+        this.equipSlot = new EquipSlots(this);
         
         this.state.setDefaultVals(CharClass.BRUTE);
     }
@@ -127,7 +128,7 @@ public abstract class ArenaCharacter{
         this.state = new CharState();
         this.lvl = new Level();
         this.backpack = new Backpack(this);
-        this.equipSlot = new EquipSlots(this, backpack);
+        this.equipSlot = new EquipSlots(this);
         
         this.state.setDefaultVals(charClass);
     }
@@ -245,7 +246,7 @@ public abstract class ArenaCharacter{
     	 * Getter for currently equipped weapon.
     	*/
     	
-    	return equipSlot().getWeapon();
+    	return (Weapon)equipSlot().getEquipped(ItemType.WEAPON);
     }
     
     public Movement getMvmnt() {
@@ -279,6 +280,14 @@ public abstract class ArenaCharacter{
     }
     
 //ACCESS-STATS---------------------------------------------------------------------
+    
+    public CharState getStats() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return state;
+    }
     
     public Stat stat(StatType stat) {
     	/**

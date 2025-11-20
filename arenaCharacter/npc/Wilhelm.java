@@ -21,7 +21,9 @@ import worldStage.WorldStage;
 
 import animate.NpcAnimate;
 import arenaCharacter.Stat.StatType;
+import item.Item.ItemType;
 import item.weapon.SteelGreatAxe;
+import item.weapon.Weapon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -81,8 +83,11 @@ public class Wilhelm extends Npc {
     	});
     	
     	bp().addItem(new SteelGreatAxe());
-    	equipSlot().equipWeapon(0);
-    	equipSlot().getWeapon().setAttk(2);
+    	bp().look(ItemType.WEAPON);
+    	bp().setItemSlot(0);
+    	
+    	equipSlot().equipItem(bp().grabItem());
+    	((Weapon)equipSlot().getEquipped(ItemType.WEAPON)).setAttk(2);
     	
     }
 

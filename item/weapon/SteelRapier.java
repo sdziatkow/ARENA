@@ -46,6 +46,8 @@ public class SteelRapier extends Weapon{
         setBaseDmg(5.0);
         setAttk1(stab);
         setAttk2(parry);
+        
+        setInfo();
     }
 
     public void genAttk1() {

@@ -1,4 +1,4 @@
-package ui;
+package ui.overlay;
 
 import arenaCharacter.CharState;
 import arenaCharacter.Level;
@@ -30,7 +30,6 @@ public class Overlay {
 	private StatBar lvlBar;
 	private StatBar[] statBars;
 	private GridPane statPane;
-	private String barStyle;
 	
 	private Group overlay;
 	
@@ -52,25 +51,19 @@ public class Overlay {
 				lvlBar
 		};
 		
-		barStyle =
-			      "-fx-border-radius: 0;"
-			    + "-fx-background-radius: 0;"
-			    + "-fx-text-box-border: transparent;"
-			    + "-fx-control-inner-background: transparent;"
-			    + "-fx-background-color: rgba(0, 0, 0, 0.1);"
-			    + "-fx-padding: 1px;"
-			    + "-fx-background-insets: 0;"
-			    + "-fx-background-radius: 0;";
-		
-		statBars[0].getBar().setStyle("-fx-accent: red;" +  barStyle);
-		statBars[1].getBar().setStyle("-fx-accent: blue;" +  barStyle);
-		statBars[2].getBar().setStyle("-fx-accent: green;" +  barStyle);
-		statBars[3].getBar().setStyle("-fx-accent: purple;" +  barStyle);
+		statBars[0].getBar().getStyleClass().add("hp-bar");
+		statBars[1].getBar().getStyleClass().add("mp-bar");
+		statBars[2].getBar().getStyleClass().add("sp-bar");
+		statBars[3].getBar().getStyleClass().add("xp-bar");
 		
 		for (int b = 0; b < statBars.length; ++b) {
 			statPane.add(statBars[b].getBar(), 0, b);
 		}
 		
+		statPane.getStyleClass().add("bar-pane");
+		overlay.getStylesheets().add(
+				getClass().getResource("overlayStyle.css").toExternalForm()
+		);
 		overlay.getChildren().add(statPane);
 	}
 	

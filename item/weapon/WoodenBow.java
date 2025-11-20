@@ -43,6 +43,8 @@ public class WoodenBow extends Weapon {
         setBaseDmg(10.0);
         setAttk1(pierce);
         setAttk2(cripple);
+        
+        setInfo();
     }
 
     public void genAttk1() {

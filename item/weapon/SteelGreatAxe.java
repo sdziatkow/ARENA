@@ -44,6 +44,8 @@ public class SteelGreatAxe extends Weapon {
         setBaseDmg(3.0);
         setAttk1(roundSwing);
         setAttk2(fell);
+        
+        setInfo();
     }
 
     public void genAttk1() {

@@ -17,6 +17,7 @@ package item.armor;
 
 import item.*;
 import arenaCharacter.*;
+import arenaCharacter.Stat.StatType;
 
 public abstract class Armor extends Item {
 	/**
@@ -55,12 +56,27 @@ public abstract class Armor extends Item {
 		*/
 		
 		super(ItemType.ARMOR);
+		setSelf(self);
+		
 		this.basePhysDef = physDef;
 		this.baseMagDef  = magDef;
-		this.self = self;
 	}
 	
 //SETTERS--------------------------------------------------------------------------
+	
+	public void setInfo() {
+		/*
+		 * 
+		*/
+		
+		getInfo().clear();
+		getInfo().add(getName());
+		getInfo().add("PHYSDEF:");
+		getInfo().add(String.valueOf(getBasePhysDef()));
+		getInfo().add("MAGDEF:");
+		getInfo().add(String.valueOf(getBaseMagDef()));
+		
+	}
 	
 	public void setBasePhysDef(double physDef) {
 		/**
@@ -76,14 +92,6 @@ public abstract class Armor extends Item {
 		*/
 		
 		this.baseMagDef = magDef;
-	}
-	
-	public void setSelf(ArenaCharacter self) {
-		/**
-		 * Setter for field: self 
-		*/
-		
-		this.self = self;
 	}
 	
 //GETTERS--------------------------------------------------------------------------
@@ -104,16 +112,23 @@ public abstract class Armor extends Item {
 		return baseMagDef;
 	}
 	
-	public ArenaCharacter getSelf() {
-		/**
-		 * Getter for field: self 
-		*/
-		
-		return self;
-	}
-	
 //STAT-MOD-------------------------------------------------------------------------
 	
-	public abstract void onEq();
-	public abstract void onUnEq();
+	public void onEq() {
+		/*
+		 * 
+		*/
+		
+		getSelf().stat(StatType.PHYSDEF).heal(getBasePhysDef());
+		getSelf().stat(StatType.MAGDEF).heal(getBaseMagDef());
+	}
+	
+	public void onUnEq() {
+		/*
+		 * 
+		*/
+		
+		getSelf().stat(StatType.PHYSDEF).dmg(getBasePhysDef());
+		getSelf().stat(StatType.MAGDEF).dmg(getBaseMagDef());
+	}
 }

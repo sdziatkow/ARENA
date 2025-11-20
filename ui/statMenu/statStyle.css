@@ -1,0 +1,78 @@
+.main {
+	-fx-background-color: white;
+	-fx-min-width: 800px;
+	-fx-max-width: 800px;
+	
+	-fx-min-height: 600px;
+	-fx-max-height: 600px;
+}
+.default-main {
+	-fx-min-width: 350px;
+	-fx-max-width: 350px;
+	
+	-fx-border-insets: 1px;
+	-fx-border-color: black;
+	-fx-padding: 20px;
+}
+
+.header {
+	-fx-min-width: 300px;
+	-fx-max-width: 300px;
+}
+
+.label {
+	-fx-alignment: center;
+	-fx-text-fill: black;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-border-insets: 0 0 5 0;
+}
+.info {
+	-fx-min-height: 20px;
+}
+.key {
+	-fx-alignment: center-right;
+	-fx-border-width: 0 0 1 1;
+	-fx-border-color: black;
+}
+
+.attr-key {
+	-fx-min-width: 100px;
+}
+.attr-val {
+	-fx-min-width: 50px;
+	-fx-border-insets: 0 25 5 0;
+}
+
+
+.lvl-key {
+	-fx-min-width: 90px;
+}
+.lvl-val {
+	-fx-min-width: 150px;
+}
+
+
+.stat-key {
+	-fx-min-width: 75px;
+}
+.stat-val {
+	-fx-min-width: 200px;
+}
+.hp {
+	-fx-text-fill: maroon;
+}
+.mp {
+	-fx-text-fill: darkblue;
+}
+.sp {
+	-fx-text-fill: darkgreen;
+}
+
+.attr-button {
+	-fx-alignment: center;
+}
+.lvl-button {
+	-fx-min-width: 120px;
+	-fx-alignment: center;
+}

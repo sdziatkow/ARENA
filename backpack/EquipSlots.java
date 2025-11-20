@@ -1,5 +1,7 @@
 package backpack;
 
+import java.util.ArrayList;
+
 /**
  * Program Name:    EquipSlots.java
  *<p>
@@ -19,6 +21,8 @@ import arenaCharacter.*;
 import item.*;
 import item.Item.ItemType;
 import item.weapon.*;
+import item.armor.*;
+import item.useable.Useable;
 
 public class EquipSlots{
     /**
@@ -29,13 +33,20 @@ public class EquipSlots{
      *  different ways.
      *
     */
+	
+	private final int WEAPON_SLOT = 0;
+	private final int ARMOR_SLOT = 1;
+	private final int USEABLE_SLOT = 2;
 
     private ArenaCharacter self;
-    private Backpack backpack;
+    
+    private ArrayList<Item> equipped;
 
-    // Default weapon is hands.
+    // Default items.
     private Weapon defaultWeapon = new Martial();
-    private Weapon weapon;
+    private Armor defaultArmor = new ClothClothes();
+    private Useable defaultUseable = null;
+    
 
 //CONSTRUCTORS---------------------------------------------------------------------
     
@@ -45,62 +56,25 @@ public class EquipSlots{
         */
 
         this.self = new Player();
-        this.backpack = new Backpack();
-        
-        this.weapon = defaultWeapon;
-
-        
+        this.equipped = new ArrayList<Item>();
     }
 
-    public EquipSlots(ArenaCharacter self, Backpack backpack) {
+    public EquipSlots(ArenaCharacter self) {
         /**
          * Default Constructor for class
         */
 
         this.self = self;
-        this.backpack = backpack;
 
-        this.weapon = defaultWeapon;
-
-        setWeapon(this.weapon);
-
-    }
-
-//SETTERS--------------------------------------------------------------------------
-
-    public void setWeapon(Weapon weapon) {
-        /**
-         * Setter for field: weapon
-        */
-
-        // Set the field self of current weapon to null.
-        this.weapon.setSelf(null);
-
-        // Set the current weapon to the received weapon.
-        this.weapon = weapon;
-
-        // Set the (possibly) new weapon's self field to the EquipSlots' self
-        // field.
-        this.weapon.setSelf(getSelf());
+        equipped = new ArrayList<Item>();
+        defaultWeapon.setSelf(getSelf());
+        defaultArmor.setSelf(getSelf());
+        equipped.add(WEAPON_SLOT, defaultWeapon);
+        equipped.add(ARMOR_SLOT, defaultArmor);
+        equipped.add(USEABLE_SLOT, defaultUseable);
     }
 
 //GETTERS--------------------------------------------------------------------------
-
-    public Weapon getDefaultWeapon() {
-        /**
-         * Getter for field: weapon
-        */
-
-        return defaultWeapon;
-    }
-
-    public Weapon getWeapon() {
-        /**
-         * Getter for field: weapon
-        */
-
-        return weapon;
-    }
 
     public ArenaCharacter getSelf() {
         /**
@@ -109,79 +83,110 @@ public class EquipSlots{
 
         return self;
     }
-
-    public Backpack bp() {
-        /**
-         * Getter for field: backpack
-        */
-
-        return backpack;
+    
+    public ArrayList<Item> getEquipped() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return equipped;
+    }
+    
+    public Item getEquipped(ItemType type) {
+    	/*
+    	 * 
+    	*/
+    	
+    	switch (type) {
+    	case WEAPON: return equipped.get(WEAPON_SLOT);
+    	case ARMOR: return equipped.get(ARMOR_SLOT);
+    	case USEABLE: return equipped.get(USEABLE_SLOT);
+		default: return null;
+    	}
     }
 
 //MANIPULATION---------------------------------------------------------------------
 
-    private boolean isEquipped(Item item) {
+    public boolean isEquipped(Item item) {
         /**
          * This method will return true if Item item is currently equipped.
         */
 
-        boolean equipped;
-
+    	boolean isEq;
+    	
         // Equipped is only true if the received item's name is equal to the
         // currently equipped item.
-        if (item.getName().equals(getWeapon().getName())) {
-            equipped = true;
-        }
-        else {
-            equipped = false;
+        
+    	isEq = false;
+        for (int i = 0; i < equipped.size() && !isEq; ++i) {
+        	
+        	if (equipped.get(i) != null && item != null) {
+        		isEq = equipped.get(i).getName().equals(item.getName());
+        	}
         }
 
-        return equipped;
+        return isEq;
     }
 
-    public void equipWeapon(int itemSlot) {
+    public void equipItem(Item item) {
         /**
          *
         */
-
-        bp().look(ItemType.WEAPON);
-        
-        // pre-select the item slot to get the item from.
-        bp().setItemSlot(itemSlot);
 
 
         // Check if item is not equipped.
-        if ( !(isEquipped(bp().grabItem())) ) {
-
-            // cast bp.grabItem as a Weapon in order to set it as equipped
-            // weapon properly. Finally set the self of the Weapon to
-            // the ArenaCharacter that has the EquipSlots
-            setWeapon((Weapon)(bp().grabItem()));
-            getWeapon().setSelf(getSelf());
+        if ( !isEquipped(item) ) {
+        	
+        	if (getEquipped(item.getItemType()) != null) {
+        		
+        		if (!item.getItemType().equals(ItemType.USEABLE)) {
+        			getEquipped(item.getItemType()).setSelf(null);
+        		}
+        	}
+        	
+        	switch (item.getItemType()) {
+        	case WEAPON: getEquipped().set(WEAPON_SLOT, item);
+        		break;
+        	case ARMOR: getEquipped().set(ARMOR_SLOT, item);
+        		break;
+        	case USEABLE: getEquipped().set(USEABLE_SLOT, item);
+        		break;
+    		default:
+    			break;
+        	}
+        	
+        	if (getEquipped(item.getItemType()) != null) {
+        		getEquipped(item.getItemType()).setSelf(getSelf());
+        	}
         }
     }
 
-    public void unEquipWeapon() {
+    public void unEquipItem(ItemType type) {
         /**
          *
         */
-
-        setWeapon(getDefaultWeapon());
-    }
-
-//INFO-----------------------------------------------------------------------------
-    
-    public String toString() {
-    	/**
-    	 * 
-    	*/
     	
-    	String equipStr;
+    	if (getEquipped(type) != null) {
+    		
+    		if (!type.equals(ItemType.USEABLE)) {
+    			getEquipped(type).setSelf(null);
+    		}
+    	}
     	
-    	equipStr = "----------------------v-equipped-v-------\n";
-    	equipStr += String.format("WEAPON: %s\n", getWeapon().getName());
+    	switch (type) {
+    	case WEAPON: equipped.set(WEAPON_SLOT, defaultWeapon);
+    		break;
+    	case ARMOR: equipped.set(ARMOR_SLOT, defaultArmor);
+    		break;
+    	case USEABLE: equipped.set(USEABLE_SLOT, defaultUseable);
+    		break;
+    	default:
+    		break;
+    	}
     	
-    	return equipStr;
+    	if (getEquipped(type) != null) {
+        	getEquipped(type).setSelf(getSelf());
+    	}
     }
 
 }

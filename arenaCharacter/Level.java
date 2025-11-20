@@ -1,5 +1,7 @@
 package arenaCharacter;
 
+import java.util.ArrayList;
+
 /**
  * Program Name:    Level.java
  *<p>
@@ -24,8 +26,13 @@ public class Level {
 	
 	private int maxXp;
 	private int currXp;
+	private int overflow;
+	
 	private int lvl;
+	private boolean lvlUpReady;
 	private int skillPoints;
+	
+	private ArrayList<String> info;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -36,8 +43,14 @@ public class Level {
 		
 		maxXp = DEFAULT_MAX_XP;
 		currXp = 0;
+		overflow = 0;
+		
 		lvl = 0;
+		lvlUpReady = false;
 		skillPoints = 0;
+		
+		info = new ArrayList<String>();
+		setInfo();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
@@ -55,7 +68,30 @@ public class Level {
 		 * Setter for field: currXp
 		*/
 		
-		this.currXp = xp;
+		if (xp > getMaxXp()) {
+			currXp = getMaxXp();
+		}
+		else if (xp < 1) {
+			currXp = 0;
+		}
+		else {
+			currXp = xp;
+		}
+		
+		setInfo();
+	}
+	
+	public void setOverflow(int over) {
+		/*
+		 * Setter for field: currXp
+		*/
+		
+		if (over < 1) {
+			overflow = 0;
+		}
+		else {
+			overflow = over;
+		}
 	}
 	
 	public void setLvl(int lvl) {
@@ -72,6 +108,27 @@ public class Level {
 		*/
 		
 		this.skillPoints = points;
+	}
+	
+	public void setInfo() {
+		/*
+		 * 
+		*/
+		
+		getInfo().clear();
+		getInfo().add("LEVEL:");
+		getInfo().add(String.valueOf(getLvl()));
+		getInfo().add("XP:");
+		getInfo().add(
+				"[ "
+				+ String.valueOf(getXp())
+				+ " / "
+				+ String.valueOf(getMaxXp())
+				+ " ]"
+		);
+		getInfo().add("SKILL-POINTS:");
+		getInfo().add(String.valueOf(getSkillPoints()));
+		getInfo().add(String.valueOf(isLvlUpReady()));
 	}
 	
 //GETTERS--------------------------------------------------------------------------	
@@ -92,6 +149,14 @@ public class Level {
 		return currXp;
 	}
 	
+	public int getOverflow() {
+		/*
+		 * 
+		*/
+		
+		return overflow;
+	}
+	
 	public int getLvl() {
 		/*
 		 * Getter for field: 
@@ -100,12 +165,30 @@ public class Level {
 		return lvl;
 	}
 	
+	public boolean isLvlUpReady() {
+		/*
+		 * 
+		*/
+		
+		lvlUpReady = getXp() == getMaxXp();
+		
+		return lvlUpReady;
+	}
+	
 	public int getSkillPoints() {
 		/*
 		 * Getter for field: 
 		*/
 		
 		return skillPoints;
+	}
+	
+	public ArrayList<String> getInfo() {
+		/*
+		 * 
+		*/
+		
+		return info;
 	}
 	
 //LEVEL----------------------------------------------------------------------------
@@ -139,21 +222,46 @@ public class Level {
 		 * 
 		*/
 		
-		setXp(getXp() + 1);
-		
-		if (getXp() >= getMaxXp()) {
-			onLvlUp();
+		if (isLvlUpReady()) {
+			incOverflow();
+		}
+		else {
+			setXp(getXp() + 1);
 		}
 	}
 	
-	public void incXp(int amnt) {
+	
+	public void incXp(int amnt, boolean fromOverflow) {
 		/*
 		 * 
 		*/
 		
 		for (int x = 0; x < amnt; ++x) {
-			incXp();
+			
+			if (fromOverflow && getOverflow() > 0) {
+				incXp();
+				decOverflow();
+			}
+			else {
+				incXp();
+			}
 		}
+	}
+	
+	public void incOverflow() {
+		/*
+		 * 
+		*/
+		
+		setOverflow(getOverflow() + 1);
+	}
+	
+	public void decOverflow() {
+		/*
+		 * 
+		*/
+		
+		setOverflow(getOverflow() - 1);
 	}
 	
 	public void onLvlUp() {
@@ -161,10 +269,15 @@ public class Level {
 		 * 
 		*/
 		
+		int lastMax = getMaxXp();
+		
 		incLvl();
 		incSkillPoints();
+		setMaxXp(DEFAULT_MAX_XP * (getLvl() + 1));
 		setXp(0);
-		setMaxXp(DEFAULT_MAX_XP * (int)(getLvl() * 1.5));
+		incXp(getOverflow(), true);
+		
+		setInfo();
 	}
 	
 
