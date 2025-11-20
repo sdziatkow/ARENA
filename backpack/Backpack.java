@@ -34,9 +34,9 @@ public class Backpack{
     */
 	
 	// Maximum storage for each backpack slot. (U)seable; (W)eapon; (A)rmor
-	public final int U_MAX = 3;
-	public final int W_MAX = 1;
-	public final int A_MAX = 1;
+	public final int U_MAX = 10;
+	public final int W_MAX = 10;
+	public final int A_MAX = 10;
 	
 	// Used to store items of class Item and sublcasses of Item.
 	private ArrayList<Item> useable;
@@ -147,6 +147,21 @@ public class Backpack{
         */
 
         return armor;
+    }
+    
+    public ArrayList<ArrayList<Item>> getAllItems() {
+    	/*
+    	 * 
+    	*/
+    	
+    	ArrayList<ArrayList<Item>> allItems;
+    	allItems = new ArrayList<ArrayList<Item>>();
+    	
+    	allItems.add(getUseable());
+    	allItems.add(getWeapon());
+    	allItems.add(getArmor());
+    	
+    	return allItems;
     }
 
     public int getItemSlot() {
@@ -354,6 +369,25 @@ public class Backpack{
         
         return item;
     }
+    
+    public Item grabItemByName(String name) {
+    	/**
+    	 * @return: Item that has field name equal to the given String. 
+    	*/
+
+    	ArrayList<Item> currList;
+    	for (int t = 0; t < getAllItems().size(); ++t) {
+    		
+    		currList = getAllItems().get(t);
+    		for (int i = 0; i < currList.size(); ++i) {
+    			if (currList.get(i).getName().equals(name)) {
+    				return currList.get(i);
+    			}
+    		}
+    	}
+    	
+    	return null;
+    }
 
     public void addItem(Item item) {
         /**
@@ -378,7 +412,7 @@ public class Backpack{
         	else if (isValidAdd()) {
         		
         		// Set Useable's self field to the bp's self field
-        		((Useable)getTempItem()).setSelf(self);
+        		getTempItem().setSelf(self);
         		getUseable().add((Useable)getTempItem());
         	}
         	break;
@@ -486,10 +520,10 @@ public class Backpack{
     	*/
     	
     	// Dec amnt of Useable in bp by one
-    	((Useable)getUseable().get(getItemSlot())).decAmnt();
+    	((Useable)getUseable().get(indexOfItem())).decAmnt();
     	
     	// If amnt is now zero, remove from ArrayList and trim to size.
-    	if ( ((Useable)getUseable().get(indexOfItem())).getAmnt() == 0 ) {
+    	if ( ((Useable)getUseable().get(indexOfItem())).getAmnt() < 1 ) {
     		getUseable().remove(indexOfItem());
     		getUseable().trimToSize();
     	}

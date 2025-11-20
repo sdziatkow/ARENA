@@ -41,6 +41,8 @@ public class BronzeHandAxe extends Weapon {
 
         setAttk1(ravage);
         setAttk2(unWilling);
+        
+        setInfo();
     }
 
     public void genAttk1() {

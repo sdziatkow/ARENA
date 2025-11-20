@@ -1,0 +1,46 @@
+.eq-main {
+	-fx-background-color: black;
+}
+
+.eq-label {
+	-fx-alignment: center;
+	-fx-text-fill: white;
+}
+.eq-header {
+	-fx-alignment: top-center;
+	-fx-min-width: 500px;
+	-fx-min-height: 30px;
+}
+.eq-type {
+	-fx-max-width: 100px;
+	-fx-min-height: 100px;
+	-fx-border-color: gray;
+	-fx-padding: 5px;
+	-fx-border-insets: 5px;
+}
+
+.eq-info {
+	-fx-border-insets: 0 0 10 0;
+	-fx-padding: 10 0 10 0;
+	-fx-border-color: silver;
+	-fx-alignment: center;
+}
+.eq-info-name {
+	-fx-min-width: 150px;
+	-fx-padding: 5px;
+	-fx-border-color: silver;
+	-fx-border-insets: 0 5 0 0;
+}
+.eq-info-field {
+	-fx-min-width: 100px;
+	-fx-alignment: center-right;
+	-fx-border-color: silver;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-insets: 0 0 5 0;
+}
+.eq-info-data {
+	-fx-min-width: 100px;
+	-fx-border-color: silver;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-insets: 0 0 5 0;
+}

@@ -18,6 +18,9 @@ package arenaCharacter;
 
 import arenaCharacter.CharAttr.Attribute;
 import arenaCharacter.Stat.StatType;
+
+import java.util.ArrayList;
+
 import arenaCharacter.ArenaCharacter.CharClass;
 
 public class CharState {
@@ -228,6 +231,7 @@ public class CharState {
 		
 		updateStats();
 		fullHealHpMpSp();
+		setAttrMins();
 	}
 	
 	public void updateStats() {
@@ -240,47 +244,40 @@ public class CharState {
 				DEF_HP_MAX + 
 				(7.8 * vigor().getVal()) + 
 				( 3.2 * wp().getVal() )
-				)
-		;
+		);
 		mp().setMaxVal(
 				DEF_MP_MAX +
 				(3.2 * wp().getVal()) +
 				(7.8 * intel().getVal())
-				)
-		;
+		);
 		sp().setMaxVal(
 				DEF_SP_MAX + 
 				( ( 3.2 * wp().getVal() ) + 
 				( 7.8 * dex().getVal() ) )
-				) 
-		;
+		);
 		
 		physDef().setVal(
 				(1.5 * wp().getVal()) +
 				(1.5 * vigor().getVal()) + 
 				(0.5 * dex().getVal())
-				)
-		;
+		);
 		magDef().setVal(
 				(1.5 * intel().getVal()) +
 				(0.5 * wp().getVal()) +
 				(1.5 * dex().getVal())
-				)
-		;
+		);
 		
 		
 		crit().setVal(
 				DEF_CRIT_VAL + 
 				(0.0001 * dex().getVal()) + 
 				(0.0001 * wp().getVal())
-				)
-		;
+		);
 		speed().setVal(
 				DEF_SPEED_VAL + 0.7 +
 				( 0.05 * dex().getVal() ) + 
 				( 0.05 * wp().getVal())
-				)
-		;
+		);
 		
 	}
 	
@@ -292,6 +289,49 @@ public class CharState {
 		hp().fullHeal();
 		mp().fullHeal();
 		sp().fullHeal();
+	}
+	
+	public ArrayList<CharAttr> getAllAttr() {
+		/*
+		 * 
+		*/
+		
+		ArrayList<CharAttr> all = new ArrayList<CharAttr>();
+		
+		all.add(vigor());
+		all.add(wp());
+		all.add(intel());
+		all.add(dex());
+		
+		return all;
+	}
+	
+	public ArrayList<Stat> getAllStats() {
+		/*
+		 * 
+		*/
+		
+		ArrayList<Stat> all = new ArrayList<Stat>();
+		
+		all.add(hp());
+		all.add(mp());
+		all.add(sp());
+		all.add(physDef());
+		all.add(magDef());
+		all.add(crit());
+		all.add(speed());
+		
+		return all;
+	}
+	
+	public void setAttrMins() {
+		/*
+		 * 
+		*/
+		
+		for (int a = 0; a < getAllAttr().size(); ++a) {
+			getAllAttr().get(a).setMinVal(getAllAttr().get(a).getVal());
+		}
 	}
 	
 

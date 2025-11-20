@@ -179,14 +179,18 @@ public class Player extends ArenaCharacter{
     	 * This method will continuosly run to switch the player between states. 
     	*/
     	
+       	getStage().getOverlay().updateStatBars(state(), lvl());
+    	
     	// If the attack key is pressed, switch state to ATTK.
-    	if (getCntrl().getAttkDown()) {
+    	if (!getCharState().equals(State.REST) && getCntrl().getAttkDown()) {
     		setCharState(State.ATTK);
     	}
     	
     	// Switch the character's current state.
     	switch (getCharState()) {
     	case REST:
+    		getMvmnt().getMvAnim().pause();
+    		getMvmnt().getAttkAnim().pause();
     		break;
     	case MOVE: // Move the character and play mvAnim given it is not already.
     		getMvmnt().move();
@@ -228,13 +232,16 @@ public class Player extends ArenaCharacter{
     			if (hitBox.getBounds().intersects(hurtBox.getBounds())) {
     				
     				// Damage the hurtBox.
-    				equipSlot().getWeapon().setTarget(getStage().getAllChars()[npc]);
-    				equipSlot().getWeapon().genAttk1();
-    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
+    				weapon().setTarget(getStage().getAllChars()[npc]);
+    				weapon().genAttk1();
+    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(weapon().getAttkDmg());
     			}
     		}
     	}
-		
+    	
+    	stat(StatType.SP).dmg(10);
+    	getStage().getOverlay().updateStatBars(state(), lvl());
+    	
 //		System.out.println("NPC HP: " + getStage().getNpc()[0].stat(StatType.HP).getVal());
 //		System.out.println("PLAYER WEAPON: " + equipSlot().getWeapon().getName());
 //		System.out.println("WEAPON DMG: " + equipSlot().getWeapon().getAttkDmg());
@@ -246,7 +253,6 @@ public class Player extends ArenaCharacter{
     	 * 
     	*/
     	
-    	getStage().getOverlay().updateStatBars(state(), lvl());
     }
     
 

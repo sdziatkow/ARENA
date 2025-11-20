@@ -45,6 +45,8 @@ public class CrystalSceptre extends Weapon {
 
         setAttk1(crystalBlast);
         setAttk2(reflect);
+        
+        setInfo();
     }
 
     public void genAttk1() {

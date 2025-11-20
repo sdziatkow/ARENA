@@ -1,0 +1,50 @@
+.bp-main {
+	-fx-background-color: black;
+	-fx-max-width: 850px;
+	-fx-min-width: 850px;
+	-fx-min-height: 550px;
+	-fx-max-height: 550px;
+	-fx-hgap: 10px;
+	-fx-vgap: 10px;
+}
+.bp-label {
+	-fx-alignment: center;
+	-fx-text-fill: white;
+}
+.bp-list {
+	-fx-control-inner-background: silver;
+}
+
+.bp-header {
+	-fx-min-width: 500px;
+	-fx-alignment: center;
+}
+.bp-type-list {
+	-fx-max-height: 94.5px;
+	-fx-min-width: 500px;
+}
+
+.item-list {
+	/* Takes up 2 5ths of menu */
+	-fx-pref-width: 200px;
+	-fx-min-height: 400px;
+	-fx-max-height: 400px;
+	
+}
+.item-info-name {
+	/* Takes of 3 5ths of menu */
+	-fx-min-width: 300px;
+}
+.item-info-field {
+	-fx-alignment: center-right;
+	-fx-min-width: 100px;
+	-fx-max-width: 100px;
+}
+.item-info-data {
+	-fx-min-width: 200px;
+}
+
+.button {
+	-fx-alignment: center;
+	-fx-min-width: 300px;
+}

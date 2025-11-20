@@ -16,7 +16,6 @@ package item.useable;
 */
 
 import item.*;
-import arenaCharacter.ArenaCharacter;
 
 public abstract class Useable extends Item {
 	/**
@@ -24,7 +23,6 @@ public abstract class Useable extends Item {
 	*/
 	
 	private int amnt;
-	private ArenaCharacter self;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -48,20 +46,23 @@ public abstract class Useable extends Item {
 	
 //SETTERS--------------------------------------------------------------------------
 	
+	public void setInfo() {
+		/*
+		 * 
+		*/
+		
+    	getInfo().clear();
+		getInfo().add(getName());
+		getInfo().add("AMOUNT:");
+		getInfo().add(String.valueOf(getAmnt()));
+	}
+	
 	public void setAmnt(int amnt) {
 		/**
 		 * 
 		*/
 		
 		this.amnt = amnt;
-	}
-	
-	public void setSelf(ArenaCharacter self) {
-		/**
-		 * 
-		*/
-		
-		this.self = self;
 	}
 	
 //GETTERS--------------------------------------------------------------------------
@@ -72,14 +73,6 @@ public abstract class Useable extends Item {
 		*/
 		
 		return amnt;
-	}
-	
-	public ArenaCharacter getSelf() {
-		/**
-		 * 
-		*/
-		
-		return self;
 	}
 	
 //USING----------------------------------------------------------------------------

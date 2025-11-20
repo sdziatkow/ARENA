@@ -2,7 +2,6 @@ package movement;
 
 import animate.PlayerAnimate;
 import javafx.animation.Animation;
-import movement.Movement.Going;
 
 /**
  * Program Name:    PlayerMovement.java

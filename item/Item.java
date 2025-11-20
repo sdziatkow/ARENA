@@ -1,5 +1,8 @@
 package item;
 
+import java.util.ArrayList;
+import arenaCharacter.ArenaCharacter;
+
 /**
  * Program Name:    Item.java
  *<p>
@@ -34,15 +37,25 @@ public abstract class Item{
 
     // String containing the name of the item.
     private String name;
+    
+    // Array list containing info for display.
+    private ArrayList<String> info;
+    
+    // The character that has this item equipped.
+    private ArenaCharacter self;
 
 //CONSTRUCTORS---------------------------------------------------------------------
     
     public Item(ItemType itemType) {
     	
         this.itemType = itemType;
+        this.info = new ArrayList<String>();
+        this.self = null;
     }
 
 //SETTERS--------------------------------------------------------------------------
+    
+    public abstract void setInfo();
     
     public void setName(String name) {
     	/**
@@ -50,6 +63,14 @@ public abstract class Item{
     	*/
     	
     	this.name = name;
+    }
+    
+    public void setSelf(ArenaCharacter self) {
+    	/*
+    	 * 
+    	*/
+    	
+    	this.self = self;
     }
     
 //GETTERS--------------------------------------------------------------------------
@@ -68,6 +89,25 @@ public abstract class Item{
     	*/
     	
     	return name;
+    }
+    
+    public ArrayList<String> getInfo() {
+    	/**
+    	 * Name will always be at index zero.
+    	 * Starting at 1 will be key (1) : value (2).
+    	 * 
+    	 * @return: An ArrayList of information for display.
+    	*/
+    	
+    	return info;
+    }
+    
+    public ArenaCharacter getSelf() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return self;
     }
 
 }

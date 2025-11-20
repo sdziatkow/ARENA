@@ -1,4 +1,4 @@
-package ui;
+package ui.overlay;
 
 /**
  * Program Name:    StatBar.java
@@ -34,7 +34,8 @@ public class StatBar {
 		statBar = new ProgressBar(0);
 		
 		statBar.setMinWidth(230);
-		statBar.setMaxHeight(15);
+		statBar.setMaxHeight(12);
+		statBar.getStyleClass().add("progress-bar");
 	}
 	
 //GETTERS--------------------------------------------------------------------------

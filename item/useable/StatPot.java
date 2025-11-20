@@ -54,9 +54,23 @@ public class StatPot extends Useable {
 		else if (getPotType().equals(StatType.SP)) {
 			setName("Potion of Stamina");
 		}
+		
+		setInfo();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
+	
+	public void setInfo() {
+		/*
+		 * 
+		*/
+		
+		super.setInfo();
+		getInfo().add("HEAL AMOUNT:");
+		getInfo().add(String.valueOf(getHealAmnt()));
+		getInfo().add("ON USE:");
+		getInfo().add("HEAL " + getHealAmnt() + " " + getPotType().toString());
+	}
 	
 //GETTERS--------------------------------------------------------------------------
 	
@@ -84,10 +98,15 @@ public class StatPot extends Useable {
 		 * ArenaCharacter.
 		*/
 		
-		getSelf().stat(potType).heal(getHealAmnt());
+		getSelf().stat(getPotType()).heal(getHealAmnt());
 		
 		getSelf().bp().removeItem(this);
 		
+		if (getAmnt() < 1) {
+			getSelf().equipSlot().unEquipItem(getItemType());
+		}
+		
+		setInfo();
 	}
 
 }

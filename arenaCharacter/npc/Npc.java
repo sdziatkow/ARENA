@@ -16,8 +16,10 @@ package arenaCharacter.npc;
 */
 
 import arenaCharacter.*;
+import arenaCharacter.ArenaCharacter.State;
 import arenaCharacter.Stat.StatType;
 import collision.CollisionBox;
+import item.Item.ItemType;
 import item.weapon.Weapon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -143,13 +145,15 @@ public abstract class Npc extends ArenaCharacter {
     	
     	NpcMovement mvmnt = (NpcMovement)getMvmnt();
     	
-    	if (mvmnt.getAttkHurtBox() ) {
+    	if (!getCharState().equals(State.REST) && mvmnt.getAttkHurtBox()) {
     		setCharState(State.ATTK);
     		
     	}
     	
     	switch (getCharState()) {
     	case REST:
+    		getMvmnt().getMvAnim().pause();
+    		getMvmnt().getAttkAnim().pause();
     		break;
     	case MOVE:
     		getMvmnt().move();
@@ -171,6 +175,8 @@ public abstract class Npc extends ArenaCharacter {
     	 * 
     	*/
     	
+    	Weapon weapon = (Weapon)equipSlot().getEquipped(ItemType.WEAPON);
+    	
     	int totalHurtBoxes = getStage().getHurtBoxes().length;
     	CollisionBox hitBox = getMvmnt().getSprite().getHitBox();
     	CollisionBox hurtBox;
@@ -182,17 +188,10 @@ public abstract class Npc extends ArenaCharacter {
     		if (npc != getMvmnt().getColBoxIndex()) {
     			hurtBox = getStage().getHurtBoxes()[npc];
     			if (hitBox.getBounds().intersects(hurtBox.getBounds())) {
-    				equipSlot().getWeapon().setTarget(getStage().getAllChars()[npc]);
-    				equipSlot().getWeapon().genAttk2();
-    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(equipSlot().getWeapon().getAttkDmg());
-    				getStage().getAllChars()[npc].hurt(equipSlot().getWeapon());
-    				System.out.println(
-    						getStage().getAllChars()[npc].getName() + " HP: [" + 
-    						(int)getStage().getAllChars()[npc].stat(StatType.HP).getVal() +
-    						" / " +
-    						(int)getStage().getAllChars()[npc].stat(StatType.HP).getMaxVal() +
-    						"]"
-    						);
+    				weapon.setTarget(getStage().getAllChars()[npc]);
+    				weapon.genAttk1();
+    				getStage().getAllChars()[npc].stat(StatType.HP).dmg(weapon.getAttkDmg());
+    				getStage().getAllChars()[npc].hurt(weapon);
     			}
     		}
     	}
