@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import movement.Movement.Going;
 import sprite.FrameGen;
+import ui.overlay.StatBar;
 
 public class EnemyTestSprite extends CharacterSprite {
 	/**
@@ -14,6 +15,7 @@ public class EnemyTestSprite extends CharacterSprite {
 	*/
 	
 	private FrameGen frameGen;
+	private StatBar hpBar;
 	
 	private double[] worldBoxBounds;
 	private double[] hurtBoxBounds;
@@ -27,6 +29,15 @@ public class EnemyTestSprite extends CharacterSprite {
 		/**
 		 * 
 		*/
+		
+		hpBar = new StatBar();
+		hpBar.getBar().setStyle(
+				"-fx-accent: maroon; "
+				+ "-fx-min-width: 32px; "
+				+ "-fx-max-width: 32px; "
+				+ "-fx-min-height: 10px; "
+				+ "-fx-max-height: 10px;"
+		);
 		
 		setSpriteSheet(new Image("file:sprites/enemy_test.png"));
 		frameGen = new FrameGen(getSpriteSheet());
@@ -91,7 +102,16 @@ public class EnemyTestSprite extends CharacterSprite {
 				getWorldBox().getColBox(),
 				getHurtBox().getColBox(),
 				getCheckBox().getColBox(),
-				getDetectBox().getColBox()
+				getDetectBox().getColBox(),
+				hpBar.getBar()
 		));
+	}
+	
+	public StatBar getHpBar() {
+		/*
+		 * 
+		*/
+		
+		return hpBar;
 	}
 }

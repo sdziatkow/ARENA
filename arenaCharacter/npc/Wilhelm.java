@@ -17,9 +17,11 @@ package arenaCharacter.npc;
 
 import movement.NpcMovement;
 import sprite.charSprite.EnemyTestSprite;
+import sprite.charSprite.PlayerSprite;
 import worldStage.WorldStage;
 
 import animate.NpcAnimate;
+import arenaCharacter.ArenaCharacter.State;
 import arenaCharacter.Stat.StatType;
 import item.Item.ItemType;
 import item.weapon.SteelGreatAxe;
@@ -88,10 +90,25 @@ public class Wilhelm extends Npc {
     	
     	equipSlot().equipItem(bp().grabItem());
     	((Weapon)equipSlot().getEquipped(ItemType.WEAPON)).setAttk(2);
+    	((EnemyTestSprite)getMvmnt().getSprite()).getHpBar().updateProgress(stat(StatType.HP).getVal() / stat(StatType.HP).getMaxVal());
     	
     }
 
 //GETTERS--------------------------------------------------------------------------
+    
+    public void hurt() {
+    	/*
+    	 * 
+    	*/
+    	
+    	((EnemyTestSprite)getMvmnt().getSprite()).getHpBar().updateProgress(stat(StatType.HP).getVal() / stat(StatType.HP).getMaxVal());
+    	
+       	if (!isAlive()) {
+       		getStage().getWorldSpace().getChildren().remove(getMvmnt().getSprite().getSpriteGroup());
+       		getMvmnt().setSprite(new EnemyTestSprite());
+       		setCharState(State.REST);
+       	}
+    }
 
 
 //DISPLAY--------------------------------------------------------------------------

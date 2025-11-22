@@ -62,6 +62,7 @@ public class WeaponSprite {
     	leftSprites = frameGen.getAllFrames()[3];
     	
     	spriteView = new ImageView(getDownSprite()[0]);
+    	spriteView.setCache(true);
     	
         hitBoxCoords = new double[][] {
 			new double[] {8.0, 1.0, 14.0, 7.0},
@@ -80,6 +81,7 @@ public class WeaponSprite {
 		*/
 		
     	spriteView = new ImageView(getDownSprite()[0]);
+    	spriteView.setCache(true);
 	}
 	
 	public void setSpriteImg(WritableImage img) {

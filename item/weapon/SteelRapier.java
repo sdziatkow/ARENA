@@ -60,6 +60,8 @@ public class SteelRapier extends Weapon{
     	getAttk1().setDmgMod(
     			getBaseDmg() +
     			(0.7 * getSelf().attr(Attribute.DEXTERITY).getVal()) +
+    			(0.9 * getSelf().attr(Attribute.WILLPOWER).getVal()) +
+    			(0.1 * getSelf().attr(Attribute.VIGOR).getVal()) +
     			(0.05 * getSelf().stat(StatType.SP).getVal()) +
     			(MISSING_HP_DMG * ( getTarget().stat(StatType.HP).getMaxVal() - 
     			 getTarget().stat(StatType.HP).getVal() ) )

@@ -41,7 +41,10 @@ public class Overlay {
 		*/
 		
 		overlay = new Group();
+		overlay.setCache(true);
+		
 		statPane = new GridPane();
+		statPane.setCache(true);
 		
 		lvlBar = new StatBar();
 		statBars = new StatBar[] {

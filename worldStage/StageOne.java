@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import arenaCharacter.ArenaCharacter;
 import arenaCharacter.ArenaCharacter.CharClass;
 import arenaCharacter.ArenaCharacter.State;
+import arenaCharacter.CharAttr.Attribute;
 import arenaCharacter.Player;
 import arenaCharacter.Stat.StatType;
 import arenaCharacter.npc.Elm;
@@ -68,7 +69,7 @@ public class StageOne extends WorldStage{
     	setBackground(groundTileSet.getTilePane());
     	
     	// Players / NPCS
-    	player = new Player(CharClass.RANGER, this, getWindow().getController());
+    	player = new Player(CharClass.DUELIST, this, getWindow().getController());
     	wilhelm = new Wilhelm(this);
     	elm = new Elm(this);
     	getWorldSpace().getChildren().add(player.getMvmnt().getSprite().getSpriteGroup());
