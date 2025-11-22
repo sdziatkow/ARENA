@@ -26,7 +26,7 @@ public class SteelGreatAxe extends Weapon {
     */
 
     private WeaponAttack roundSwing = new WeaponAttack(
-    		AttackType.PHYS, "ROUND SWING", 15.0, 25.0
+    		AttackType.PHYS, "ROUND SWING", 3.0, 10.0
     		)
     ;
     private WeaponAttack fell     = new WeaponAttack(
@@ -50,28 +50,29 @@ public class SteelGreatAxe extends Weapon {
 
     public void genAttk1() {
         /**
-         * Attk1 ROUND SWING
-         *
-         * dmgMod plus 3x normal roll
-         * Will heal for 100% of dmg dealt plus 40% missing health
+         * Attk1 FELL
+         * dmgMod is 10% of target's current hp
         */
+    	
+    	
+    	getAttk2().setDmgMod(
+    			getBaseDmg() +
+    			(0.05 * getSelf().stat(StatType.HP).getVal()) +
+    			(0.1 * getSelf().attr(Attribute.VIGOR).getVal())
+    			)
+    	;
+    	
+    	setAttkDmg(getAttk2().genDmg());
 
     }
 
     public void genAttk2() {
         /**
-         * Attk2 FELL
-         * dmgMod is 10% of target's current hp
+         * Attk2 ROUND SWING
+         *
+         * dmgMod plus 3x normal roll
+         * Will heal for 100% of dmg dealt plus 40% missing health
         */
-    	
-    	getAttk2().setDmgMod(
-    			getBaseDmg() +
-    			(0.02 * getSelf().stat(StatType.HP).getVal()) +
-    			(0.5 * getSelf().attr(Attribute.VIGOR).getVal())
-    			)
-    	;
-    	
-    	setAttkDmg(getAttk2().genDmg());
 
     }
 }

@@ -131,18 +131,6 @@ public class PlayerMovement extends Movement{
 				)
 		;
 		
-		getStage().getOverlay().getOverlayGroup().setTranslateX(getSprite().getSpriteGroup().getTranslateX());
-		getStage().getOverlay().getOverlayGroup().setTranslateY(getSprite().getSpriteGroup().getTranslateY());
-		
-		getStage().getOverlay().getOverlayGroup().setLayoutX(-(getStage().getWindow().getRoot().getWidth() / 2));
-		getStage().getOverlay().getOverlayGroup().setLayoutY(-(getStage().getWindow().getRoot().getHeight() / 2));
-		
-		getStage().getWindow().getCam().setTranslateX(getSprite().getSpriteGroup().getTranslateX());
-		getStage().getWindow().getCam().setTranslateY(getSprite().getSpriteGroup().getTranslateY());
-		
-		getStage().getWindow().getCam().setLayoutX(-(getStage().getWindow().getRoot().getWidth() / 2));
-		getStage().getWindow().getCam().setLayoutY(-(getStage().getWindow().getRoot().getHeight() / 2));
-		
 		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
 			getMvAnim().play();
 		}

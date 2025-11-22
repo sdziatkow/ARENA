@@ -18,7 +18,9 @@ import animate.Animate;
 */
 
 import collision.CollisionBox;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -145,8 +147,7 @@ public abstract class Movement{
     	
     	// Create new KeyFrames for moving and attacking.
     	mvFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE), onMvFrameFinish);
-    	attkFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE), onAttkFrameFinish);
-    	
+    	attkFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE * 1.71), onAttkFrameFinish);
     	
     	
     	// Create Timelines for moving and attacking.

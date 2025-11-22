@@ -61,6 +61,7 @@ public class CollisionBox{
     	colBox.setY(0);
     	colBox.setWidth(0);
     	colBox.setHeight(0);
+    	colBox.setCache(true);
     	
     	originalBounds = getBounds();
 	}

@@ -55,7 +55,7 @@ public abstract class CharacterSprite{
 	private CollisionBox detectBox;
 	private CollisionBox checkBox;
 	
-	// Will store spriteView and worldBox.getColBox() -> Ellipse
+	// Will store spriteView and worldBox.getColBox() -> Rectangle
 	private StackPane charPane;
 	
 	private WeaponSprite weaponSprite;
@@ -82,7 +82,7 @@ public abstract class CharacterSprite{
     	weaponSprite = new WeaponSprite();
     	
     	charPane = new StackPane();
-    	charPane.setCache(false);
+    	charPane.setCache(true);
 
     }
     
@@ -106,7 +106,7 @@ public abstract class CharacterSprite{
     	weaponSprite = new WeaponSprite();
     	
     	charPane = new StackPane();
-    	charPane.setCache(false);
+    	charPane.setCache(true);
 
     }
 
@@ -194,7 +194,7 @@ public abstract class CharacterSprite{
 		
 		this.spriteView = spriteView;
 		
-		this.spriteView.setCache(false);
+		this.spriteView.setCache(true);
 		
 	}
     

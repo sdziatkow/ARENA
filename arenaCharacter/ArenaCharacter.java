@@ -332,6 +332,8 @@ public abstract class ArenaCharacter{
     			return state().vigor();
     	}
     }
+    
+    public abstract void hurt();
 
 //DISPLAY--------------------------------------------------------------------------
     

@@ -35,7 +35,12 @@ public class StatBar {
 		
 		statBar.setMinWidth(230);
 		statBar.setMaxHeight(12);
+		statBar.getStylesheets().add(
+				getClass().getResource("overlayStyle.css").toExternalForm()
+		);
 		statBar.getStyleClass().add("progress-bar");
+		
+		statBar.setCache(true);
 	}
 	
 //GETTERS--------------------------------------------------------------------------

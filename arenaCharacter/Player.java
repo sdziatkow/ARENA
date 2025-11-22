@@ -179,8 +179,6 @@ public class Player extends ArenaCharacter{
     	 * This method will continuosly run to switch the player between states. 
     	*/
     	
-       	getStage().getOverlay().updateStatBars(state(), lvl());
-    	
     	// If the attack key is pressed, switch state to ATTK.
     	if (!getCharState().equals(State.REST) && getCntrl().getAttkDown()) {
     		setCharState(State.ATTK);
@@ -235,23 +233,34 @@ public class Player extends ArenaCharacter{
     				weapon().setTarget(getStage().getAllChars()[npc]);
     				weapon().genAttk1();
     				getStage().getAllChars()[npc].stat(StatType.HP).dmg(weapon().getAttkDmg());
+    				getStage().getAllChars()[npc].hurt();
     			}
     		}
     	}
     	
-    	stat(StatType.SP).dmg(10);
     	getStage().getOverlay().updateStatBars(state(), lvl());
+    }
+    
+    public void hurt() {
+    	/*
+    	 * 
+    	*/
     	
-//		System.out.println("NPC HP: " + getStage().getNpc()[0].stat(StatType.HP).getVal());
-//		System.out.println("PLAYER WEAPON: " + equipSlot().getWeapon().getName());
-//		System.out.println("WEAPON DMG: " + equipSlot().getWeapon().getAttkDmg());
-		
+       	getStage().getOverlay().updateStatBars(state(), lvl());
+       	
+       	if (!isAlive()) {
+       		getStage().getWorldSpace().getChildren().remove(getMvmnt().getSprite().getSpriteGroup());
+       		getMvmnt().setSprite(new PlayerSprite());
+       		setCharState(State.REST);
+       	}
     }
     
     public void hurt(Weapon weapon) {
     	/*
     	 * 
     	*/
+    	
+    	
     	
     }
     

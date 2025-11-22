@@ -55,8 +55,6 @@ public class StoneTower{
     	;
     	
     	objPane.getChildren().add(obj);
-    	obj.setCache(true);
-    	objPane.setCache(true);
     	
 		// Initialize CollisionBox bounds and set CollisionBoxes.
 		worldBoxBounds = new double[] {

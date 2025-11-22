@@ -71,5 +71,9 @@ public class Elm extends Npc{
     		}
     	});
 	}
+	
+	public void hurt() {
+		
+	}
 
 }

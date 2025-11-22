@@ -191,7 +191,7 @@ public abstract class Npc extends ArenaCharacter {
     				weapon.setTarget(getStage().getAllChars()[npc]);
     				weapon.genAttk1();
     				getStage().getAllChars()[npc].stat(StatType.HP).dmg(weapon.getAttkDmg());
-    				getStage().getAllChars()[npc].hurt(weapon);
+    				getStage().getAllChars()[npc].hurt();
     			}
     		}
     	}

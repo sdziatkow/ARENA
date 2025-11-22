@@ -17,6 +17,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import worldStage.StageOne;
 import worldStage.WorldStage;
 
@@ -44,6 +45,7 @@ public class Main extends Application {
 		*/
 		
 		cam = new ParallelCamera();
+		cam.setCache(true);
 		controller = new Controller();
 		currStage = new StageOne(this);
 		
@@ -58,7 +60,6 @@ public class Main extends Application {
     	stage = s;
 		scene = new Scene(currStage.getBackground(), 3000, 3000, true);
 		scene.setCamera(cam);
-		
 		
 		onPress = new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent event) {
@@ -182,23 +183,25 @@ public class Main extends Application {
         stage.setMaxHeight(3000);
         stage.show();
         
-        
         gameTimer = new Timer();
         gameTimer.scheduleAtFixedRate(new TimerTask() {
 
 			public void run() {
+				Platform.runLater(() -> currStage.updateViewOrder());
+				Platform.runLater(() -> moveCam());
+				
 				Platform.runLater(() -> currStage.runPlayerStates());
 			}
         	
         }, 0, 32);
         
-        gameTimer.scheduleAtFixedRate(new TimerTask() {
-
-			public void run() {
-				Platform.runLater(() -> currStage.updateViewOrder());
-			}
-        	
-        }, 0, 32);
+//        gameTimer.scheduleAtFixedRate(new TimerTask() {
+//
+//			public void run() {
+//				Platform.runLater(() -> currStage.updateViewOrder());
+//			}
+//        	
+//        }, 0, 32);
         
         gameTimer.scheduleAtFixedRate(new TimerTask() {
 
@@ -210,6 +213,7 @@ public class Main extends Application {
         }, 0, 32);
         
 		currStage.onLaunch();
+		currStage.getOverlay().getOverlayGroup().getChildren().add(cam);
         
     }
 
@@ -257,12 +261,27 @@ public class Main extends Application {
     
 //MAIN-----------------------------------------------------------------------------
     
+    public void moveCam() {
+    	/*
+    	 * 
+    	*/
+    	
+    	if (!currStage.getPlayer().isAlive()) {
+    		return;
+    	}
+		currStage.getOverlay().getOverlayGroup().setTranslateX(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateX());
+		currStage.getOverlay().getOverlayGroup().setTranslateY(currStage.getPlayer().getMvmnt().getSprite().getSpriteGroup().getTranslateY());
+		
+		currStage.getOverlay().getOverlayGroup().setLayoutX(-(getStage().getWindow().getRoot().getWidth() / 2));
+		currStage.getOverlay().getOverlayGroup().setLayoutY(-(getStage().getWindow().getRoot().getHeight() / 2));
+    }
+    
     public static void main(String args[]) {
     	/**
     	 * This program will call init() - > start()  
     	*/
     	
-    	launch(args);
+    	Application.launch(args);
     	
     	//TODO: save the game.
     	

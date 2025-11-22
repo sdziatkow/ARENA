@@ -32,11 +32,18 @@ public class GroundTileSet {
 	
 	// Constant integers describing the amount of rows, columns, and total tiles
 	// (JLabels) needed for the JPanel.
-	private final int ROWS        = 100;
-	private final int COLS        = 100;
+	private final int ROWS        = 85;
+	private final int COLS        = 85;
+	
+	private Random grassGen;
+	private int nextGrass;
 	
 	// Will store entire overworld img.
 	private Image overworldSheet;
+	private Image grass1;
+	private Image grass2;
+	private ImageView currGrass;
+	private ImageView randGrass;
 	
 	// Will store a ground tile set.
 	private GridPane ground;
@@ -51,7 +58,13 @@ public class GroundTileSet {
 		 * 
 		*/
 		
+		grassGen = new Random();
+		
 		overworldSheet = new Image("file:sprites/Overworld.png");
+		grass1 = new 
+				WritableImage(overworldSheet.getPixelReader(), 273, 465, 30, 30);
+		grass2 = new 
+				WritableImage(overworldSheet.getPixelReader(), 225, 513, 30, 30);
 		
 		container = new Group();
 		ground = new GridPane();
@@ -61,10 +74,10 @@ public class GroundTileSet {
 			for (int col = 0; col < COLS; ++col) {
 				
 				// Grab a random ImageView object containing grass.
-				ImageView grass = getRandGrass();
+				currGrass = getRandGrass();
 				
 				// Add the grass to the grid.
-				ground.add(grass, row, col);
+				ground.add(currGrass, row, col);
 				
 				// Ensures there is no extra whitespace between each grass img.
 				ground.getRowConstraints().add(new RowConstraints(25));
@@ -84,53 +97,19 @@ public class GroundTileSet {
 		/**
 		 * This method will return a random grass Image being 1 or 2
 		*/
+
+		nextGrass = grassGen.nextInt();
 		
-		Random randGen = new Random();
-		int num = randGen.nextInt();
+		if (nextGrass % 2 == 0) {
 		
-		ImageView grass;
-		
-		if (num % 2 == 0) {
-		
-			grass = new ImageView(getGrass1());
+			randGrass = new ImageView(grass1);
 		}
 		else {
 			
-			grass = new ImageView(getGrass2());
+			randGrass = new ImageView(grass2);
 		}
 		
-		grass.setCache(true);
-		
-		return grass;
-	}
-	
-	private Image getGrass1() {
-		/**
-		 * This method will return sub image of 30x30 grass (plain).
-		 * CURRENT COORDS WORK EXACTLY WITH GRASS 2
-		 * 
-		 * 273, 465, 30, 30
-		*/
-		
-		Image grass1 = new 
-				WritableImage(overworldSheet.getPixelReader(), 273, 465, 30, 30);
-		
-		return grass1;
-
-	}
-	
-	private Image getGrass2() {
-		/**
-		 * This method will return sub image of 30x30 grass (raised center).
-		 * CURRENT COORDS WORK EXACTLY WITH GRASS 1
-		 * 225, 513, 30, 30
-		*/
-		
-		Image grass2 = new 
-				WritableImage(overworldSheet.getPixelReader(), 225, 513, 30, 30);
-		
-		return grass2;
-
+		return randGrass;
 	}
 
 //COMPLETED-TILE-PANE--------------------------------------------------------------
