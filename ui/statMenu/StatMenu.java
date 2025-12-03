@@ -19,8 +19,8 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
-import arenaCharacter.CharAttr;
-import arenaCharacter.Stat;
+import arenaPerson.ArenaAttr;
+import arenaPerson.ArenaStat;
 import javafx.scene.Group;
 
 public class StatMenu {
@@ -58,7 +58,7 @@ public class StatMenu {
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setAttrDisp(ArrayList<CharAttr> attrIn) {
+	public void setAttrDisp(ArrayList<ArenaAttr> attrIn) {
 		/*
 		 * 
 		*/
@@ -82,7 +82,7 @@ public class StatMenu {
 		main.add(lvl.getMain(), 1, 0);
 	}
 	
-	public void setStatDisp(ArrayList<Stat> statIn) {
+	public void setStatDisp(ArrayList<ArenaStat> statIn) {
 		/*
 		 * 
 		*/

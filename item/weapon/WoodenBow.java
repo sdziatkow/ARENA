@@ -1,23 +1,8 @@
 package item.weapon;
 
-/**
- * Program Name:    WoodenBow.java
- *<p>
- * Purpose:         The purpose of this program is to create a bow Weapon that 
- * 					ArenaCharacters can use.
- *<p>
- * @version         0.0
- *<p>
- * Created:         March 06, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
+import arenaEnum.personStats.Attribute;
+import arenaEnum.personStats.StatType;
 
 public class WoodenBow extends Weapon {
     /**
@@ -59,8 +44,8 @@ public class WoodenBow extends Weapon {
     	
     	getAttk1().setDmgMod(
     			getBaseDmg() +
-    			( 0.02 * getSelf().stat(StatType.SP).getVal() ) +
-    			( 0.02 * getSelf().stat(StatType.SPEED).getVal() ) +
+    			( 0.02 * getSelf().arenaStat(StatType.SP).getVal() ) +
+    			( 0.02 * getSelf().arenaStat(StatType.SPEED).getVal() ) +
     			( 0.5 * getSelf().attr(Attribute.DEXTERITY).getVal() )
     			)
     	;

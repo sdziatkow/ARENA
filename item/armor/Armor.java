@@ -1,5 +1,9 @@
 package item.armor;
 
+import arenaEnum.itemInfo.ItemType;
+import arenaEnum.personStats.StatType;
+import arenaPerson.*;
+
 /**
  * Program Name:    Armor.java
  *<p>
@@ -16,8 +20,6 @@ package item.armor;
 */
 
 import item.*;
-import arenaCharacter.*;
-import arenaCharacter.Stat.StatType;
 
 public abstract class Armor extends Item {
 	/**
@@ -26,7 +28,7 @@ public abstract class Armor extends Item {
 	
 	private double basePhysDef;
 	private double baseMagDef;
-	private ArenaCharacter self;
+	private ArenaPerson self;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -50,7 +52,7 @@ public abstract class Armor extends Item {
 		this.baseMagDef  = magDef;
 	}
 	
-	public Armor(double physDef, double magDef, ArenaCharacter self) {
+	public Armor(double physDef, double magDef, ArenaPerson self) {
 		/**
 		 * 
 		*/
@@ -119,8 +121,8 @@ public abstract class Armor extends Item {
 		 * 
 		*/
 		
-		getSelf().stat(StatType.PHYSDEF).heal(getBasePhysDef());
-		getSelf().stat(StatType.MAGDEF).heal(getBaseMagDef());
+		getSelf().arenaStat(StatType.PHYSDEF).heal(getBasePhysDef());
+		getSelf().arenaStat(StatType.MAGDEF).heal(getBaseMagDef());
 	}
 	
 	public void onUnEq() {
@@ -128,7 +130,7 @@ public abstract class Armor extends Item {
 		 * 
 		*/
 		
-		getSelf().stat(StatType.PHYSDEF).dmg(getBasePhysDef());
-		getSelf().stat(StatType.MAGDEF).dmg(getBaseMagDef());
+		getSelf().arenaStat(StatType.PHYSDEF).dmg(getBasePhysDef());
+		getSelf().arenaStat(StatType.MAGDEF).dmg(getBaseMagDef());
 	}
 }

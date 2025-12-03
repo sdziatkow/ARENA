@@ -19,9 +19,8 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
-import arenaCharacter.CharAttr;
-import arenaCharacter.Stat;
-import arenaCharacter.Stat.StatType;
+import arenaPerson.ArenaAttr;
+import arenaPerson.ArenaStat;
 import javafx.scene.control.Label;
 
 public class StatDisplay {
@@ -62,7 +61,7 @@ public class StatDisplay {
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setStatDisp(ArrayList<Stat> statIn) {
+	public void setStatDisp(ArrayList<ArenaStat> statIn) {
 		/*
 		 * 
 		*/
@@ -77,7 +76,7 @@ public class StatDisplay {
 		int row = 0;
 		
 		// For each Stat Object.
-		Stat currStat;
+		ArenaStat currStat;
 		ArrayList<String> currInfo;
 		for (int s = 0; s < statIn.size(); ++s) {
 			

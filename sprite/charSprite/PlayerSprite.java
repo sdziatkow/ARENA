@@ -15,7 +15,7 @@ package sprite.charSprite;
 */
 
 import collision.CollisionBox;
-import collision.CollisionBox.ColType;
+import arenaEnum.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,6 +32,7 @@ public class PlayerSprite extends CharacterSprite {
 	private double[] worldBoxBounds;
 	private double[] hurtBoxBounds;
 	private double[] hitBoxBounds;
+	private double[] checkBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -40,7 +41,7 @@ public class PlayerSprite extends CharacterSprite {
 		 * 
 		*/
 		
-		super();
+		super(4, 4);
 		
 		setSpriteSheet(new Image("file:sprites/character.png"));
 		frameGen = new FrameGen(getSpriteSheet());
@@ -53,34 +54,37 @@ public class PlayerSprite extends CharacterSprite {
 		frameGen.setFrameHeight(32);
 		frameGen.genFrames();
 		
-		setDownSprite(frameGen.getAllFrames()[0]);
-		setRightSprite(frameGen.getAllFrames()[1]);
-		setUpSprite(frameGen.getAllFrames()[2]);
-		setLeftSprite(frameGen.getAllFrames()[3]);
+		setMvFrames(0, frameGen.getAllFrames()[2]);
+		setMvFrames(1, frameGen.getAllFrames()[1]);
+		setMvFrames(2, frameGen.getAllFrames()[0]);
+		setMvFrames(3, frameGen.getAllFrames()[3]);
+		
 		
 		frameGen.setXOffset(8);
 		frameGen.setYOffset(128);
 		frameGen.genFrames(true);
 		
-		setDownAttkSprite(frameGen.getAllFrames()[0]);
-		setUpAttkSprite(frameGen.getAllFrames()[1]);
-		setRightAttkSprite(frameGen.getAllFrames()[2]);
-		setLeftAttkSprite(frameGen.getAllFrames()[3]);
+		setAttkFrames(0, frameGen.getAllFrames()[1]);
+		setAttkFrames(1, frameGen.getAllFrames()[2]);
+		setAttkFrames(2, frameGen.getAllFrames()[0]);
+		setAttkFrames(3, frameGen.getAllFrames()[3]);
 	
 		// Set sprite view to default position and add it to StackPane.
-		setSpriteView(new ImageView(getDownSprite()[0]));
+		setSpriteView(new ImageView(getMvFrames(2)[0]));
 		getCharPane().getChildren().add(getSpriteView());
 		getCharPane().setMinHeight(32);
 		getCharPane().setMinWidth(32);
 		
 		// Initialize CollisionBox bounds and set CollisionBoxes.
 		worldBoxBounds = new double[] {
-				getCharPane().getBoundsInParent().getCenterX() + 4.0,
-				getCharPane().getBoundsInParent().getCenterY() + 1.3,
-				getCharPane().getBoundsInParent().getCenterX() - 1.0,
-				getCharPane().getBoundsInParent().getCenterY() - 7.0
+				12, 12, 8, 12
 			};
-		hitBoxBounds  = new double[] {0, 0, 7.0, 9.0};
+		hitBoxBounds = new double[] {
+				getCharPane().getBoundsInParent().getCenterX(),
+				getCharPane().getBoundsInParent().getCenterY() - 5.0,
+				getCharPane().getBoundsInParent().getMaxX(),
+				getCharPane().getBoundsInParent().getCenterY() + 1.0
+			};
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
 		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
 		setHitBox(new CollisionBox(ColType.HITBOX, hitBoxBounds));

@@ -18,7 +18,7 @@ package ui.invMenu;
 import java.util.ArrayList;
 
 import item.Item;
-import item.Item.ItemType;
+import arenaEnum.itemInfo.ItemType;
 import javafx.collections.ObservableList;
 
 /**

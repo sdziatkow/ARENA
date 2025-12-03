@@ -30,13 +30,10 @@ public class WeaponSprite {
 	
 	private FrameGen frameGen;
 	
-	private WritableImage[] upSprites;
-	private WritableImage[] leftSprites;
-	private WritableImage[] downSprites;
-	private WritableImage[] rightSprites;
+	private WritableImage[][] frames;
 	private ImageView spriteView;
 	
-	private double[][] hitBoxCoords;
+	private double hitBoxOffset;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -44,6 +41,8 @@ public class WeaponSprite {
 		/*
 		 * Default constructor for class WeaponSprite. 
 		*/
+		
+		hitBoxOffset = 10.0;
 		
 		frameGen = new FrameGen(new Image("file:sprites/sword.png"));
 		frameGen.setTotalDirections(4);
@@ -56,23 +55,25 @@ public class WeaponSprite {
 		
 		frameGen.genFrames();
 		
-    	downSprites = frameGen.getAllFrames()[0];
-    	upSprites = frameGen.getAllFrames()[1];
-    	rightSprites = frameGen.getAllFrames()[2];
-    	leftSprites = frameGen.getAllFrames()[3];
+		frames = new WritableImage[4][];
+    	frames[0] = frameGen.getAllFrames()[1];
+    	frames[1] = frameGen.getAllFrames()[2];
+    	frames[2] = frameGen.getAllFrames()[0];
+    	frames[3] = frameGen.getAllFrames()[3];
     	
-    	spriteView = new ImageView(getDownSprite()[0]);
+    	spriteView = new ImageView(getFrames(2)[0]);
     	spriteView.setCache(true);
-    	
-        hitBoxCoords = new double[][] {
-			new double[] {8.0, 1.0, 14.0, 7.0},
-			new double[] {21.0, 12.0, 7.0, 12.0},
-			new double[] {9.0, 24.0, 14.0, 7.0},
-			new double[] {0.0, 12.0, 7.0, 12.0}
-		};
 	}
 	
 //SETTERS--------------------------------------------------------------------------
+	
+	public void setHitBoxOffset(double offset) {
+		/*
+		 * 
+		*/
+		
+		hitBoxOffset = offset;
+	}
 	
 	public void clearSpriteView() {
 		/**
@@ -80,7 +81,7 @@ public class WeaponSprite {
 		 * object of the current sprite.
 		*/
 		
-    	spriteView = new ImageView(getDownSprite()[0]);
+    	spriteView = new ImageView(getFrames(0)[0]);
     	spriteView.setCache(true);
 	}
 	
@@ -96,81 +97,38 @@ public class WeaponSprite {
 		
 	}
 	
-	public void setHitBoxCoords(double[][] coords) {
-		/*
-		 * Setter for field: hitBoxCoords
-		*/
-		
-		this.hitBoxCoords = coords;
-	}
-	
 //GETTERS--------------------------------------------------------------------------
 	
-	public double[][] getAllHitBoxCoords() {
-		/*
-		 * Getter for field: hitBoxCoords.
-		*/
-		
-		return hitBoxCoords;
-	}
-	
-	public double[] getHitBoxCoords(Going dir) {
+	public double[] getHitBoxTranslate(String dir) {
 		/*
 		 * 
 		*/
 		
-		double[] coords;
+		double translate[] = new double[] {0.0, 0.0};
 		
-		switch (dir) {
-		case N:
-			coords = getAllHitBoxCoords()[0];
-			break;
-		case E:
-			coords = getAllHitBoxCoords()[1];
-			break;
-		case S:
-			coords = getAllHitBoxCoords()[2];
-			break;
-		case W:
-			coords = getAllHitBoxCoords()[3];
-			break;
-		default:
-			coords = getAllHitBoxCoords()[0];
+
+		if (dir.equals("N")) {
+			 translate[1] = -hitBoxOffset;
+		}
+		else if (dir.equals("E")) {
+			 translate[0] = hitBoxOffset;
+		}
+		else if (dir.equals("S")) {
+			 translate[1] = hitBoxOffset;
+		}
+		else if (dir.equals("W")) {
+			 translate[0] = -hitBoxOffset;
 		}
 		
-		return coords;
+		return translate;
 	}
 	
-	public WritableImage[] getUpSprite() {
+	public WritableImage[] getFrames(int dir) {
 		/**
 		 * 
 		*/
 		
-		return upSprites;
-	}
-	
-	public WritableImage[] getLeftSprite() {
-		/**
-		 * 
-		*/
-		
-		return leftSprites;
-	}
-	
-	public WritableImage[] getDownSprite() {
-		/**
-		 * 
-		*/
-		
-		return downSprites;
-	}
-	
-	public WritableImage[] getRightSprite() {
-		/**
-		 * 
-		*/
-		
-		return rightSprites;
+		return frames[dir];
 	}
 	
 	public ImageView getSpriteView() {

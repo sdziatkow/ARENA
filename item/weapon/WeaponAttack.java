@@ -1,5 +1,7 @@
 package item.weapon;
 
+import arenaEnum.itemInfo.AttackType;
+
 /**
  * Program Name:    WeaponAttack.java
  *<p>
@@ -25,17 +27,6 @@ public class WeaponAttack {
      *
      * @param randGen: Random generator for DOUBLE dmg.
     */
-	
-	public enum AttackType {
-		/**
-		 * 
-		*/
-		
-		PHYS,
-		MAG,
-		MIX,
-		DEF;
-	}
 	
 	private AttackType type;
 

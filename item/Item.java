@@ -1,7 +1,8 @@
 package item;
 
 import java.util.ArrayList;
-import arenaCharacter.ArenaCharacter;
+import arenaEnum.itemInfo.ItemType;
+import arenaPerson.ArenaPerson;
 
 /**
  * Program Name:    Item.java
@@ -23,15 +24,6 @@ public abstract class Item{
      *
     */
 
-	public enum ItemType {
-		/**
-		 * 
-		*/
-		
-		USEABLE,
-		WEAPON,
-		ARMOR;
-	}
     // Constant containing the type of the item (WEAPON, ARMOR, MISC)
     private ItemType itemType;
 
@@ -42,7 +34,7 @@ public abstract class Item{
     private ArrayList<String> info;
     
     // The character that has this item equipped.
-    private ArenaCharacter self;
+    private ArenaPerson self;
 
 //CONSTRUCTORS---------------------------------------------------------------------
     
@@ -65,7 +57,7 @@ public abstract class Item{
     	this.name = name;
     }
     
-    public void setSelf(ArenaCharacter self) {
+    public void setSelf(ArenaPerson self) {
     	/*
     	 * 
     	*/
@@ -102,7 +94,7 @@ public abstract class Item{
     	return info;
     }
     
-    public ArenaCharacter getSelf() {
+    public ArenaPerson getSelf() {
     	/*
     	 * 
     	*/

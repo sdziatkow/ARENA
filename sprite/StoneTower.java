@@ -16,25 +16,19 @@ package sprite;
 */
 
 import collision.CollisionBox;
-import collision.CollisionBox.ColType;
+import arenaEnum.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 
-public class StoneTower{
+public class StoneTower extends StaticSprite{
     /**
      *
     */
 	
-	private Image overworldSheet;
-	
-	private Group objGroup;
-	private StackPane objPane;
-	private ImageView obj;
-	private CollisionBox worldBox;
-	private double[] worldBoxBounds;
+	private double[] colBounds;
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -44,65 +38,30 @@ public class StoneTower{
          * Default Constructor for class
         */
     	
-    	overworldSheet = new Image("file:sprites/overworld.png");
+    	super();
     	
-    	objPane = new StackPane();
+    	setSheet("file:sprites/overworld.png");
+    	setFrame(new int[] {0, 337, 48, 117});
+
     	
-    	obj = new ImageView(new WritableImage(
-    				overworldSheet.getPixelReader(), 0, 337, 48, 117
-    				)
-    			)
-    	;
-    	
-    	objPane.getChildren().add(obj);
+    	getPane().getChildren().add(getFrame());
     	
 		// Initialize CollisionBox bounds and set CollisionBoxes.
-		worldBoxBounds = new double[] {
-				objPane.getBoundsInParent().getCenterX() - 20.0,
-				objPane.getBoundsInParent().getCenterY() + 20.0,
-				objPane.getBoundsInParent().getCenterX() + 15.2,
-				objPane.getBoundsInParent().getCenterY() - 31.0
+		colBounds = new double[] {
+				getPane().getBoundsInParent().getCenterX() - 20.0,
+				getPane().getBoundsInParent().getCenterY() + 20.0,
+				getPane().getBoundsInParent().getCenterX() + 15.2,
+				getPane().getBoundsInParent().getCenterY() - 31.0
 			};
-    	worldBox = new CollisionBox(ColType.WORLDBOX, worldBoxBounds);
-    	
-    	objGroup = new Group(objPane, worldBox.getColBox());
+    	setWorldBoxBounds(colBounds);
+    	getGroup().getChildren().add(getPane());
+    	getGroup().getChildren().add(getWorldBox().getColBox());
 
     }
 
 //SETTERS--------------------------------------------------------------------------
 
-    public void set() {
-        /**
-         * Setter for field:
-        */
-
-    }
-
 //GETTERS--------------------------------------------------------------------------
-    
-    public CollisionBox getWorldBox() {
-    	/**
-    	 * 
-    	*/
-    	
-    	return worldBox;
-    }
-    
-
-    public StackPane getStoneTower() {
-        /**
-         * This method will return an ImageView object containing a stone tower 
-         * image.
-         * EXACT COORDS WORK FOR STONE TOWER
-         * (0, 337, 48, 117)
-        */
-    	
-    	return objPane;
-    }
-    
-    public Group getObjGroup() {
-    	return objGroup;
-    }
 
 //
 

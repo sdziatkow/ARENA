@@ -1,21 +1,6 @@
 package item.useable;
 
-/**
- * Program Name:    StatPot.java
- *<p>
- * Purpose:         The purpose of this program is to create potions that can 
- * 					effect the ArenaCharacters HP, SP, or MP.
- *<p>
- * @version         0.0
- *<p>
- * Created:         May 01, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.Stat.StatType;
+import arenaEnum.personStats.StatType;
 
 public class StatPot extends Useable {
 	/**
@@ -98,7 +83,7 @@ public class StatPot extends Useable {
 		 * ArenaCharacter.
 		*/
 		
-		getSelf().stat(getPotType()).heal(getHealAmnt());
+		getSelf().arenaStat(getPotType()).heal(getHealAmnt());
 		
 		getSelf().bp().removeItem(this);
 		

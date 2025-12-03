@@ -1,23 +1,8 @@
 package item.weapon;
 
-/**
- * Program Name:    SteelRapier.java
- *<p>
- * Purpose:         The purpose of this program is to create a rapier Weapon for 
- * 					ArenaCharacters to use.
- *<p>
- * @version         0.0
- *<p>
- * Created:         March 06, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
+import arenaEnum.personStats.Attribute;
+import arenaEnum.personStats.StatType;
 
 public class SteelRapier extends Weapon{
     /**
@@ -32,7 +17,7 @@ public class SteelRapier extends Weapon{
     								)
     ;
     private WeaponAttack parry  = new WeaponAttack(
-    								  AttackType.DEF, "PARRY", 0.0, 1.0
+    								  AttackType.UTIL, "PARRY", 0.0, 1.0
     								  )
     ;
 
@@ -62,9 +47,9 @@ public class SteelRapier extends Weapon{
     			(0.7 * getSelf().attr(Attribute.DEXTERITY).getVal()) +
     			(0.9 * getSelf().attr(Attribute.WILLPOWER).getVal()) +
     			(0.1 * getSelf().attr(Attribute.VIGOR).getVal()) +
-    			(0.05 * getSelf().stat(StatType.SP).getVal()) +
-    			(MISSING_HP_DMG * ( getTarget().stat(StatType.HP).getMaxVal() - 
-    			 getTarget().stat(StatType.HP).getVal() ) )
+    			(0.05 * getSelf().arenaStat(StatType.SP).getVal()) +
+    			(MISSING_HP_DMG * ( getTarget().arenaStat(StatType.HP).getMaxVal() - 
+    			 getTarget().arenaStat(StatType.HP).getVal() ) )
     			)
     	;
     	

@@ -20,7 +20,7 @@ import javafx.scene.layout.GridPane;
 import java.util.ArrayList;
 
 import item.Item;
-import item.Item.ItemType;
+import arenaEnum.itemInfo.ItemType;
 import javafx.scene.control.Label;
 
 public class EquipMenu {

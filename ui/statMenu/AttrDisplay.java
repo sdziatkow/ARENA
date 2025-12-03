@@ -19,8 +19,7 @@ import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 
-import arenaCharacter.CharAttr;
-import arenaCharacter.CharAttr.Attribute;
+import arenaPerson.ArenaAttr;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -71,7 +70,7 @@ public class AttrDisplay {
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setAttrDisp(ArrayList<CharAttr> attrIn) {
+	public void setAttrDisp(ArrayList<ArenaAttr> attrIn) {
 		/*
 		 * 
 		*/
@@ -86,7 +85,7 @@ public class AttrDisplay {
 		int row = 0;
 		
 		// For each CharAttr Object.
-		CharAttr currAttr;
+		ArenaAttr currAttr;
 		ArrayList<String> currInfo;
 		for (int a = 0; a < attrIn.size(); ++a) {
 			

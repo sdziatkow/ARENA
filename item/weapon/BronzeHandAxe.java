@@ -1,4 +1,6 @@
+
 package item.weapon;
+
 
 /**
  * Program Name:    BronzeHandAxe.java
@@ -15,7 +17,7 @@ package item.weapon;
  * @author          Sean Dziatkowiec
 */
 
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
 
 public class BronzeHandAxe extends Weapon {
     /**

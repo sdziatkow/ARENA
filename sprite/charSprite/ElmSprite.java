@@ -1,7 +1,7 @@
 package sprite.charSprite;
 
 import collision.CollisionBox;
-import collision.CollisionBox.ColType;
+import arenaEnum.ColType;
 import javafx.scene.Group;
 
 /**
@@ -36,7 +36,7 @@ public class ElmSprite extends CharacterSprite {
 		 * 
 		*/
 		
-		super();
+		super(4, 0);
 		setSpriteSheet(new Image("file:sprites/log.png"));
 		frameGen = new FrameGen(getSpriteSheet());
 		
@@ -49,40 +49,33 @@ public class ElmSprite extends CharacterSprite {
 		frameGen.setFrameHeight(32);
 		frameGen.genFrames();
 		
-		setDownSprite(frameGen.getAllFrames()[0]);
-		setUpSprite(frameGen.getAllFrames()[1]);
-		setRightSprite(frameGen.getAllFrames()[2]);
-		setLeftSprite(frameGen.getAllFrames()[3]);
+		setMvFrames(0, frameGen.getAllFrames()[1]);
+		setMvFrames(1, frameGen.getAllFrames()[2]);
+		setMvFrames(2, frameGen.getAllFrames()[0]);
+		setMvFrames(3, frameGen.getAllFrames()[3]);
 		
-		setSpriteView(new ImageView(getDownSprite()[0]));
+		setSpriteView(new ImageView(getMvFrames(2)[0]));
 		getCharPane().getChildren().add(getSpriteView());
 		getCharPane().setMinWidth(32);
 		getCharPane().setMinHeight(32);
 		
 		// Initialize CollisionBox bounds and set CollisionBoxes.
 		worldBoxBounds = new double[] {
-				getCharPane().getBoundsInParent().getCenterX() - 3.3,
-				getCharPane().getBoundsInParent().getCenterY() - 3.3,
-				getCharPane().getBoundsInParent().getCenterX() - 8.0,
-				getCharPane().getBoundsInParent().getCenterY() - 4.0
+				12, 12, 8, 11
 			};
 		checkBoxBounds = new double[] {
-				getCharPane().getBoundsInParent().getCenterX() - 8.5,
-				getCharPane().getBoundsInParent().getCenterY() - 6.0,
-				getCharPane().getBoundsInParent().getCenterX() - 5.0,
-				getCharPane().getBoundsInParent().getCenterY() - 7.0
+				13, 14, 6, 8
 			};
-		
 		setWorldBox(new CollisionBox(ColType.WORLDBOX, worldBoxBounds));
 		setHurtBox(new CollisionBox(ColType.HURTBOX, worldBoxBounds));
 		setCheckBox(new CollisionBox(ColType.CHECKBOX, checkBoxBounds));
-		setDetectBox(new CollisionBox(ColType.DETECTBOX, new double[] {0.0, 0.0, 0.1, 0.1}));
 		
 		setSpriteGroup(new Group(
 				getCharPane(),
 				getWorldBox().getColBox(),
 				getHurtBox().getColBox(),
-				getCheckBox().getColBox()
+				getCheckBox().getColBox(),
+				getHpBar().getBar()
 		));
 		
 		
