@@ -1,6 +1,12 @@
-package arenaCharacter;
+package arenaPerson;
 
 import java.util.ArrayList;
+
+import arenaEnum.personStats.StatType;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Program Name:    Stat.java
@@ -17,7 +23,7 @@ import java.util.ArrayList;
  * @author          Sean Dziatkowiec
 */
 
-public class Stat{
+public class ArenaStat{
     /**
      * This class will create a stat object that can be modified.
      *
@@ -29,17 +35,6 @@ public class Stat{
      * @param healRate: The rate at which this state heals.
      * @param dmgRate:  The rate at which this stat takes damage.
     */
-	
-	public enum StatType {
-		HP,
-		MP,
-		SP,
-		PHYSDEF,
-		MAGDEF,
-		CRIT,
-		SPEED;
-		
-	}
 
     private final double WEAK_MULT = 1.2567;
 
@@ -58,10 +53,12 @@ public class Stat{
     private double lastDmg;
     
     private ArrayList<String> info;
+    
+    private DoubleProperty dispVal;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
-    public Stat(){
+    public ArenaStat(){
         /**
          * Default constructor for class Stat.
         */
@@ -79,9 +76,12 @@ public class Stat{
         
         info = new ArrayList<String>();
         setInfo();
+        
+        dispVal = new SimpleDoubleProperty();
+        dispVal.set(this.val / 1.0);
     }
 
-    public Stat(StatType statType){
+    public ArenaStat(StatType statType){
         /**
          * Constructor for class Stat.
          *
@@ -100,6 +100,8 @@ public class Stat{
         lastDmg = 0.0;
         
         info = new ArrayList<String>();
+        dispVal = new SimpleDoubleProperty();
+        dispVal.set(this.val / 1.0);
         setInfo();
     }
 
@@ -133,6 +135,7 @@ public class Stat{
         if (maxVal > minVal){
             this.maxVal = maxVal;
         }
+        dispVal.set(this.val / maxVal);
         setInfo();
     }
 
@@ -153,6 +156,8 @@ public class Stat{
                 this.val = maxVal;
             }
         }
+        
+        dispVal.set(this.val / maxVal);
         setInfo();
     }
 
@@ -408,6 +413,7 @@ public class Stat{
     		valInfo += " / " + String.format("%.2f", getMaxVal());
     		valInfo += " ]";
     		break;
+    	case SPEED: valInfo = "[ " + String.format("%.2f", getVal() * 10);
 		default: valInfo += " ]";
 			break;
     	}
@@ -421,5 +427,13 @@ public class Stat{
     	*/
     	
     	return info;
+    }
+    
+    public DoubleProperty dispVal() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return dispVal;
     }
 }

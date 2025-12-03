@@ -16,6 +16,10 @@ package backpack;
 */
 
 import java.util.ArrayList;
+
+import arenaEnum.itemInfo.ItemType;
+import arenaPerson.ArenaPerson;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -25,7 +29,6 @@ import item.Item.*;
 import item.armor.Armor;
 import item.useable.Useable;
 import item.weapon.Weapon;
-import arenaCharacter.ArenaCharacter;
 
 
 public class Backpack{
@@ -53,7 +56,7 @@ public class Backpack{
     private ItemType currLooking;
     
     // The character that the backpack belongs to (optional)
-    private ArenaCharacter self;
+    private ArenaPerson self;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
@@ -67,7 +70,7 @@ public class Backpack{
     	armor = new ArrayList<Item>();
     }
     
-	public Backpack(ArenaCharacter self) {
+	public Backpack(ArenaPerson self) {
 	    /**
 	     *
 	    */

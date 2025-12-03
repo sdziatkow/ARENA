@@ -16,9 +16,9 @@ package ui.invMenu;
 */
 
 import worldStage.WorldStage;
-import arenaCharacter.ArenaCharacter;
+import arenaPerson.ArenaPerson;
 import item.Item;
-import item.Item.ItemType;
+import arenaEnum.itemInfo.ItemType;
 import item.useable.Useable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -55,7 +55,7 @@ public class InventoryEvent {
 	public InventoryEvent(
 			WorldStage stage, 
 			InventoryMenu menu, 
-			ArenaCharacter player
+			ArenaPerson player
 	) {
 		/*
 		 * 
@@ -241,7 +241,6 @@ public class InventoryEvent {
 				menu.getBpMenu().getBpList().getSelectionModel().select(currTypeIdx);
 				
 				menu.resetEqMenu(player.equipSlot().getEquipped());
-				System.out.println("RESET FROM EQ-BUTTON");
 			}
 		};
 		
@@ -269,7 +268,6 @@ public class InventoryEvent {
 				menu.getBpMenu().getBpList().getSelectionModel().select(currTypeIdx);
 				
 				menu.resetEqMenu(player.equipSlot().getEquipped());
-				System.out.println("RESET FROM USE-BUTTON");
 			}
 		};
 	}

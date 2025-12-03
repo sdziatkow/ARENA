@@ -16,6 +16,7 @@ package item.useable;
 */
 
 import item.*;
+import arenaEnum.itemInfo.ItemType;
 
 public abstract class Useable extends Item {
 	/**

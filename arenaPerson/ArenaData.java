@@ -1,47 +1,33 @@
-package arenaCharacter;
-
-/**
- * Program Name:    Charstate.java
- *<p>
- * Purpose:         The purpose of this program is to combine both class Stat and
- * 					class CharAttr into one class describing an ArenaCharacter's
- * 					state.
- *<p>
- * @version         0.0
- *<p>
- * Created:         April 30, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
+package arenaPerson;
 
 import java.util.ArrayList;
+import arenaEnum.personInfo.CharClass;
+import arenaEnum.personStats.Attribute;
+import arenaEnum.personStats.StatType;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
-import arenaCharacter.ArenaCharacter.CharClass;
-
-public class CharState {
+public class ArenaData {
 	/**
 	 * This is a class used for class ArenaCharacter. All the stats for a single 
 	 * ArenaCharacter can be accessed from an object of this class.
 	*/
 	
-	private Stat hp;
-	private Stat mp;
-	private Stat sp;
+	private ArenaStat hp;
+	private ArenaStat mp;
+	private ArenaStat sp;
 	
-	private Stat physDef;
-	private Stat magDef;
-	private Stat crit;
-	private Stat speed;
+	private ArenaStat physDef;
+	private ArenaStat magDef;
+	private ArenaStat crit;
+	private ArenaStat speed;
 	
-	private CharAttr vigor;
-	private CharAttr wp;
-	private CharAttr intel;
-	private CharAttr dex;
+	private ArenaAttr vigor;
+	private ArenaAttr wp;
+	private ArenaAttr intel;
+	private ArenaAttr dex;
+	
+	private DoubleProperty mvSpeed;
 	
 	// Default values.
 	final double DEF_XP_MAX = 100.0;
@@ -57,45 +43,47 @@ public class CharState {
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
-	public CharState() {
+	public ArenaData() {
 		/**
 		 * 
 		*/
 		
 		// Initialize new stats.
-		hp = new Stat(StatType.HP);
-		mp = new Stat(StatType.MP);
-		sp = new Stat(StatType.SP);
+		hp = new ArenaStat(StatType.HP);
+		mp = new ArenaStat(StatType.MP);
+		sp = new ArenaStat(StatType.SP);
 		
-		physDef = new Stat(StatType.PHYSDEF);
-		magDef = new Stat(StatType.MAGDEF);
-		crit = new Stat(StatType.CRIT);
-		speed = new Stat(StatType.SPEED);
+		physDef = new ArenaStat(StatType.PHYSDEF);
+		magDef = new ArenaStat(StatType.MAGDEF);
+		crit = new ArenaStat(StatType.CRIT);
+		speed = new ArenaStat(StatType.SPEED);
 		
 		// Initialize new attributes.
-		vigor =  new CharAttr(Attribute.VIGOR);
-		wp =  new CharAttr(Attribute.WILLPOWER);
-		intel =  new CharAttr(Attribute.INTELLIGENCE);
-		dex =  new CharAttr(Attribute.DEXTERITY);
+		vigor =  new ArenaAttr(Attribute.VIGOR);
+		wp =  new ArenaAttr(Attribute.WILLPOWER);
+		intel =  new ArenaAttr(Attribute.INTELLIGENCE);
+		dex =  new ArenaAttr(Attribute.DEXTERITY);
+		
+		mvSpeed = new SimpleDoubleProperty();
 	}
 	
 //GETTERS--------------------------------------------------------------------------
 
-	public Stat hp() {
+	public ArenaStat hp() {
 		/**
 		 * Getter for field: hp
 		*/
 		
 		return hp;
 	}
-	public Stat mp() {
+	public ArenaStat mp() {
 		/**
 		 * Getter for field: mp
 		*/
 		
 		return mp;
 	}
-	public Stat sp() {
+	public ArenaStat sp() {
 		/**
 		 * Getter for field: sp
 		*/
@@ -103,57 +91,64 @@ public class CharState {
 		return sp;
 	}
 	
-	public Stat physDef() {
+	public ArenaStat physDef() {
 		/**
 		 * Getter for field: physDef
 		*/
 		
 		return physDef;
 	}
-	public Stat magDef() {
+	public ArenaStat magDef() {
 		/**
 		 * Getter for field: magDef
 		*/
 		
 		return magDef;
 	}
-	public Stat crit() {
+	public ArenaStat crit() {
 		/**
 		 * Getter for field: crit
 		*/
 		
 		return crit;
 	}
-	public Stat speed() {
+	public ArenaStat speed() {
 		/**
 		 * Getter for field: speed
 		*/
 		
 		return speed;
 	}
+	public DoubleProperty speedProperty() {
+		/*
+		 * 
+		*/
+		
+		return mvSpeed;
+	}
 	
-	public CharAttr vigor() {
+	public ArenaAttr vigor() {
 		/**
 		 * Getter for field: vigor
 		*/
 		
 		return vigor;
 	}
-	public CharAttr wp() {
+	public ArenaAttr wp() {
 		/**
 		 * Getter for field: wp
 		*/
 		
 		return wp;
 	}
-	public CharAttr intel() {
+	public ArenaAttr intel() {
 		/**
 		 * Getter for field: intel
 		*/
 		
 		return intel;
 	}
-	public CharAttr dex() {
+	public ArenaAttr dex() {
 		/**
 		 * Getter for field: dex
 		*/
@@ -274,11 +269,11 @@ public class CharState {
 				(0.0001 * wp().getVal())
 		);
 		speed().setVal(
-				DEF_SPEED_VAL + 0.7 +
-				( 0.05 * dex().getVal() ) + 
-				( 0.05 * wp().getVal())
+				DEF_SPEED_VAL + 1 +
+				( 0.03 * dex().getVal() ) + 
+				( 0.015 * wp().getVal())
 		);
-		
+		mvSpeed.set(speed().getVal());
 	}
 	
 	public void fullHealHpMpSp() {
@@ -291,12 +286,12 @@ public class CharState {
 		sp().fullHeal();
 	}
 	
-	public ArrayList<CharAttr> getAllAttr() {
+	public ArrayList<ArenaAttr> getAllAttr() {
 		/*
 		 * 
 		*/
 		
-		ArrayList<CharAttr> all = new ArrayList<CharAttr>();
+		ArrayList<ArenaAttr> all = new ArrayList<ArenaAttr>();
 		
 		all.add(vigor());
 		all.add(wp());
@@ -306,12 +301,12 @@ public class CharState {
 		return all;
 	}
 	
-	public ArrayList<Stat> getAllStats() {
+	public ArrayList<ArenaStat> getAllStats() {
 		/*
 		 * 
 		*/
 		
-		ArrayList<Stat> all = new ArrayList<Stat>();
+		ArrayList<ArenaStat> all = new ArrayList<ArenaStat>();
 		
 		all.add(hp());
 		all.add(mp());

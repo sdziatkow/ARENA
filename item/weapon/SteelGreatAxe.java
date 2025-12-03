@@ -1,23 +1,8 @@
 package item.weapon;
 
-/**
- * Program Name:    SteelGreatAxe.java
- *<p>
- * Purpose:         The purpose of this program is to create a large axe Weapon
- * 					for ArenaCharacters to use.
- *<p>
- * @version         0.0
- *<p>
- * Created:         March 06, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
+import arenaEnum.personStats.Attribute;
+import arenaEnum.personStats.StatType;
 import sprite.weaponSprite.WeaponSprite;
 
 public class SteelGreatAxe extends Weapon {
@@ -57,7 +42,7 @@ public class SteelGreatAxe extends Weapon {
     	
     	getAttk2().setDmgMod(
     			getBaseDmg() +
-    			(0.05 * getSelf().stat(StatType.HP).getVal()) +
+    			(0.05 * getSelf().arenaStat(StatType.HP).getVal()) +
     			(0.1 * getSelf().attr(Attribute.VIGOR).getVal())
     			)
     	;

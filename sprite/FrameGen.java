@@ -26,6 +26,7 @@ public class FrameGen {
 	private Image sheet;
 	private WritableImage frame;
 	
+	private int initialXOffset;
 	private int xOffset;
 	private int yOffset;
 	private int frameWidth;
@@ -45,11 +46,12 @@ public class FrameGen {
 		
 		sheet = null;
 		frame = null;
-		xOffset = -1;
-		yOffset = -1;
-		frameWidth = -1;
-		frameHeight = -1;
-		totalDirections = -1;
+		initialXOffset = 0;
+		xOffset = 0;
+		yOffset = 0;
+		frameWidth = 0;
+		frameHeight = 0;
+		totalDirections = 0;
 		framesPerDirection = null;
 	}
 	
@@ -60,11 +62,12 @@ public class FrameGen {
 		
 		this.sheet = sheet;
 		frame = null;
-		xOffset = -1;
-		yOffset = -1;
-		frameWidth = -1;
-		frameHeight = -1;
-		totalDirections = -1;
+		initialXOffset = 0;
+		xOffset = 0;
+		yOffset = 0;
+		frameWidth = 0;
+		frameHeight = 0;
+		totalDirections = 0;
 		framesPerDirection = null;
 	}
 	
@@ -113,6 +116,14 @@ public class FrameGen {
 		*/
 		
 		this.frame = frame;
+	}
+	
+	public void setInitialXOffset(int xOffset) {
+		/*
+		 * Setter for field: xOffset.
+		*/
+		
+		this.initialXOffset = xOffset;
 	}
 	
 	public void setXOffset(int xOffset) {
@@ -188,6 +199,14 @@ public class FrameGen {
 		return frame;
 	}
 	
+	public int getInitialXOffset() {
+		/*
+		 * Getter for field:  
+		*/
+		
+		return initialXOffset;
+	}
+	
 	public int getXOffset() {
 		/*
 		 * Getter for field:  
@@ -250,14 +269,16 @@ public class FrameGen {
 		/*
 		 * 
 		*/
-		
-		allFrames = new WritableImage[totalDirections][framesPerDirection.length];
+
+		allFrames = new WritableImage[totalDirections][];
 		
 		// For each direction.
-		for (int d = 0; d < getTotalDirections(); ++d) {
+		for (int d = 0; d < allFrames.length; ++d) {
+			allFrames[d] = new WritableImage[getFramesPerDirection()[d]];
 			
 			// Add each 
-			for (int f = 0; f < getFramesPerDirection()[d]; ++f) {
+			for (int f = 0; f < allFrames[d].length; ++f) {
+				
 				allFrames[d][f] = new WritableImage(
 						sheet.getPixelReader(),
 						getXOffset() + (getFrameWidth() * f),
@@ -269,18 +290,18 @@ public class FrameGen {
 		}
 	}
 	
-	public void genFrames(boolean skip) {
+	public void genFrames(boolean skipBetweenX) {
 		/*
 		 * 
 		*/
-		
-		allFrames = new WritableImage[totalDirections][framesPerDirection.length];
+		allFrames = new WritableImage[totalDirections][];
 		
 		// For each direction.
-		for (int d = 0; d < getTotalDirections(); ++d) {
+		for (int d = 0; d < allFrames.length; ++d) {
+			allFrames[d] = new WritableImage[getFramesPerDirection()[d]];
 			
 			// Add each 
-			for (int f = 0; f < getFramesPerDirection()[d] * 2; ++f) {
+			for (int f = 0; f < allFrames[d].length * 2; ++f) {
 				
 				if (f % 2 == 0) {
 					allFrames[d][f / 2] = new WritableImage(
@@ -290,6 +311,37 @@ public class FrameGen {
 							getFrameWidth(),
 							getFrameHeight()								
 					);
+				}
+			}
+		}
+	}
+	
+	public void genFrames(boolean skipBetweenX, boolean skipBetweenTwoY) {
+		/*
+		 * 
+		*/
+		
+		allFrames = new WritableImage[totalDirections][];
+		
+		// For each direction.
+		for (int d = 0; d < allFrames.length * 2.5; ++d) {
+			if (d % 3 == 0) {
+			
+				allFrames[d / 3] = new WritableImage[getFramesPerDirection()[d / 3]];
+			
+			
+				// Add each 
+				for (int f = 0; f < allFrames[d / 3].length * 2; ++f) {
+					
+					if (f % 2 == 0) {
+						allFrames[d / 3][f / 2] = new WritableImage(
+								sheet.getPixelReader(),
+								getXOffset() + (getFrameWidth() * f),
+								getYOffset() + (getFrameHeight() * d),
+								getFrameWidth(),
+								getFrameHeight()								
+						);
+					}
 				}
 			}
 		}

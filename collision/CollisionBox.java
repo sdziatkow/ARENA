@@ -1,5 +1,7 @@
 package collision;
 
+import arenaEnum.ColType;
+
 /**
  * Program Name:    CollisionBox.java
  *<p>
@@ -23,29 +25,10 @@ public class CollisionBox{
     /**
      * 
     */
-	
-	public enum ColType {
-		/**
-		 * @const STAGEBOX: The bounds of the stage itself.
-		 * @const HURTBOX: Takes damage if hitbox enters bounds.
-		 * @const HITBOX: Deals damage if entering a hurtbox.
-		 * @const DETECTBOX: For detection of other boxes from far away.
-		 * @const INTERACTBOX: Can interact if within bounds.
-		 * @const WORLDBOX: General collision for anything with collision.
-		 * @const CHECKBOX: Used to check for moving and or attacking.
-		*/
-		STAGEBOX,
-		HURTBOX,
-		HITBOX,
-		DETECTBOX,
-		INTERACTBOX,
-		WORLDBOX,
-		CHECKBOX
-	}
 
 	private ColType type;
 	private Rectangle colBox;
-	private Bounds originalBounds;
+	private double[] originalBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
@@ -63,7 +46,12 @@ public class CollisionBox{
     	colBox.setHeight(0);
     	colBox.setCache(true);
     	
-    	originalBounds = getBounds();
+    	originalBounds = new double[] {
+    			colBox.getX(), 
+    			colBox.getY(), 
+    			colBox.getWidth(), 
+    			colBox.getHeight()
+    	};
 	}
 
     public CollisionBox(ColType type, double[] bounds) {
@@ -74,13 +62,10 @@ public class CollisionBox{
     	this.type = type;
     	
     	colBox = new Rectangle();
-    	colBox.setX(bounds[0]);
-    	colBox.setY(bounds[1]);
-    	colBox.setWidth(bounds[2]);
-    	colBox.setHeight(bounds[3]);
+    	setBounds(bounds);
 		colBox.setFill(Color.TRANSPARENT);
 		
-		originalBounds = getBounds();
+		originalBounds = bounds;
     	
     	// Give each collision box a different color for testing purposes.
     	// Stroke/strokeWidth is the border color/border width.
@@ -209,7 +194,7 @@ public class CollisionBox{
     	return colBox.localToScene(colBox.getBoundsInLocal());
     }
     
-    public Bounds getOriginalBounds() {
+    public double[] getOriginalBounds() {
     	/**
     	 * Will return a Bounds object of rectangle.
     	*/

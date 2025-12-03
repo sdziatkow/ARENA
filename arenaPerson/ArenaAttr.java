@@ -1,6 +1,8 @@
-package arenaCharacter;
+package arenaPerson;
 
 import java.util.ArrayList;
+
+import arenaEnum.personStats.Attribute;
 
 /**
  * Program Name:    CharAttr.java
@@ -17,24 +19,10 @@ import java.util.ArrayList;
  * @author          Sean Dziatkowiec
 */
 
-public class CharAttr {
+public class ArenaAttr {
 	/**
 	 * Class for character attributes which determine stat levels.
 	*/
-	
-	public enum Attribute {
-		/**
-		 * @const VIGOR: Determines max HP.
-		 * @const WILLPOWER: Determins HP and SP.
-		 * @const INTELLIGENCE: Determins MP.
-		 * @const DEXTERITY: Determines SP, CRIT and SPEED 
-		*/
-		
-		VIGOR,
-		WILLPOWER,
-		INTELLIGENCE,
-		DEXTERITY;
-	}
 	
 	public final int TOTAL_ATTR = 4;
 	private Attribute attribute;
@@ -47,7 +35,7 @@ public class CharAttr {
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
-	public CharAttr() {
+	public ArenaAttr() {
 		/**
 		 * 
 		*/
@@ -61,7 +49,7 @@ public class CharAttr {
 		setInfo();
 	}
 	
-	public CharAttr(Attribute attribute) {
+	public ArenaAttr(Attribute attribute) {
 		/**
 		 * 
 		*/

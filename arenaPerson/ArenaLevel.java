@@ -1,6 +1,9 @@
-package arenaCharacter;
+package arenaPerson;
 
 import java.util.ArrayList;
+
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 /**
  * Program Name:    Level.java
@@ -17,7 +20,7 @@ import java.util.ArrayList;
  * @author          Sean Dziatkowiec
 */
 
-public class Level {
+public class ArenaLevel {
 	/*
 	 * 
 	*/
@@ -33,10 +36,11 @@ public class Level {
 	private int skillPoints;
 	
 	private ArrayList<String> info;
+	private DoubleProperty dispVal;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
-	public Level() {
+	public ArenaLevel() {
 		/*
 		 * Default constructor for class Level.
 		*/
@@ -51,6 +55,8 @@ public class Level {
 		
 		info = new ArrayList<String>();
 		setInfo();
+		
+		dispVal = new SimpleDoubleProperty(currXp / maxXp);
 	}
 	
 //SETTERS--------------------------------------------------------------------------
@@ -79,6 +85,7 @@ public class Level {
 		}
 		
 		setInfo();
+		dispVal.set(getXp() / getMaxXp());
 	}
 	
 	public void setOverflow(int over) {
@@ -191,6 +198,15 @@ public class Level {
 		return info;
 	}
 	
+	public DoubleProperty dispVal() {
+		/*
+		 * 
+		 * 
+		*/
+		
+		return dispVal;
+	}
+	
 //LEVEL----------------------------------------------------------------------------
 	
 	public void incLvl() {
@@ -278,6 +294,8 @@ public class Level {
 		incXp(getOverflow(), true);
 		
 		setInfo();
+		
+		dispVal.set(getXp() / getMaxXp());
 	}
 	
 

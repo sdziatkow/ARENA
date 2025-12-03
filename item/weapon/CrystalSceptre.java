@@ -1,23 +1,9 @@
 package item.weapon;
 
-/**
- * Program Name:    CrystalSceptre.java
- *<p>
- * Purpose:         The purpose of this program is to create a scepter Weapon for
- * 					ArenaCharacters to use.
- *<p>
- * @version         0.0
- *<p>
- * Created:         March 06, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
 
-import arenaCharacter.CharAttr.Attribute;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
+import arenaEnum.personStats.Attribute;
+import arenaEnum.personStats.StatType;
 
 public class CrystalSceptre extends Weapon {
     /**
@@ -31,7 +17,7 @@ public class CrystalSceptre extends Weapon {
     		)
     ;
     private WeaponAttack reflect = new WeaponAttack(
-    		AttackType.DEF, "REFLECT", 5.0, 10.0
+    		AttackType.UTIL, "REFLECT", 5.0, 10.0
     		)
     ;
 
@@ -58,15 +44,15 @@ public class CrystalSceptre extends Weapon {
     	
     	getAttk1().setDmgMod(
     			getBaseDmg() +
-    			(0.02 * getSelf().stat(StatType.MP).getVal()) +
-    			(0.04 * getSelf().stat(StatType.MAGDEF).getVal()) +
+    			(0.02 * getSelf().arenaStat(StatType.MP).getVal()) +
+    			(0.04 * getSelf().arenaStat(StatType.MAGDEF).getVal()) +
     			(0.68 * getSelf().attr(Attribute.INTELLIGENCE).getVal())
     			)
     	;
     	
     	setAttkDmg(getAttk1().genDmg());
     	
-    	getSelf().stat(StatType.MP).dmg(MP_COST);
+    	getSelf().arenaStat(StatType.MP).dmg(MP_COST);
     }
 
     public void genAttk2() {

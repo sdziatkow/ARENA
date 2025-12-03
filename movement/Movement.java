@@ -1,7 +1,5 @@
 package movement;
 
-import animate.Animate;
-
 /**
  * Program Name:    Movement.java
  *<p>
@@ -18,16 +16,32 @@ import animate.Animate;
 */
 
 import collision.CollisionBox;
+import collision.CollisionCheck;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.util.Duration;
 import sprite.charSprite.CharacterSprite;
 import worldStage.WorldStage;
+import java.util.ArrayList;
+import animate.Animate;
+import arenaEnum.ColType;
 
 public abstract class Movement{
     /**
@@ -58,11 +72,10 @@ public abstract class Movement{
 	
 	private final int BASE_ANIM_FRAME_RATE = 128;
 	
-	private WorldStage stage;
-	private CharacterSprite sprite;
-	private Animate anim;
-	
+	private ObservableDoubleValue maxRate;
+	private double maxMvRate;
 	private double mvRate;
+	private double incMvRate;
 	private double dx;
 	private double dy;
 	private Going dir;
@@ -71,16 +84,94 @@ public abstract class Movement{
 	private double colBounce;
 	
 	boolean contained = false;
+	public static ArrayList<ArrayList<CollisionBox>> colBoxes;
 	
-	// Timelines hold the keyframes
-	private Timeline mvAnim;
-	private Timeline attkAnim;
-	private KeyFrame mvFrame;
-	private KeyFrame attkFrame;
+	// Will be binded to corresponding JFX Group translateX/Y property.
+	private DoubleProperty[] pos;
 	
-	// Associated with Timeline or KeyFrame.
-	private EventHandler<ActionEvent> onMvFrameFinish;
-	private EventHandler<ActionEvent> onAttkFrameFinish;
+	// Will be binded to corresponding Animate dir property.
+	private StringProperty lstnDir;
+	
+	// Will be binded to corresponding CharacterSprite isMoving property.
+	private BooleanProperty isMv;
+	private BooleanProperty isAttk;
+	
+	// Will be binded to ArenaPerson and represents the idx of ArenaPerson that 
+	// was hit.
+	private IntegerProperty personHit;
+	
+	private ObservableBooleanValue isHitBoxPlaced;
+	
+	// Listener for isAttk when set to false.
+	private ChangeListener<? super Boolean> onAttkEnd = new ChangeListener<Boolean>() {
+		public void changed(
+				ObservableValue<? extends Boolean> attk,
+				Boolean oldVal,
+				Boolean newVal
+		){
+			/*
+			 * THIS IS NEEDED TO RESET THE VALUE OF PERSON HIT SO NEXT TIME IF IT
+			 * IS SET TO SAME PERSON HIT IT WILL TRIGGER NEW PERSON HIT 
+			 * SEE ARENA-PERSON 
+			*/
+			
+			if (newVal.booleanValue()) {
+				isMv.set(false);
+			}
+			else {
+				personHit.set(-1);
+			}
+		}
+	};
+	
+	// To detect a hit. Listener for isHitBoxPlaced when true.
+	private ChangeListener<? super Boolean> onHitBoxPlaced = new ChangeListener<Boolean>() {
+		public void changed(
+				ObservableValue<? extends Boolean> attk,
+				Boolean oldVal,
+				Boolean newVal
+		){
+			/*
+			 * TRIGGERED WHEN HITBOX IS PLACED IN CharacterSprite. 
+			*/
+			if (newVal.booleanValue()) {
+				ArrayList<CollisionBox> hurtBoxes = colBoxes.get(1);
+				CollisionBox hitBox = colBoxes.get(3).get(getColBoxIndex());
+				CollisionBox currHurtBox;
+				
+				
+				if (hitBox != null) {
+					for (int b = 0; b < hurtBoxes.size(); ++b) {
+						
+						currHurtBox = hurtBoxes.get(b);
+						if (b != getColBoxIndex() && currHurtBox != null) {
+							
+							if (hitBox.getBounds().intersects(currHurtBox.getBounds())) {
+								personHit.set(b);
+								setMvRate(getMvRate() * 0.01);
+							}
+						}
+					}
+				}
+			}
+		}
+	};
+	
+	// Update mvRate when ArenaPerson increases speed stat.
+	private ChangeListener<? super Number> onMaxRateChange = new ChangeListener<Number>() {
+		public void changed(
+				ObservableValue<? extends Number> rate,
+				Number oldVal,
+				Number newVal
+		){
+			/*
+			 * TRIGGERED WHEN PERSONS SPEED STAT CHANGES.
+			*/
+			
+			setMaxMvRate(newVal.doubleValue());
+	    	incMvRate = getMaxMvRate() / (4.0 + (newVal.doubleValue() * 2.0));
+		}
+	};
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -90,83 +181,61 @@ public abstract class Movement{
          * Default Constructor for class Movement.
         */
     	
-    	this.mvRate = 1.25;
+    	maxRate = new SimpleDoubleProperty(1.25);
+    	maxMvRate = maxRate.get();
+    	incMvRate = getMaxMvRate() / (5.0 + (getMaxMvRate() * 4.0));
+    	mvRate = incMvRate;
     	dx = 0.0;
     	dy = 0.0;
     	colBounce = 0.1;
     	
     	dir = Going.S;
+    	lstnDir = new SimpleStringProperty();
+    	
+    	pos = new DoubleProperty[] {new SimpleDoubleProperty(), new SimpleDoubleProperty()};
+    	pos[0].set(0.0);
+    	pos[1].set(0.0);
+    	
+    	isMv = new SimpleBooleanProperty(false);
+    	isAttk = new SimpleBooleanProperty(false);
+    	isAttk.addListener(onAttkEnd);
+    	
+    	personHit = new SimpleIntegerProperty(0);
     }
     
-    public Movement(
-    		WorldStage stage, 
-    		CharacterSprite sprite, 
-    		Animate anim, 
-    		double mvRate
-    	){
-        /**
-         * Constructor for class Movement.
-        */
+//SETTERS--------------------------------------------------------------------------
+    
+    public void setMaxRate(DoubleProperty speedProperty) {
+    	/*
+    	 * 
+    	*/
     	
-    	this.stage = stage;
-    	this.sprite = sprite;
-    	this.anim   = anim;
-    	this.mvRate = mvRate;
-    	dx = 0.0;
-    	dy = 0.0;
-    	colBounce = 0.1;
+    	maxRate = speedProperty;
+    	maxRate.addListener(onMaxRateChange);
+    }
+    
+    public void setMaxMvRate(double rate) {
+    	/*
+    	 * 
+    	*/
     	
-    	dir = Going.S;
-    	
-    	// Create event handler for when a movement frame is finished and for when
-    	// an attack frame is finished.
-    	onMvFrameFinish = new EventHandler<ActionEvent>() {
-    		/*
-    		 * Call the animate method each time a frame ends.
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			
-    			boolean moving; 
-    			
-    			moving = (getDx() > 0.0 || getDx() < 0.0) ||
-    					 (getDy() > 0.0 || getDy() < 0.0);
-    			
-    			getAnim().animate(getSprite(), getSimpleDir(), moving);
-    		}
-    	};
-    	onAttkFrameFinish = new EventHandler<ActionEvent>() {
-    		/*
-    		 * Call the animateAttk method each time a frame ends. 
-    		*/
-    		
-    		public void handle(ActionEvent e) {
-    			getAnim().animateAttk(getSprite(), getSimpleDir());
-    		}
-    	};
-    	
-    	// Create new KeyFrames for moving and attacking.
-    	mvFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE), onMvFrameFinish);
-    	attkFrame = new KeyFrame(new Duration(BASE_ANIM_FRAME_RATE * 1.71), onAttkFrameFinish);
-    	
-    	
-    	// Create Timelines for moving and attacking.
-    	mvAnim = new Timeline(mvFrame);
-    	attkAnim = new Timeline(attkFrame);
-    	
-    	// Set the cycleCount and onFinished handler for each Timeline.
-    	mvAnim.setCycleCount(Timeline.INDEFINITE);
-    	attkAnim.setCycleCount(getSprite().getFramesPerDir());
+    	maxMvRate = rate;
     }
 
-//SETTERS--------------------------------------------------------------------------
-
-    public void setMvRate(double mvRate) {
+    public void setMvRate(double rate) {
         /**
          * Setter for field: mvRate
         */
     	
-    	this.mvRate = mvRate;
+    	if (mvRate > getMaxMvRate()) {
+    		mvRate = getMaxMvRate();
+    	}
+    	else if (mvRate < 0.0000) {
+    		mvRate = 0.0000;
+    	}
+    	else {
+    		mvRate = rate;
+    	}
     }
     
     public void setDx(double dx) {
@@ -190,58 +259,61 @@ public abstract class Movement{
          * Setter for field: direction
         */
     	
-    	double absDx = Math.abs(getDx());
-    	double absDy = Math.abs(getDy());
+    	if (!isHitBoxPlaced().get() && !isAttk().get()) {
+	    	double absDx = Math.abs(getDx());
+	    	double absDy = Math.abs(getDy());
     	
-    	if (getDx() > 0.0 && getDy() < 0.0) {
-    		
-    		if (absDy > absDx) {
-    			dir = Going.NE;
-    		}
-    		else {
-    			dir = Going.EN;
-    		}
-    	}
-    	else if (getDx() < 0.0 && getDy() < 0.0) {
-    		
-    		if (absDy > absDx) {
-    			dir = Going.NW;
-    		}
-    		else {
-    			dir = Going.WN;
-    		}
-    	}
-    	
-    	else if (getDx() > 0.0 && getDy() > 0.0) {
-    		
-    		if (absDy > absDx) {
-    			dir = Going.SE;
-    		}
-    		else {
-    			dir = Going.ES;
-    		}
-    	}
-    	else if (getDx() < 0.0 && getDy() > 0.0) {
-    		
-    		if (absDy > absDx) {
-    			dir = Going.SW;
-    		}
-    		else {
-    			dir = Going.WS;
-    		}
-    	}
-    	
-    	else if (getDy() < 0.0) {
-    		dir = Going.N;
-    	}
-    	else if (getDx() > 0.0) {
-    		dir = Going.E;
-    	}
-    	else if (getDy() > 0.0) {
-    		dir = Going.S;
-    	}
-    	else if (getDx() < 0.0) {
-    		dir = Going.W;
+			if (getDx() > 0.0 && getDy() < 0.0) {
+				
+				if (absDy > absDx) {
+					dir = Going.NE;
+				}
+				else {
+					dir = Going.EN;
+				}
+			}
+			else if (getDx() < 0.0 && getDy() < 0.0) {
+				
+				if (absDy > absDx) {
+					dir = Going.NW;
+				}
+				else {
+					dir = Going.WN;
+				}
+			}
+			
+			else if (getDx() > 0.0 && getDy() > 0.0) {
+				
+				if (absDy > absDx) {
+					dir = Going.SE;
+				}
+				else {
+					dir = Going.ES;
+				}
+			}
+			else if (getDx() < 0.0 && getDy() > 0.0) {
+				
+				if (absDy > absDx) {
+					dir = Going.SW;
+				}
+				else {
+					dir = Going.WS;
+				}
+			}
+			
+			else if (getDy() < 0.0) {
+				dir = Going.N;
+			}
+			else if (getDx() > 0.0) {
+				dir = Going.E;
+			}
+			else if (getDy() > 0.0) {
+				dir = Going.S;
+			}
+			else if (getDx() < 0.0) {
+				dir = Going.W;
+			}
+			lstnDir.set(getSimpleDir().toString());
     	}
 
     }
@@ -252,6 +324,7 @@ public abstract class Movement{
     	*/
     	
     	this.dir = dir;
+    	lstnDir.set(getSimpleDir().toString());
     }
     
     public void setColBoxIndex(int colBoxIndex) {
@@ -270,54 +343,48 @@ public abstract class Movement{
     	this.colBounce = colBounce;
     }
     
-    public void setStage(WorldStage stage) {
-        /**
-         * Setter for field: stage
-        */
+    public void setPos(double x, double y) {
+    	/*
+    	 * 
+    	*/
     	
-    	this.stage = stage;
+    	pos[0].set(x);
+    	pos[1].set(y);
     }
     
-    public void setSprite(CharacterSprite sprite) {
-        /**
-         * Setter for field: sprite
-        */
+    public static void setColBoxes(ArrayList<ArrayList<CollisionBox>> boxes) {
+    	/*
+    	 * 
+    	*/
     	
-    	this.sprite = sprite;
+    	colBoxes = boxes;
     }
     
-    public void setAnim(Animate anim) {
-        /**
-         * Setter for field: anim
-        */
+    public void setIsHitBoxPlaced(BooleanProperty placed) {
+    	/*
+    	 * 
+    	*/
     	
-    	this.anim = anim;
+    	isHitBoxPlaced = placed;
+    	isHitBoxPlaced.addListener(onHitBoxPlaced);
     }
 
 //GETTERS--------------------------------------------------------------------------
     
-    public WorldStage getStage() {
-        /**
-         * Getter for field: stage
-        */
+    public ObservableDoubleValue getMaxRate() {
+    	/*
+    	 * 
+    	*/
     	
-    	return stage;
+    	return maxRate;
     }
     
-    public CharacterSprite getSprite() {
-        /**
-         * Getter for field: sprite
-        */
-
-    	return sprite;
-    }
-    
-    public Animate getAnim() {
-        /**
-         * Getter for field: anim
-        */
-
-    	return anim;
+    public double getMaxMvRate() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return maxMvRate;
     }
 
     public double getMvRate() {
@@ -326,6 +393,14 @@ public abstract class Movement{
         */
 
     	return mvRate;
+    }
+    
+    public double getIncMvRate() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return incMvRate;
     }
     
     public double getDx() {
@@ -350,6 +425,14 @@ public abstract class Movement{
         */
     	
     	return dir;
+    }
+    
+    public StringProperty lstnDir() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return lstnDir;
     }
     
     public Going getSimpleDir() {
@@ -456,145 +539,315 @@ public abstract class Movement{
     	return contained;
     }
     
-    public Timeline getMvAnim() {
+    public DoubleProperty getPos(int axis) {
         /**
-         * Getter for field:
+         * Getter for field: dy
         */
-
-    	return mvAnim;
+    	
+    	return pos[axis];
     }
     
-    public Timeline getAttkAnim() {
-        /**
-         * Getter for field:
-        */
-
-    	return attkAnim;
+    public BooleanProperty isMv() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return isMv;
+    }
+    
+    public BooleanProperty isAttk() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return isAttk;
+    }
+    
+    public ObservableBooleanValue isHitBoxPlaced() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return isHitBoxPlaced;
+    }
+    
+    public IntegerProperty personHit() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return personHit;
     }
     
 //MOVEMENT-------------------------------------------------------------------------
     
     public abstract void move();
     
+    public void translate() {
+    	/*
+    	 * This method will move the Npc's sprite group on the stage and increment
+    	 * its mvRate.
+    	*/
+    		
+    		if (isMv.get()) {
+        		setMvRate(getMvRate() + getIncMvRate());
+    		}
+    		
+    		if (isAttk.get()) {
+    			setMvRate(getMaxMvRate() * 0.35);
+    		}
+    		
+			setPos(getPos(0).get() + getDx(), getPos(1).get() + getDy());
+    		
+    }
+//COLLISION------------------------------------------------------------------------
+    
+    public ArrayList<CollisionBox> getBoxes(ColType boxType) {
+    	/**
+    	 * This method will return the ArrayList in colBoxes that matches the
+    	 * given type.
+    	 * @see WorldData.java for ColType idx in colBoxes.
+    	*/
+    	
+    	ArrayList<CollisionBox> boxes;
+    	
+    	switch (boxType) {
+    	case WORLDBOX:
+    		boxes = colBoxes.get(0);
+    		break;
+    	case HURTBOX:
+    		boxes = colBoxes.get(1);
+    		break;
+    	case CHECKBOX:
+    		boxes = colBoxes.get(2);
+    		break;
+    	case DETECTBOX:
+    		boxes = colBoxes.get(4);
+    		break;
+    	default:
+    		boxes = null;
+    		break;
+    	}
+    	
+    	return boxes;
+    }
+    
+    public CollisionBox getClosestBox(ColType boxType) {
+    	/*
+    	 * This method will return the CollisionBox of the given type that is
+    	 * closest to its worldBox.
+    	*/
+    	
+    	// All worldBoxes boxes and myBox at colBoxIndex.
+    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
+    	CollisionBox myBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
+    	CollisionBox otherBox;
+    	
+    	// Checking by midY
+    	double myX = myBox.getMidX();
+    	double myY = myBox.getMidY();
+    	double otherX;
+    	double otherY;
+    	
+    	// Absolute value of myX - otherX
+    	double diffX;
+    	double diffY;
+    	
+    	// Will store lowest value of diffX + diffY.
+    	double closestDiff = 1000;
+    	int closestIdx = 0;
+    	
+    	// For each worldBox
+    	for (int b = 0; b < boxes.size(); ++b) {
+    		
+    		otherBox = boxes.get(b);
+    		if (b != getColBoxIndex() && otherBox != null) {
+    			
+    			// Get mid x/y vals for otherBox
+	    		otherX = otherBox.getMidX();
+	    		otherY = otherBox.getMidY();
+	    		
+	    		// Calculate difference between points.
+	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
+	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
+	    		if (diffX + diffY < closestDiff) {
+	    			closestDiff = diffX + diffY;
+	    			closestIdx = b;
+	    		}
+    		}
+    	}
+    	
+    	return boxes.get(closestIdx);
+    }
+    
+    public ArrayList<CollisionBox> getBoxesWithinRange(ColType boxType, boolean useCheckBox) {
+    	/*
+    	 * This method will return all CollisionBoxes of given type in range 50.
+    	 * If useCheckBox is true, will check range from checkBox bounds instead 
+    	 * of worldBoxBounds.
+    	*/
+    	
+    	final int BOX_LIMIT = 4;
+    	final double RANGE = 50;
+    	ArrayList<CollisionBox> withinRange;
+    	
+    	// All worldBoxes boxes and myBox at colBoxIndex.
+    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
+    	CollisionBox myBox;
+    	if (useCheckBox) {
+        	myBox = getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
+    	}
+    	else {
+    		myBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
+    	}
+    	CollisionBox otherBox;
+    	
+    	// Checking by midY
+    	double myX = myBox.getMidX();
+    	double myY = myBox.getMidY();
+    	double otherX;
+    	double otherY;
+    	
+    	// Absolute value of myX - otherX
+    	double diffX;
+    	double diffY;
+    	
+    	// For each worldBox
+    	withinRange = new ArrayList();
+    	for (int b = 0; b < boxes.size() && withinRange.size() < BOX_LIMIT; ++b) {
+    		
+    		otherBox = boxes.get(b);
+    		if (b != getColBoxIndex() && otherBox != null) {
+    			
+    			// Get mid x/y vals for otherBox
+	    		otherX = otherBox.getMidX();
+	    		otherY = otherBox.getMidY();
+	    		
+	    		// Calculate difference between points.
+	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
+	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
+	    		if (diffX + diffY < RANGE) {
+	    			withinRange.add(otherBox);
+	    		}
+    		}
+    	}
+    	
+    	if (withinRange.isEmpty()) {
+    		return null;
+    	}
+    	else {
+    		return withinRange;
+    	}
+    }
+    
 	public void checkCollision() {
 		/**
+		 * This method will determine where two boxes intersect and nullify or 
+		 * reverse dx/dy accordingly.
 		 * 
+		 * WILL ONLY CHECK FOR BOXES WITHIN RANGE.
 		*/
 		
+		ArrayList<CollisionBox> boxes = getBoxesWithinRange(ColType.WORLDBOX, false);
+		
+		if (boxes == null) {
+			return;
+		}
 		
 		// Character's current worldBox bounds.
-		Bounds charBounds = getSprite().getWorldBox().getBounds();
+		CollisionBox charBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
+		Bounds charBounds = charBox.getBounds();
 		
 		// Will store the worldBox bounds of the worldBox being checked.
 		Bounds checkBounds;
 		
-		// Character's current center, min, and max X/Y values.
-		double currX = getSprite().getWorldBox().getMidX();
-//		double currY = getSprite().getWorldBox().getMidY();
-		double maxX  = getSprite().getWorldBox().getMaxX();
-		double maxY  = getSprite().getWorldBox().getMaxY();
-		double minX  = getSprite().getWorldBox().getMinX();
-		double minY  = getSprite().getWorldBox().getMinY();
 		
-		// Will store the center, min, and max X/Y values of the worldBox being checked.
-		double checkX;
-//		double checkY;
-		double checkMaxX;
-		double checkMaxY;
-		double checkMinX;
-		double checkMinY;
-		
-		// An array containing all worldBoxes in the character's stage.
-		CollisionBox[] worldBoxes = getStage().getWorldBoxes();
-		int totalWorldBoxes = worldBoxes.length;
-		
-		// The modifier that the Character will be pushed back upon colliding with 
-		// another worldBox.
-		double bounce = getColBounce();
-		
-		// For intersection purposes allows greater detection range.
-		double pad = 3.0;
-		
-		for (int box = 0; box < totalWorldBoxes && !contained; ++box) {
+		for (int b = 0; b < boxes.size(); ++b) {
 			
-			if (box != getColBoxIndex()) {
+			// Will store the worldBox bounds of the worldBox being checked.
+			checkBounds = boxes.get(b).getBounds();
 			
-				checkBounds = worldBoxes[box].getBounds();
-				checkX = worldBoxes[box].getMidX();
-//				checkY = worldBoxes[box].getMidY();
+			if (charBounds.intersects(checkBounds)) {
 				
-				checkMaxX = worldBoxes[box].getMaxX();
-				checkMaxY = worldBoxes[box].getMaxY();
+				// Character's current center, min, and max X/Y values.
+				double currX = charBounds.getCenterX();
+				double maxX  = charBounds.getMaxX();
+				double maxY  = charBounds.getMaxY();
+				double minX  = charBounds.getMinX();
+				double minY  = charBounds.getMinY();
 				
-				checkMinX = worldBoxes[box].getMinX();
-				checkMinY = worldBoxes[box].getMinY();
+				// Will store the center, min, and max X/Y values of the worldBox being checked.
+				double checkX    = checkBounds.getCenterX();
+				double checkMaxX = checkBounds.getMaxX();
+				double checkMaxY = checkBounds.getMaxY();
+				double checkMinX = checkBounds.getMinX();
+				double checkMinY = checkBounds.getMinY();
 				
-				if (charBounds.intersects(checkBounds)) {
-					contained = true;
+				// The modifier that the Character will be pushed back upon colliding with 
+				// another worldBox.
+				double bounce = getColBounce();
+				
+				// For intersection purposes allows greater detection range.
+				double pad = 3.0;
+				
+				boolean w;
+				boolean a;
+				boolean s;
+				boolean d;
+				
+				// Will determine where the intersection is occuring.
+				w = (minY + pad) > checkMaxY;                     // up
+				a = (currX > checkX && (minX + pad) > checkMaxX); // left
+				s = (maxY - pad) < checkMinY;                     // down
+				d = currX < checkX && (maxX - pad) < checkMinX;   // right
+					
+				if (
+					(getDx() > 0.0 && d) 
+					&&
+					(getDy() > 0.0 && s)
+					) { // right - down
+					setDx(-getDx() * bounce);
+					setDy(-getDy() * bounce);
 				}
-				
-				if (contained) {
-					
-					boolean w;
-					boolean a;
-					boolean s;
-					boolean d;
-					
-					// Will determine where the intersection is occuring.
-					w = (minY + pad) > checkMaxY;                     // up
-					a = (currX > checkX && (minX + pad) > checkMaxX); // left
-					s = (maxY - pad) < checkMinY;                     // down
-					d = currX < checkX && (maxX - pad) < checkMinX;   // right
-					
-					if (
+				else if (
 						(getDx() > 0.0 && d) 
 						&&
-						(getDy() > 0.0 && s)
-						) { // right - down
-						setDx(-getDx() * bounce);
-						setDy(-getDy() * bounce);
-					}
-					else if (
-							(getDx() > 0.0 && d) 
-							&&
-							(getDy() < 0.0 && w)
-							) { // right - up
-						setDx(-getDx() * bounce);
-						setDy(-getDy() * bounce);
-					}
-					else if (
-							(getDx() < 0.0 && a)
-							&&
-							(getDy() > 0.0 && s)
-							) { // left - down
-						setDx(-getDx() * bounce);
-						setDy(-getDy() * bounce);
-					}
-					else if (
-							(getDx() < 0.0 && a)
-							&&
-							(getDy() < 0.0 && w)
-							) { // left - up
-						setDx(-getDx() * bounce);
-						setDy(-getDy() * bounce);
-					}
-					else if (getDx() > 0.0 && d) { // right
-						setDx(-getDx() * bounce);
-					}
-					else if (getDx() < 0.0 && a) { //left
-						setDx(-getDx() * bounce);
-					}
-					else if (getDy() < 0.0 && w) { //up
-						setDy(-getDy() * bounce);
-					}
-					else if (getDy() > 0.0 && s) { //down
-						setDy(-getDy() * bounce);
-					}
+						(getDy() < 0.0 && w)
+						) { // right - up
+					setDx(-getDx() * bounce);
+					setDy(-getDy() * bounce);
 				}
-			}
+				else if (
+						(getDx() < 0.0 && a)
+						&&
+						(getDy() > 0.0 && s)
+						) { // left - down
+					setDx(-getDx() * bounce);
+					setDy(-getDy() * bounce);
+				}
+				else if (
+						(getDx() < 0.0 && a)
+						&&
+						(getDy() < 0.0 && w)
+						) { // left - up
+					setDx(-getDx() * bounce);
+					setDy(-getDy() * bounce);
+				}
+				else if (getDx() > 0.0 && d) { // right
+					setDx(-getDx() * bounce);
+				}
+				else if (getDx() < 0.0 && a) { //left
+					setDx(-getDx() * bounce);
+				}
+				else if (getDy() < 0.0 && w) { //up
+					setDy(-getDy() * bounce);
+				}
+				else if (getDy() > 0.0 && s) { //down
+					setDy(-getDy() * bounce);
+				}
 			
-			contained = false;
+			}
 		}
+		
 	}
-	
 }

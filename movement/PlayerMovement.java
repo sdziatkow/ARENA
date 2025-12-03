@@ -1,8 +1,5 @@
 package movement;
 
-import animate.PlayerAnimate;
-import javafx.animation.Animation;
-
 /**
  * Program Name:    PlayerMovement.java
  *<p>
@@ -21,6 +18,15 @@ import javafx.animation.Animation;
 import sprite.charSprite.PlayerSprite;
 import window.Controller;
 import worldStage.WorldStage;
+import collision.CollisionBox;
+import javafx.animation.Animation;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableValue;
+import movement.Movement.Going;
+
+import java.util.ArrayList;
 
 public class PlayerMovement extends Movement{
     /**
@@ -28,6 +34,65 @@ public class PlayerMovement extends Movement{
     */
 	
 	private Controller cntrl;
+	private ObservableDoubleValue mouseX;
+	private ObservableDoubleValue mouseY;
+	
+	
+	// Listener for isAttk when set to false.
+	private ChangeListener<? super Boolean> switchCntrl = new ChangeListener<Boolean>() {
+		public void changed(
+				ObservableValue<? extends Boolean> attk,
+				Boolean oldVal,
+				Boolean newVal
+		){
+			/*
+			 * THIS IS NEEDED TO RESET THE VALUE OF PERSON HIT SO NEXT TIME IF IT
+			 * IS SET TO SAME PERSON HIT IT WILL TRIGGER NEW PERSON HIT 
+			 * SEE ARENA-PERSON 
+			*/
+			
+			if (!newVal.booleanValue()) {
+				cntrl.setAttkDown(false);
+			}
+		}
+	};
+	
+	// Listener for isAttk when set to false.
+	private ChangeListener<? super Boolean> onAttk = new ChangeListener<Boolean>() {
+		public void changed(
+				ObservableValue<? extends Boolean> attk,
+				Boolean oldVal,
+				Boolean newVal
+		){
+			/*
+			 * THIS IS NEEDED TO RESET THE VALUE OF PERSON HIT SO NEXT TIME IF IT
+			 * IS SET TO SAME PERSON HIT IT WILL TRIGGER NEW PERSON HIT 
+			 * SEE ARENA-PERSON 
+			*/
+			
+			if (newVal.booleanValue()) {
+				
+		    	double distDiffY = getPos(1).get() - mouseY.get();
+		    	double distDiffX = getPos(0).get() - mouseX.get();
+		    	double absDistX  = Math.abs(Math.abs(getPos(0).get()) - Math.abs(mouseX.get()));
+		    	double absDistY  = Math.abs(Math.abs(getPos(1).get()) - Math.abs(mouseY.get()));
+				
+				if (distDiffX > 0.0 && absDistX > absDistY) {
+					forceDir(Going.W);
+				}
+				else if (distDiffX < 0.0 && absDistX > absDistY) {
+					forceDir(Going.E);
+				}
+				else if (distDiffY > 0.0 && absDistY > absDistX) {
+					forceDir(Going.N);
+				}
+				else if (distDiffY < 0.0 && absDistY > absDistX) {
+					forceDir(Going.S);
+				}
+			}
+		}
+	};
+	
 
 
 //CONSTRUCTORS---------------------------------------------------------------------
@@ -38,22 +103,7 @@ public class PlayerMovement extends Movement{
         */
     	
     	super();
-    }
-    
-    public PlayerMovement(
-    		WorldStage stage,
-    		PlayerSprite sprite, 
-    		PlayerAnimate anim,
-    		Controller cntrl,
-    		double mvRate
-    	){
-        /**
-         * Default Constructor for class PlayerMovement.
-        */
-    	
-    	super(stage, sprite, anim, mvRate);
-    	this.cntrl = cntrl;
-
+    	setColBounce(0.001);
     }
     
 //SETTERS--------------------------------------------------------------------------
@@ -64,6 +114,18 @@ public class PlayerMovement extends Movement{
     	*/
     	
     	this.cntrl = cntrl;
+    	isHitBoxPlaced().addListener(switchCntrl);
+    	isAttk().addListener(switchCntrl);
+    	isAttk().addListener(onAttk);
+    }
+    
+    public void setMousePos(DoubleProperty mouseX, DoubleProperty mouseY) {
+    	/*
+    	 * 
+    	*/
+    	
+    	this.mouseX = mouseX;
+    	this.mouseY = mouseY;
     }
     
 //GETTERS--------------------------------------------------------------------------
@@ -76,11 +138,18 @@ public class PlayerMovement extends Movement{
     	*/
     	
 		// Player does not move when no keys are not pressed.
-		if (!cntrl.getWDown() && !cntrl.getSDown()) {
-			setDy(0.0);
+		if (
+			!cntrl.getWDown() && !cntrl.getSDown()
+			&&
+			!cntrl.getADown() && !cntrl.getDDown()
+		) {
+			setMvRate(getMvRate() - (getIncMvRate() * 1.2));
+			setDx( getMvRate() * getNormalX() * Math.signum(getDx()));
+			setDy( getMvRate() * getNormalY() * Math.signum(getDy()));
+			isMv().set(false);
 		}
-		if (!cntrl.getADown() && !cntrl.getDDown()) {
-			setDx(0.0);
+		else if (!isAttk().get()){
+			isMv().set(true);
 		}
 		
 		// Set dx, dy dependent on which keys are pressed down.
@@ -117,23 +186,18 @@ public class PlayerMovement extends Movement{
 			setDy(0.0);
 		}
 		
+    	if (cntrl.getAttkDown() && !isAttk().get()) {
+			cntrl.setAttkDown(false);
+    		isMv().set(false);
+    		isAttk().set(true);
+    	}
+		
 		setDir();
 		
 		checkCollision();
-
-		// Move the getChar() group by translation
-		getSprite().getSpriteGroup().setTranslateY(
-				getSprite().getSpriteGroup().getTranslateY() + getDy()
-				)
-		;
-		getSprite().getSpriteGroup().setTranslateX(
-				getSprite().getSpriteGroup().getTranslateX() + getDx()
-				)
-		;
 		
-		if (!getMvAnim().getStatus().equals(Animation.Status.RUNNING)) {
-			getMvAnim().play();
-		}
+		translate();
+    	
     	
     }
 }

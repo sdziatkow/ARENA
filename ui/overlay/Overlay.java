@@ -1,7 +1,7 @@
 package ui.overlay;
 
-import arenaCharacter.CharState;
-import arenaCharacter.Level;
+import arenaPerson.ArenaData;
+import arenaPerson.ArenaLevel;
 
 /**
  * Program Name:    Overlay.java
@@ -97,27 +97,5 @@ public class Overlay {
 	}
 	
 //UPDATE---------------------------------------------------------------------------
-	
-	public void updateStatBars(CharState state, Level lvl) {
-		/*
-		 * 
-		*/
-		
-		double hpVal;
-		double mpVal;
-		double spVal;
-		double xpVal;
-		
-		hpVal = state.hp().getVal() / state.hp().getMaxVal();
-		mpVal = state.mp().getVal() / state.mp().getMaxVal();
-		spVal = state.sp().getVal() / state.sp().getMaxVal();
-		xpVal = lvl.getXp() / lvl.getMaxXp();
-		
-		getStatBars()[0].updateProgress(hpVal);
-		getStatBars()[1].updateProgress(mpVal);
-		getStatBars()[2].updateProgress(spVal);
-		getStatBars()[3].updateProgress(xpVal);
-		
-	}
 
 }

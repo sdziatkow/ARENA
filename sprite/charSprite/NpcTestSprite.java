@@ -15,7 +15,7 @@ package sprite.charSprite;
 */
 
 import collision.CollisionBox;
-import collision.CollisionBox.ColType;
+import arenaEnum.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,7 +41,7 @@ public class NpcTestSprite extends CharacterSprite {
 		 * 
 		*/
 		
-		super();
+		super(4, 0);
 		setSpriteSheet(new Image("file:sprites/NPC_test.png"));
 		frameGen = new FrameGen(getSpriteSheet());
 		
@@ -53,13 +53,13 @@ public class NpcTestSprite extends CharacterSprite {
 		frameGen.setFrameHeight(32);
 		frameGen.genFrames();
 		
-		setDownSprite(frameGen.getAllFrames()[0]);
-		setRightSprite(frameGen.getAllFrames()[1]);
-		setUpSprite(frameGen.getAllFrames()[2]);
-		setLeftSprite(frameGen.getAllFrames()[3]);
+		setMvFrames(0, frameGen.getAllFrames()[2]);
+		setMvFrames(1, frameGen.getAllFrames()[1]);
+		setMvFrames(2, frameGen.getAllFrames()[0]);
+		setMvFrames(3, frameGen.getAllFrames()[3]);
 		
 		// Set sprite view to default position and add it to StackPane.
-		setSpriteView(new ImageView(getDownSprite()[0]));
+		setSpriteView(new ImageView(getMvFrames(2)[0]));
 		getCharPane().getChildren().add(getSpriteView());
 
 		// Initialize CollisionBox bounds and set CollisionBoxes.

@@ -16,6 +16,16 @@ package sprite.charSprite;
 */
 
 import collision.CollisionBox;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableStringValue;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
@@ -24,6 +34,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import movement.Movement.Going;
 import sprite.weaponSprite.WeaponSprite;
+import ui.overlay.StatBar;
 
 public abstract class CharacterSprite{
     /**
@@ -34,16 +45,10 @@ public abstract class CharacterSprite{
 	private Image spriteSheet;
 	
 	// Will store sprites for each mvmnt direction.
-	private int framesPerDir;
-	private WritableImage[] upSprites;
-	private WritableImage[] leftSprites;
-	private WritableImage[] downSprites;
-	private WritableImage[] rightSprites;
-	
-	private WritableImage[] upAttkSprites;
-	private WritableImage[] leftAttkSprites;
-	private WritableImage[] downAttkSprites;
-	private WritableImage[] rightAttkSprites;
+	private int mvFramesPerDir;
+	private int attkFramesPerDir;
+	private WritableImage[][] mvFrames;
+	private WritableImage[][] attkFrames;
 	
 	// Will store sub image of playerSheet.
 	private ImageView spriteView;
@@ -54,62 +59,123 @@ public abstract class CharacterSprite{
 	private CollisionBox hitBox;
 	private CollisionBox detectBox;
 	private CollisionBox checkBox;
+	private StatBar hpBar;
 	
 	// Will store spriteView and worldBox.getColBox() -> Rectangle
 	private StackPane charPane;
 	
 	private WeaponSprite weaponSprite;
+	
+	// Will be binded to given Animate frameCount val.
+	private ObservableIntegerValue mvFrameCount;
+	private ObservableIntegerValue attkFrameCount;
+	private ObservableStringValue dir;
+	
+	// Will be binded to given Movement isMv val.
+	private ObservableBooleanValue isMoving;
+	
+	private BooleanProperty isHitBoxPlaced;
+	
+	// When a frameCount has changed, switch the sprite image to the corresponding 
+	// dirCount -n(orth), e(ast), s(outh), w(est).
+	private ChangeListener<? super Number> mvFrameChange = new ChangeListener<Number>() {
+		public void changed(
+				ObservableValue<? extends Number> cnt, 
+				Number oldVal,
+				Number newVal
+		){
+			
+			int nextDir;
+			if (dir.get().equals("N")) {
+				nextDir = 0;
+			}
+			else if (dir.get().equals("E")) {
+				nextDir = 1;
+			}
+			else if (dir.get().equals("S")) {
+				nextDir = 2;
+			}
+			else if (dir.get().equals("W")) {
+				nextDir = 3;
+			}
+			else {
+				nextDir = 0;
+			}
+			
+			if (isMoving.get()) {
+				setSpriteImg(getMvFrames(nextDir)[oldVal.intValue()]);
+			}
+			else {
+				setSpriteImg(getMvFrames(nextDir)[0]);
+			}
+		}
+	};
+	
+	private ChangeListener<? super Number> attkFrameChange = new ChangeListener<Number>() {
+		public void changed(
+				ObservableValue<? extends Number> cnt, 
+				Number oldVal,
+				Number newVal
+				){
+			
+			int nextDir;
+			if (dir.get().equals("N")) {
+				nextDir = 0;
+			}
+			else if (dir.get().equals("E")) {
+				nextDir = 1;
+			}
+			else if (dir.get().equals("S")) {
+				nextDir = 2;
+			}
+			else if (dir.get().equals("W")) {
+				nextDir = 3;
+			}
+			else {
+				nextDir = 0;
+			}
+			
+			setSpriteImg(getAttkFrames(nextDir)[oldVal.intValue()]);
+			getWeaponSprite().setSpriteImg(getWeaponSprite().getFrames(nextDir)[oldVal.intValue()]);
+			placeHitBox(dir.get());
+			
+			if (newVal.intValue() ==  0) {
+				getCharPane().getChildren().remove(getWeaponSprite().getSpriteView());
+			}
+		}
+	};
+	
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
-    public CharacterSprite() {
+    public CharacterSprite(int mvFramesPerDir, int attkFramesPerDir) {
         /**
          * Default Constructor for class
         */
     	
-    	framesPerDir = 4;
+    	this.mvFramesPerDir = mvFramesPerDir;
+    	this.attkFramesPerDir = attkFramesPerDir;
     	
-    	upSprites = new WritableImage[framesPerDir];
-    	leftSprites = new WritableImage[framesPerDir];
-    	downSprites = new WritableImage[framesPerDir];
-    	rightSprites = new WritableImage[framesPerDir];
-    	
-    	upAttkSprites = new WritableImage[framesPerDir];
-    	leftAttkSprites = new WritableImage[framesPerDir];
-    	downAttkSprites = new WritableImage[framesPerDir];
-    	rightAttkSprites = new WritableImage[framesPerDir];
+    	mvFrames = new WritableImage[4][mvFramesPerDir];
+    	attkFrames = new WritableImage[4][attkFramesPerDir];
     	
     	weaponSprite = new WeaponSprite();
     	
     	charPane = new StackPane();
     	charPane.setCache(true);
 
+    	isHitBoxPlaced = new SimpleBooleanProperty(false);
+    	
+		hpBar = new StatBar();
+		hpBar.getBar().setStyle(
+				"-fx-accent: maroon; "
+				+ "-fx-min-width: 32px; "
+				+ "-fx-max-width: 32px; "
+				+ "-fx-min-height: 10px; "
+				+ "-fx-max-height: 10px;"
+		);
     }
     
-    public CharacterSprite(int framesPerDir) {
-        /**
-         * Default Constructor for class
-        */
-    	
-    	this.framesPerDir = framesPerDir;
-    	
-    	upSprites = new WritableImage[framesPerDir];
-    	leftSprites = new WritableImage[framesPerDir];
-    	downSprites = new WritableImage[framesPerDir];
-    	rightSprites = new WritableImage[framesPerDir];
-    	
-    	upAttkSprites = new WritableImage[framesPerDir];
-    	leftAttkSprites = new WritableImage[framesPerDir];
-    	downAttkSprites = new WritableImage[framesPerDir];
-    	rightAttkSprites = new WritableImage[framesPerDir];
-    	
-    	weaponSprite = new WeaponSprite();
-    	
-    	charPane = new StackPane();
-    	charPane.setCache(true);
-
-    }
-
 //SETTERS--------------------------------------------------------------------------
     
     public void setSpriteSheet(Image spriteSheet) {
@@ -119,69 +185,21 @@ public abstract class CharacterSprite{
     	
     	this.spriteSheet = spriteSheet;
     }
-
-    public void setUpSprite(WritableImage[] frames) {
-        /**
-         * Setter for field: upSprites.
-        */
+    
+    public void setMvFrames(int dir, WritableImage[] frames) {
+    	/*
+    	 * 
+    	*/
     	
-    	this.upSprites = frames;
+    	mvFrames[dir] = frames;
     }
     
-    public void setLeftSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.leftSprites = frames;
-    }
-    
-    public void setDownSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.downSprites = frames;
-    }
-    
-    public void setRightSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.rightSprites = frames;
-    }
-    
-    public void setUpAttkSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.upAttkSprites = frames;
-    }
-    
-    public void setLeftAttkSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.leftAttkSprites = frames;
-    }
-    
-    public void setDownAttkSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.downAttkSprites = frames;
-    }
-    
-    public void setRightAttkSprite(WritableImage[] frames) {
-        /**
-         * Setter for field:
-        */
-
-    	this.rightAttkSprites = frames;
+    public void setAttkFrames(int dir, WritableImage[] frames) {
+    	/*
+    	 * 
+    	*/
+    	
+    	attkFrames[dir] = frames;
     }
     
 	public void setSpriteView(ImageView spriteView) {
@@ -267,15 +285,67 @@ public abstract class CharacterSprite{
 		
 		this.weaponSprite = sprite;
 	}
+	
+	public void setFrameCounts(IntegerProperty mvCnt, IntegerProperty attkCnt) {
+		/*
+		 * 
+		*/
+		
+		mvFrameCount = mvCnt;
+		attkFrameCount = attkCnt;
+		
+		mvFrameCount.addListener(mvFrameChange);
+		attkFrameCount.addListener(attkFrameChange);
+	}
+	
+	public void setIsMoving(BooleanProperty isMv) {
+		/*
+		 * 
+		*/
+		
+		isMoving = isMv;
+	}
+	
+	public void setDir(StringProperty dir) {
+		/*
+		 * 
+		*/
+		
+		this.dir = dir;
+	}
 
 //GETTERS--------------------------------------------------------------------------
 	
-	public int getFramesPerDir() {
+	public int getMvFramesPerDir() {
 		/**
 		 * 
 		*/
 		
-		return framesPerDir;
+		return mvFramesPerDir;
+	}
+	
+	public int getAttkFramesPerDir() {
+		/**
+		 * 
+		*/
+		
+		return attkFramesPerDir;
+	}
+	
+	public WritableImage[] getMvFrames(int dir) {
+		/*
+		 * 
+		*/
+		
+		return mvFrames[dir];
+	}
+	
+	public WritableImage[] getAttkFrames(int dir) {
+		/*
+		 * 
+		*/
+		
+		return attkFrames[dir];
 	}
     
 	public Image getSpriteSheet() {
@@ -294,70 +364,6 @@ public abstract class CharacterSprite{
 		*/
 		
 		return spriteView;
-	}
-
-	public WritableImage[] getUpSprite() {
-		/**
-		 * 
-		*/
-		
-		return upSprites;
-	}
-	
-	public WritableImage[] getLeftSprite() {
-		/**
-		 * 
-		*/
-		
-		return leftSprites;
-	}
-	
-	public WritableImage[] getDownSprite() {
-		/**
-		 * 
-		*/
-		
-		return downSprites;
-	}
-	
-	public WritableImage[] getRightSprite() {
-		/**
-		 * 
-		*/
-		
-		return rightSprites;
-	}
-	
-	public WritableImage[] getUpAttkSprite() {
-		/**
-		 * 
-		*/
-		
-		return upAttkSprites;
-	}
-	
-	public WritableImage[] getLeftAttkSprite() {
-		/**
-		 * 
-		*/
-		
-		return leftAttkSprites;
-	}
-	
-	public WritableImage[] getDownAttkSprite() {
-		/**
-		 * 
-		*/
-		
-		return downAttkSprites;
-	}
-	
-	public WritableImage[] getRightAttkSprite() {
-		/**
-		 * 
-		*/
-		
-		return rightAttkSprites;
 	}
 	
 	public CollisionBox getWorldBox() {
@@ -400,6 +406,14 @@ public abstract class CharacterSprite{
 		return checkBox;
 	}
 	
+	public StatBar getHpBar() {
+		/*
+		 * 
+		*/
+		
+		return hpBar;
+	}
+	
 	public StackPane getCharPane() {
 		/**
 		 * 
@@ -424,35 +438,44 @@ public abstract class CharacterSprite{
 		return weaponSprite;
 	}
 	
-//HIT-BOX-PLACEMENT----------------------------------------------------------------
-	
-	public void placeHitBox(Going dir) {
+	public BooleanProperty isHitBoxPlaced() {
 		/*
 		 * 
 		*/
 		
-		double[] coords = getWeaponSprite().getHitBoxCoords(dir);
+		return isHitBoxPlaced;
+	}
+	
+//HIT-BOX-PLACEMENT----------------------------------------------------------------
+	
+	public void placeHitBox(String dir) {
+		/*
+		 * 
+		*/
 		
 		if (!getSpriteGroup().getChildren().contains(getHitBox().getColBox())) {
-			getHitBox().setBounds(coords);
+			getHitBox().getColBox().setTranslateX(getWeaponSprite().getHitBoxTranslate(dir)[0]);
+			getHitBox().getColBox().setTranslateY(getWeaponSprite().getHitBoxTranslate(dir)[1]);
 			getSpriteGroup().getChildren().add(getHitBox().getColBox());
+			isHitBoxPlaced.set(true);
+		}
+		else {
+			getHitBox().getColBox().setTranslateX(0);
+			getHitBox().getColBox().setTranslateY(0);
+			getSpriteGroup().getChildren().remove(getHitBox().getColBox());
+			isHitBoxPlaced.set(false);
 		}
 		
 		if (!getCharPane().getChildren().contains(getWeaponSprite().getSpriteView())) {
 			getCharPane().getChildren().add(getWeaponSprite().getSpriteView());
 			
-			switch (dir) {
-			case N:
+			if (dir.equals("N")) {
 				getCharPane().getChildren().getFirst().setViewOrder(1);
 				getCharPane().getChildren().getLast().setViewOrder(0);
-				break;
-			case E:
-			case S:
-			case W:
+			}
+			else {
 				getCharPane().getChildren().getFirst().setViewOrder(0);
 				getCharPane().getChildren().getLast().setViewOrder(1);
-				break;
-			default:
 			}
 		}
 		

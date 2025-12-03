@@ -37,9 +37,8 @@ import worldStage.WorldStage;
 
 import java.util.ArrayList;
 
-import arenaCharacter.ArenaCharacter;
-import arenaCharacter.CharAttr;
-import arenaCharacter.Stat.StatType;
+import arenaPerson.ArenaAttr;
+import arenaPerson.ArenaPerson;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -57,7 +56,7 @@ public class StatEvent {
 	public StatEvent(
 			WorldStage stage,
 			StatMenu menu,
-			ArenaCharacter player
+			ArenaPerson player
 		) {
 		/*
 		 * 
@@ -73,7 +72,7 @@ public class StatEvent {
 				
 				// Each button on AttrDisplay has CharAttr object as its data.
 				Button src = (Button)e.getSource();
-				CharAttr attr = (CharAttr)src.getUserData();
+				ArenaAttr attr = (ArenaAttr)src.getUserData();
 				
 				// If incButton and has skillPoints and less than maxVal
 				if (player.lvl().getSkillPoints() > 0 && attr.getVal() < attr.getMaxVal()) {
@@ -92,7 +91,7 @@ public class StatEvent {
 				
 				// Update CharAttr info and reset AttrDisplay.
 				attr.setInfo();
-				menu.setAttrDisp(player.getStats().getAllAttr());
+				menu.setAttrDisp(player.data().getAllAttr());
 				
 				// If still showing buttons, add them again and set the handler.
 				if (keepShowing) {
@@ -109,8 +108,8 @@ public class StatEvent {
 				}
 				
 				// Update stat info and reset StatDisplay.
-				player.getStats().updateStats();
-				menu.setStatDisp(player.getStats().getAllStats());
+				player.data().updateStats();
+				menu.setStatDisp(player.data().getAllStats());
 				
 				// Update Level info and reset LevelDisplay.
 				player.lvl().setInfo();
@@ -128,7 +127,7 @@ public class StatEvent {
 				
 				// Level up, reset AttrDisplay, and add inc/dec Buttons.
 				player.lvl().onLvlUp();
-				menu.setAttrDisp(player.getStats().getAllAttr());
+				menu.setAttrDisp(player.data().getAllAttr());
 				menu.getAttrDisp().setButtons();
 				
 				ArrayList<Button> currSet;

@@ -2,7 +2,7 @@ package ui.statMenu;
 
 import java.util.ArrayList;
 
-import arenaCharacter.CharAttr;
+import arenaPerson.ArenaAttr;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;

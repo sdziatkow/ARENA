@@ -2,24 +2,9 @@ package backpack;
 
 import java.util.ArrayList;
 
-/**
- * Program Name:    EquipSlots.java
- *<p>
- * Purpose:         The purpose of this program is to create a place for
- * 					ArenaCharacters to use certain items from Backpack.
- *<p>
- * @version         0.0
- *<p>
- * Created:         March 06, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import arenaCharacter.*;
+import arenaPerson.*;
 import item.*;
-import item.Item.ItemType;
+import arenaEnum.itemInfo.ItemType;
 import item.weapon.*;
 import item.armor.*;
 import item.useable.Useable;
@@ -38,7 +23,7 @@ public class EquipSlots{
 	private final int ARMOR_SLOT = 1;
 	private final int USEABLE_SLOT = 2;
 
-    private ArenaCharacter self;
+    private ArenaPerson self;
     
     private ArrayList<Item> equipped;
 
@@ -55,11 +40,11 @@ public class EquipSlots{
          * Default Constructor for class
         */
 
-        this.self = new Player();
+        this.self = new ArenaPlayer();
         this.equipped = new ArrayList<Item>();
     }
 
-    public EquipSlots(ArenaCharacter self) {
+    public EquipSlots(ArenaPerson self) {
         /**
          * Default Constructor for class
         */
@@ -76,7 +61,7 @@ public class EquipSlots{
 
 //GETTERS--------------------------------------------------------------------------
 
-    public ArenaCharacter getSelf() {
+    public ArenaPerson getSelf() {
         /**
          *
         */

@@ -15,10 +15,11 @@ package item.weapon;
  * @author          Sean Dziatkowiec
 */
 
+import arenaPerson.*;
 import item.*;
-import arenaCharacter.*;
-import arenaCharacter.Stat.StatType;
-import item.weapon.WeaponAttack.AttackType;
+import arenaEnum.itemInfo.AttackType;
+import arenaEnum.itemInfo.ItemType;
+import arenaEnum.personStats.StatType;
 import sprite.weaponSprite.WeaponSprite;
 
 public abstract class Weapon extends Item{
@@ -37,7 +38,7 @@ public abstract class Weapon extends Item{
     // This value will be defined based on attk
     private double attkDmg;
 
-    private ArenaCharacter target;
+    private ArenaPerson target;
     
     private WeaponSprite sprite;
 
@@ -110,7 +111,7 @@ public abstract class Weapon extends Item{
         }
     }
 
-    public void setTarget(ArenaCharacter target) {
+    public void setTarget(ArenaPerson target) {
         /**
          * Setter for field: target
         */
@@ -175,7 +176,7 @@ public abstract class Weapon extends Item{
         return attk;
     }
 
-    public ArenaCharacter getTarget() {
+    public ArenaPerson getTarget() {
         /**
          * Getter for field: target
         */
@@ -268,8 +269,8 @@ public abstract class Weapon extends Item{
 
         dispDmg = getAttkDmg();
 
-        if (getTarget().stat(StatType.HP).isWeak()) {
-            dispDmg *= getTarget().stat(StatType.HP).getVal();
+        if (getTarget().arenaStat(StatType.HP).isWeak()) {
+            dispDmg *= getTarget().arenaStat(StatType.HP).getVal();
         }
 
         System.out.print(getName() + " " + getAttk().getName() + " ");
