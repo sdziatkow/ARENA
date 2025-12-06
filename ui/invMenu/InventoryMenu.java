@@ -15,28 +15,6 @@ package ui.invMenu;
  * @author          Sean Dziatkowiec
 */
 
-import java.util.ArrayList;
-
-import item.Item;
-import arenaEnum.itemInfo.ItemType;
-import javafx.collections.ObservableList;
-
-/**
- * Program Name:    PlayerMenu.java
- *<p>
- * Purpose:         The purpose of this program is to create a visual
- * 					representation of an ArenaCharacter's CharState
- *<p>
- * @version         0.0
- *<p>
- * Created:         November 12, 2025
- *<p>
- * Updated:         MONTH DD, YYYY
- *<p>
- * @author          Sean Dziatkowiec
-*/
-
-import javafx.scene.Group;
 import javafx.scene.layout.GridPane;
 
 public class InventoryMenu {
@@ -44,10 +22,7 @@ public class InventoryMenu {
 	 * 
 	*/
 	
-	private Group menu;
-	private GridPane main;
-	private BpMenu bpMenu;
-	private EquipMenu eqMenu;
+	public static GridPane main;
 	
 	public InventoryMenu() {
 		/*
@@ -56,66 +31,33 @@ public class InventoryMenu {
 		
 		main = new GridPane();
 		
-		bpMenu = new BpMenu();
-		eqMenu = new EquipMenu();
-		main.add(bpMenu.getMain(), 0, 0);
-		
-		menu = new Group(main);
-		
+		initBpMenu();
+		initEqMenu();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void resetBpMenu() {
+	public static void initBpMenu() {
 		/*
 		 * 
 		*/
 		
-		main.getChildren().remove(bpMenu);
+		new BpMenu();
 		
-		bpMenu = new BpMenu();
-		
-		main.add(bpMenu.getMain(), 0, 0);
+		main.add(BpMenu.main, 0, 0);
 	}
 	
-	public void resetEqMenu(ArrayList<Item> items) {
+	public static void initEqMenu() {
 		/*
 		 * 
 		*/
 		
-		main.getChildren().remove(eqMenu);
+		new EquipMenu();
 		
-		eqMenu = new EquipMenu();
-		eqMenu.setEq(items);
-		
-		main.add(eqMenu.getMain(), 1, 0);
+		main.add(EquipMenu.main, 1, 0);
 	}
 	
 	
 //GETTERS--------------------------------------------------------------------------
-	
-	public BpMenu getBpMenu() {
-		/*
-		 * 
-		*/
-		
-		return bpMenu;
-	}
-	
-	public EquipMenu getEqMenu() {
-		/*
-		 * 
-		*/
-		
-		return eqMenu;
-	}
-	
-	public Group getMenu() {
-		/*
-		 * 
-		*/
-		
-		return menu;
-	}
 
 }

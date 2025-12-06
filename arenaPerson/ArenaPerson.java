@@ -1,7 +1,7 @@
 package arenaPerson;
 
 /**
- * Program Name:    ArenaCharacter.java
+ * Program Name:    ArenaPerson.java
  *<p>
  * Purpose:         The purpose of this class is to have a base character class
  *                  that can be used by subclasses player and npc.
@@ -15,28 +15,19 @@ package arenaPerson;
  * @author          Sean Dziatkowiec
 */
 
-import backpack.Backpack;
-import backpack.EquipSlots;
-
-import java.util.ArrayList;
-
-import arenaEnum.itemInfo.ItemType;
-import item.weapon.Weapon;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableIntegerValue;
-import javafx.beans.value.ObservableValue;
-import movement.Movement;
-import window.Controller;
-import worldStage.WorldStage;
 import arenaEnum.personInfo.CharClass;
 import arenaEnum.personInfo.CharState;
 import arenaEnum.personInfo.CharType;
 import arenaEnum.personStats.Attribute;
 import arenaEnum.personStats.StatType;
+import worldStage.WorldData;
+import worldStage.WorldStage;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableValue;
 
 public abstract class ArenaPerson{
     /**
@@ -62,18 +53,8 @@ public abstract class ArenaPerson{
     private ArenaData data;
     private ArenaLevel lvl;
 
-    // Object of class Backpack; used to store items.
-    private Backpack backpack;
-
-    // Object of class EquipSlots; used to equip items from backpack so they can
-    // be used by character. Also equipped items can then be used to modify
-    // character's stats and do various actions such as attacking.
-    private EquipSlots equipSlot;
-    
-    public static ArrayList<ArenaPerson> otherPersons;
     private ObservableBooleanValue isAttk;
     private ObservableIntegerValue personHit;
-    public static IntegerProperty isDead;
     
     // Triggered when attack is started in Movement
     private ChangeListener<? super Boolean> onAttkChanged = new ChangeListener<Boolean>() {
@@ -100,11 +81,11 @@ public abstract class ArenaPerson{
 		){
     		
     		if (newVal.intValue() != -1) {
-    			weapon().setTarget(otherPersons.get(newVal.intValue()));
-    			weapon().setAttk(1);
-    			weapon().genAttack();
-    			otherPersons.get(newVal.intValue()).hurt(id); 
-    			weapon().setTarget(null);
+    			WorldData.eqSlots.get(id).getWeapon().setTarget(WorldData.persons.get(newVal.intValue()));
+    			WorldData.eqSlots.get(id).getWeapon().setAttk(1);
+    			WorldData.eqSlots.get(id).getWeapon().genAttack();
+    			WorldData.persons.get(newVal.intValue()).hurt(id); 
+    			WorldData.eqSlots.get(id).getWeapon().setTarget(null);
     		}
     	}
     };
@@ -123,8 +104,6 @@ public abstract class ArenaPerson{
     	
     	data = new ArenaData();
     	lvl = new ArenaLevel();
-        backpack = new Backpack(this);
-        equipSlot = new EquipSlots(this);
         
         data.setDefaultVals(CharClass.BRUTE);
     }
@@ -144,8 +123,6 @@ public abstract class ArenaPerson{
     	
         data = new ArenaData();
         lvl = new ArenaLevel();
-        backpack = new Backpack(this);
-        equipSlot = new EquipSlots(this);
         
         data.setDefaultVals(charClass);
     }
@@ -166,21 +143,6 @@ public abstract class ArenaPerson{
         */
 
         this.name = name;
-    }
-    
-    public static void setOtherPersons(ArrayList<ArenaPerson> persons) {
-    	/*
-    	 * 
-    	*/
-    	
-    	otherPersons = persons;
-    }
-    public static void setOnDeath(IntegerProperty onDeath) {
-    	/*
-    	 * 
-    	*/
-    	
-    	isDead = onDeath;
     }
     
 //GETTERS--------------------------------------------------------------------------
@@ -240,33 +202,6 @@ public abstract class ArenaPerson{
 
         return lvl;
     }
-
-    public Backpack bp() {
-        /**
-         * Getter for field: backpack
-        */
-
-        return backpack;
-    }
-
-    public EquipSlots equipSlot() {
-        /**
-         * Getter for field: equipper
-        */
-
-        return equipSlot;
-    }
-    
-    public Weapon weapon() {
-    	/**
-    	 * Getter for currently equipped weapon.
-    	*/
-    	
-    	return (Weapon)equipSlot().getEquipped(ItemType.WEAPON);
-    }
-    
-    public abstract void attk();
-    public abstract void stateMachine();
     
 //FLAGS----------------------------------------------------------------------------
     
@@ -356,13 +291,11 @@ public abstract class ArenaPerson{
     	 * 
     	*/
     	
-    	ArenaPerson attacker = otherPersons.get(attackerID);
-    	
-    	arenaStat(StatType.HP).dmg(attacker.weapon().getAttkDmg());
+    	arenaStat(StatType.HP).dmg(WorldData.eqSlots.get(attackerID).getWeapon().getAttkDmg());
     	
     	if (!isAlive()) {
-    		attacker.lvl().incXp(20 * lvl().getLvl(), false);
-    		isDead.set(getID());
+    		WorldData.persons.get(attackerID).lvl().incXp(20 * lvl().getLvl(), false);
+    		WorldStage.onPersonDeath.set(getID());
     	}
     	
     }

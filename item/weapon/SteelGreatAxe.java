@@ -3,7 +3,6 @@ package item.weapon;
 import arenaEnum.itemInfo.AttackType;
 import arenaEnum.personStats.Attribute;
 import arenaEnum.personStats.StatType;
-import sprite.weaponSprite.WeaponSprite;
 
 public class SteelGreatAxe extends Weapon {
     /**

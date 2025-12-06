@@ -15,18 +15,12 @@ package movement;
  * @author          Sean Dziatkowiec
 */
 
-import sprite.charSprite.PlayerSprite;
+import arenaEnum.Going;
 import window.Controller;
-import worldStage.WorldStage;
-import collision.CollisionBox;
-import javafx.animation.Animation;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
-import movement.Movement.Going;
-
-import java.util.ArrayList;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ChangeListener;
 
 public class PlayerMovement extends Movement{
     /**

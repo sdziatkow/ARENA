@@ -15,30 +15,28 @@ package ui.statMenu;
  * @author          Sean Dziatkowiec
 */
 
-import javafx.scene.layout.GridPane;
-
-import java.util.ArrayList;
-
 import arenaPerson.ArenaAttr;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
+import java.util.ArrayList;
+import javafx.scene.layout.GridPane;
+import ui.Menus;
+import worldStage.WorldData;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 
 public class AttrDisplay {
 	/*
 	 * 
 	*/
 	
-	private GridPane main;
-	private Label header;
+	public static GridPane main;
+	public static Label header;
 	
-	private GridPane allInfo;
-	private Label info;
+	public static GridPane allInfo;
+	public static ArrayList<Label> infoLabels;
 	
-	private Button incButton;
-	private Button decButton;
-	private ArrayList<ArrayList<Button>> buttons;
+	public static Button incButton;
+	public static Button decButton;
+	public static ArrayList<ArrayList<Button>> buttons;
 	
 	
 	public AttrDisplay() {
@@ -54,6 +52,7 @@ public class AttrDisplay {
 		 * 
 		*/
 		
+		// HOLDS WHOLE DISPLAY.
 		main = new GridPane();
 		main.getStylesheets().add(
 				getClass().getResource("statStyle.css").toExternalForm());
@@ -65,19 +64,22 @@ public class AttrDisplay {
 		
 		main.add(header, 0, 0, 4, 1);
 		
+		// KEY-VAL ATTR INFO.
+		infoLabels = new ArrayList<Label>();
+		initAttrDisp();
+		
+		// LVL UP BUTTONS.
 		buttons = new ArrayList<ArrayList<Button>>();
+		initButtons();
+		hideButtons();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setAttrDisp(ArrayList<ArenaAttr> attrIn) {
+	public static void initAttrDisp() {
 		/*
 		 * 
 		*/
-		
-		if (main.getChildren().contains(allInfo)) {
-			main.getChildren().remove(allInfo);
-		}
 		
 		allInfo = new GridPane();
 		
@@ -87,14 +89,14 @@ public class AttrDisplay {
 		// For each CharAttr Object.
 		ArenaAttr currAttr;
 		ArrayList<String> currInfo;
-		for (int a = 0; a < attrIn.size(); ++a) {
+		for (int a = 0; a < WorldData.persons.get(Menus.ID.get()).data().getAllAttr().size(); ++a) {
 			
-			currAttr = attrIn.get(a);
+			currAttr = WorldData.persons.get(Menus.ID.get()).data().getAllAttr().get(a);
 			
 			// For each info String in key(0) : value(1) pair. 
 			currInfo = currAttr.getInfo();
 			for (int i = 0; i < currInfo.size(); ++i) {
-				info = new Label(currInfo.get(i));
+				Label info = new Label(currInfo.get(i));
 				info.getStyleClass().add("label");
 				info.getStyleClass().add("info");
 				
@@ -111,6 +113,7 @@ public class AttrDisplay {
 					info.getStyleClass().add("attr-val");
 				}
 				
+				infoLabels.add(info);
 				allInfo.add(info, col, row);
 			}
 			
@@ -121,13 +124,25 @@ public class AttrDisplay {
 		main.add(allInfo, 0, 1);
 	}
 	
-	public void setButtons() {
+	public static void setAttrVals() {
+		/*
+		 * 
+		*/
+				
+		ArenaAttr currAttr;
+		for (int v = 1; v < infoLabels.size() ; v += 2) {
+			currAttr = WorldData.persons.get(Menus.ID.get()).data().getAllAttr().get(v / 2);
+			infoLabels.get(v).setText(currAttr.getInfo().get(v % 2));
+		}
+	}
+	
+	public static void initButtons() {
 		/*
 		 * 
 		*/
 		
 		ArrayList<Button> btnSet;
-		int totalRows = getAllInfo().getRowCount();
+		int totalRows = allInfo.getRowCount();
 		int attrIdx = 0;
 		
 		// For each in allInfo.
@@ -145,6 +160,9 @@ public class AttrDisplay {
 			decButton.getStyleClass().add("attr-button");
 			incButton.getStyleClass().add("attr-button");
 			
+			decButton.setOnAction(StatEvent.attrBtnOnActn);
+			incButton.setOnAction(StatEvent.attrBtnOnActn);
+			
 			// Init arrayList for both buttons and add arrayList to master list.
 			btnSet = new ArrayList<Button>();
 			btnSet.add(decButton);
@@ -159,31 +177,31 @@ public class AttrDisplay {
 		}
 	}
 	
+	public static void showButtons() {
+		/*
+		 * 
+		*/
+		
+		for (int a = 0; a < buttons.size(); ++a) {
+			for (int b = 0; b < buttons.get(a).size(); ++b) {
+				Menus.show(buttons.get(a).get(b));
+			}
+		}
+	}
+	
+	public static void hideButtons() {
+		/*
+		 * 
+		*/
+		
+		for (int a = 0; a < buttons.size(); ++a) {
+			for (int b = 0; b < buttons.get(a).size(); ++b) {
+				Menus.hide(buttons.get(a).get(b));
+			}
+		}
+	}
+	
 //GETTERS--------------------------------------------------------------------------
-	
-	public ArrayList<ArrayList<Button>> getButtons() {
-		/*
-		 * 
-		*/
-		
-		return buttons;
-	}
-	
-	public GridPane getAllInfo() {
-		/*
-		 * 
-		*/
-		
-		return allInfo;
-	}
-	
-	public GridPane getMain() {
-		/*
-		 * 
-		*/
-		
-		return main;
-	}
 	
 
 }

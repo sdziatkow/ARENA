@@ -15,48 +15,30 @@ package worldStage;
  * @author          Sean Dziatkowiec
 */
 
-import java.util.ArrayList;
 
-import arenaEnum.personInfo.CharClass;
-import arenaEnum.personInfo.CharState;
 import arenaEnum.personStats.StatType;
-import arenaPerson.ArenaPerson;
-import arenaPerson.ArenaPlayer;
-import arenaPerson.npc.NPCElm;
-import arenaPerson.npc.NPCWilhelm;
-import collision.CollisionBox;
-import item.armor.ClothClothes;
-import item.armor.SteelArmor;
-import item.useable.StatPot;
-import item.weapon.CrystalSceptre;
-import item.weapon.SteelRapier;
 import sprite.GroundTileSet;
-import sprite.StoneTower;
-import sprite.charSprite.PlayerSprite;
-import window.Main;
-import movement.Movement;
-import movement.PlayerMovement;
+import ui.Menus;
 
 public class StageOne extends WorldStage{
     /**
      *
     */
 	
-	private GroundTileSet groundTileSet;
+	public final static WorldData DATA = new StageOneData();
+	public static final Menus MENU = new Menus();
 
 //CONSTRUCTORS---------------------------------------------------------------------
 
-    public StageOne(Main window) {
+    public StageOne() {
         /**
          * Default Constructor for class
         */
     	
-    	super(window);
-    	DATA = new StageOneData();
+    	super();
     	
     	// Grass background.
-    	groundTileSet = new GroundTileSet();
-    	setBackground(groundTileSet.getTilePane());
+    	setBackground(new GroundTileSet().getTilePane());
     }
     
     public void onLaunch() {
@@ -64,59 +46,28 @@ public class StageOne extends WorldStage{
     	 * 
     	*/
     	
-    	// Add all sprites and overlay.
-    	for (int s = 0; s < DATA.persons.size(); ++s) {
+    	// Add all sprites and OVERLAY.
+    	for (int s = 0; s < WorldData.persons.size(); ++s) {
     		
-    		if (s < DATA.staticSprites.size()) {
-    			getWorldSpace().getChildren().add(DATA.staticSprites.get(s).getGroup());
+    		if (s < WorldData.staticSprites.size()) {
+    			getWorldSpace().getChildren().add(WorldData.staticSprites.get(s).getGroup());
     		}
-    		getWorldSpace().getChildren().add(DATA.charSprites.get(s).getSpriteGroup());
+    		getWorldSpace().getChildren().add(WorldData.charSprites.get(s).getSpriteGroup());
     	}
-    	getWorldSpace().getChildren().add(getOverlay().getOverlayGroup());
+    	getWorldSpace().getChildren().add(OVERLAY.getOverlayGroup());
+    	getWorldSpace().getChildren().add(Menus.MENU_SPACE);
     	
     	// Add all to grassBackground
     	getBackground().getChildren().add(getWorldSpace());
     	
-    	getOverlay().getStatBars()[0].getBar().progressProperty().bind(DATA.persons.get(0).arenaStat(StatType.HP).dispVal());
-    	getOverlay().getStatBars()[1].getBar().progressProperty().bind(DATA.persons.get(0).arenaStat(StatType.MP).dispVal());
-    	getOverlay().getStatBars()[2].getBar().progressProperty().bind(DATA.persons.get(0).arenaStat(StatType.SP).dispVal());
-    	getOverlay().getStatBars()[3].getBar().progressProperty().bind(DATA.persons.get(0).lvl().dispVal());
-    	getOverlay().getOverlayGroup().translateXProperty().bind(DATA.mvmnts.get(0).getPos(0));
-    	getOverlay().getOverlayGroup().translateYProperty().bind(DATA.mvmnts.get(0).getPos(1));
-		getOverlay().getOverlayGroup().setLayoutX(-(getWindow().getStage().getWindow().getRoot().getWidth() / 2));
-		getOverlay().getOverlayGroup().setLayoutY(-(getWindow().getStage().getWindow().getRoot().getHeight() / 2));
+    	OVERLAY.getStatBars()[0].getBar().progressProperty().bind(WorldData.persons.get(0).arenaStat(StatType.HP).dispVal());
+    	OVERLAY.getStatBars()[1].getBar().progressProperty().bind(WorldData.persons.get(0).arenaStat(StatType.MP).dispVal());
+    	OVERLAY.getStatBars()[2].getBar().progressProperty().bind(WorldData.persons.get(0).arenaStat(StatType.SP).dispVal());
+    	OVERLAY.getStatBars()[3].getBar().progressProperty().bind(WorldData.persons.get(0).lvl().dispVal());
+    	OVERLAY.getOverlayGroup().translateXProperty().bind(WorldData.mvmnts.get(0).getPos(0));
+    	OVERLAY.getOverlayGroup().translateYProperty().bind(WorldData.mvmnts.get(0).getPos(1));
     	
-    	getOverlay().getOverlayGroup().setViewOrder(1);
-    	
-
-    	
-    	setIEvent();
-    	setSEvent();
-    	
-    	ArenaPerson.setOnDeath(onPersonDeath());
-    }
-    
-    public void runPersonStates() {
-    	/**
-    	 * 
-    	*/
-    	
-    	//player.stateMachine();
-    	for (int i = 0; i < DATA.persons.size(); ++i) {
-
-    		if (DATA.mvmnts.get(i) != null) {
-	    		switch (DATA.persons.get(i).getCharState()) {
-	    		case REST:
-	    			break;
-	    		case MOVE:
-	    			DATA.mvmnts.get(i).move();
-	    			break;
-	    		case ATTK:
-	    			DATA.mvmnts.get(i).move();
-	    			break;
-	    		}
-    		}
-    	}
+    	OVERLAY.getOverlayGroup().setViewOrder(1);
     }
     	
     	

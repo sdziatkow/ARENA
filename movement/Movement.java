@@ -15,62 +15,29 @@ package movement;
  * @author          Sean Dziatkowiec
 */
 
+import arenaEnum.Going;
+import arenaEnum.ColType;
 import collision.CollisionBox;
-import collision.CollisionCheck;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import java.util.ArrayList;
+import javafx.geometry.Bounds;
+import worldStage.WorldData;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableBooleanValue;
 import javafx.beans.value.ObservableDoubleValue;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.util.Duration;
-import sprite.charSprite.CharacterSprite;
-import worldStage.WorldStage;
-import java.util.ArrayList;
-import animate.Animate;
-import arenaEnum.ColType;
+import javafx.beans.value.ChangeListener;
 
 public abstract class Movement{
     /**
      *
     */
-	
-	public enum Going {
-		/*
-		 * Associated with dx/dy 
-		*/
-		N,
-		E,
-		S,
-		W,
-		
-		NE,
-		NW,
-		
-		EN,
-		ES,
-		
-		SE,
-		SW,
-		
-		WN,
-		WS
-	}
-	
-	private final int BASE_ANIM_FRAME_RATE = 128;
 	
 	private ObservableDoubleValue maxRate;
 	private double maxMvRate;
@@ -84,7 +51,6 @@ public abstract class Movement{
 	private double colBounce;
 	
 	boolean contained = false;
-	public static ArrayList<ArrayList<CollisionBox>> colBoxes;
 	
 	// Will be binded to corresponding JFX Group translateX/Y property.
 	private DoubleProperty[] pos;
@@ -135,21 +101,20 @@ public abstract class Movement{
 			 * TRIGGERED WHEN HITBOX IS PLACED IN CharacterSprite. 
 			*/
 			if (newVal.booleanValue()) {
-				ArrayList<CollisionBox> hurtBoxes = colBoxes.get(1);
-				CollisionBox hitBox = colBoxes.get(3).get(getColBoxIndex());
+				ArrayList<CollisionBox> hurtBoxes = WorldData.getBoxesWithinRange(ColType.HURTBOX, getColBoxIndex(), false);
+				CollisionBox hitBox = WorldData.getBoxes(ColType.HITBOX).get(getColBoxIndex());
+				if (hurtBoxes == null || hitBox == null) {
+					return;
+				}
+				
 				CollisionBox currHurtBox;
-				
-				
 				if (hitBox != null) {
 					for (int b = 0; b < hurtBoxes.size(); ++b) {
 						
 						currHurtBox = hurtBoxes.get(b);
-						if (b != getColBoxIndex() && currHurtBox != null) {
-							
-							if (hitBox.getBounds().intersects(currHurtBox.getBounds())) {
-								personHit.set(b);
-								setMvRate(getMvRate() * 0.01);
-							}
+						if (hitBox.getBounds().intersects(currHurtBox.getBounds())) {
+							personHit.set(WorldData.getBoxes(ColType.HURTBOX).indexOf(currHurtBox));
+							setMvRate(getMvRate() * 0.01);
 						}
 					}
 				}
@@ -169,7 +134,7 @@ public abstract class Movement{
 			*/
 			
 			setMaxMvRate(newVal.doubleValue());
-	    	incMvRate = getMaxMvRate() / (4.0 + (newVal.doubleValue() * 2.0));
+	    	incMvRate = getMaxMvRate() / (5.0 + (newVal.doubleValue() * 4.0));
 		}
 	};
 
@@ -350,14 +315,6 @@ public abstract class Movement{
     	
     	pos[0].set(x);
     	pos[1].set(y);
-    }
-    
-    public static void setColBoxes(ArrayList<ArrayList<CollisionBox>> boxes) {
-    	/*
-    	 * 
-    	*/
-    	
-    	colBoxes = boxes;
     }
     
     public void setIsHitBoxPlaced(BooleanProperty placed) {
@@ -601,145 +558,6 @@ public abstract class Movement{
     		
     }
 //COLLISION------------------------------------------------------------------------
-    
-    public ArrayList<CollisionBox> getBoxes(ColType boxType) {
-    	/**
-    	 * This method will return the ArrayList in colBoxes that matches the
-    	 * given type.
-    	 * @see WorldData.java for ColType idx in colBoxes.
-    	*/
-    	
-    	ArrayList<CollisionBox> boxes;
-    	
-    	switch (boxType) {
-    	case WORLDBOX:
-    		boxes = colBoxes.get(0);
-    		break;
-    	case HURTBOX:
-    		boxes = colBoxes.get(1);
-    		break;
-    	case CHECKBOX:
-    		boxes = colBoxes.get(2);
-    		break;
-    	case DETECTBOX:
-    		boxes = colBoxes.get(4);
-    		break;
-    	default:
-    		boxes = null;
-    		break;
-    	}
-    	
-    	return boxes;
-    }
-    
-    public CollisionBox getClosestBox(ColType boxType) {
-    	/*
-    	 * This method will return the CollisionBox of the given type that is
-    	 * closest to its worldBox.
-    	*/
-    	
-    	// All worldBoxes boxes and myBox at colBoxIndex.
-    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
-    	CollisionBox myBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
-    	CollisionBox otherBox;
-    	
-    	// Checking by midY
-    	double myX = myBox.getMidX();
-    	double myY = myBox.getMidY();
-    	double otherX;
-    	double otherY;
-    	
-    	// Absolute value of myX - otherX
-    	double diffX;
-    	double diffY;
-    	
-    	// Will store lowest value of diffX + diffY.
-    	double closestDiff = 1000;
-    	int closestIdx = 0;
-    	
-    	// For each worldBox
-    	for (int b = 0; b < boxes.size(); ++b) {
-    		
-    		otherBox = boxes.get(b);
-    		if (b != getColBoxIndex() && otherBox != null) {
-    			
-    			// Get mid x/y vals for otherBox
-	    		otherX = otherBox.getMidX();
-	    		otherY = otherBox.getMidY();
-	    		
-	    		// Calculate difference between points.
-	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
-	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
-	    		if (diffX + diffY < closestDiff) {
-	    			closestDiff = diffX + diffY;
-	    			closestIdx = b;
-	    		}
-    		}
-    	}
-    	
-    	return boxes.get(closestIdx);
-    }
-    
-    public ArrayList<CollisionBox> getBoxesWithinRange(ColType boxType, boolean useCheckBox) {
-    	/*
-    	 * This method will return all CollisionBoxes of given type in range 50.
-    	 * If useCheckBox is true, will check range from checkBox bounds instead 
-    	 * of worldBoxBounds.
-    	*/
-    	
-    	final int BOX_LIMIT = 4;
-    	final double RANGE = 50;
-    	ArrayList<CollisionBox> withinRange;
-    	
-    	// All worldBoxes boxes and myBox at colBoxIndex.
-    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
-    	CollisionBox myBox;
-    	if (useCheckBox) {
-        	myBox = getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
-    	}
-    	else {
-    		myBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
-    	}
-    	CollisionBox otherBox;
-    	
-    	// Checking by midY
-    	double myX = myBox.getMidX();
-    	double myY = myBox.getMidY();
-    	double otherX;
-    	double otherY;
-    	
-    	// Absolute value of myX - otherX
-    	double diffX;
-    	double diffY;
-    	
-    	// For each worldBox
-    	withinRange = new ArrayList();
-    	for (int b = 0; b < boxes.size() && withinRange.size() < BOX_LIMIT; ++b) {
-    		
-    		otherBox = boxes.get(b);
-    		if (b != getColBoxIndex() && otherBox != null) {
-    			
-    			// Get mid x/y vals for otherBox
-	    		otherX = otherBox.getMidX();
-	    		otherY = otherBox.getMidY();
-	    		
-	    		// Calculate difference between points.
-	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
-	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
-	    		if (diffX + diffY < RANGE) {
-	    			withinRange.add(otherBox);
-	    		}
-    		}
-    	}
-    	
-    	if (withinRange.isEmpty()) {
-    		return null;
-    	}
-    	else {
-    		return withinRange;
-    	}
-    }
-    
 	public void checkCollision() {
 		/**
 		 * This method will determine where two boxes intersect and nullify or 
@@ -748,14 +566,14 @@ public abstract class Movement{
 		 * WILL ONLY CHECK FOR BOXES WITHIN RANGE.
 		*/
 		
-		ArrayList<CollisionBox> boxes = getBoxesWithinRange(ColType.WORLDBOX, false);
+		ArrayList<CollisionBox> boxes = WorldData.getBoxesWithinRange(ColType.WORLDBOX, getColBoxIndex(), false);
 		
 		if (boxes == null) {
 			return;
 		}
 		
 		// Character's current worldBox bounds.
-		CollisionBox charBox = getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
+		CollisionBox charBox = WorldData.getBoxes(ColType.WORLDBOX).get(getColBoxIndex());
 		Bounds charBounds = charBox.getBounds();
 		
 		// Will store the worldBox bounds of the worldBox being checked.

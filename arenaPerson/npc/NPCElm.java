@@ -15,13 +15,6 @@ package arenaPerson.npc;
 */
 
 import arenaEnum.personInfo.CharClass;
-import arenaEnum.personInfo.CharState;
-import arenaEnum.personStats.StatType;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import movement.NpcMovement;
-import sprite.charSprite.ElmSprite;
-import worldStage.WorldStage;
 
 public class NPCElm extends ArenaNPC{
 	/*

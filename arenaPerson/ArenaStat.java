@@ -1,13 +1,5 @@
 package arenaPerson;
 
-import java.util.ArrayList;
-
-import arenaEnum.personStats.StatType;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ObservableDoubleValue;
-import javafx.beans.value.ObservableValue;
-
 /**
  * Program Name:    Stat.java
  *<p>
@@ -22,6 +14,11 @@ import javafx.beans.value.ObservableValue;
  *<p>
  * @author          Sean Dziatkowiec
 */
+
+import arenaEnum.personStats.StatType;
+import java.util.ArrayList;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class ArenaStat{
     /**

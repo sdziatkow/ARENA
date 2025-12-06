@@ -1,13 +1,11 @@
 package sprite.charSprite;
 
-import collision.CollisionBox;
 import arenaEnum.ColType;
+import collision.CollisionBox;
+import sprite.FrameGen;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import movement.Movement.Going;
-import sprite.FrameGen;
-import ui.overlay.StatBar;
 
 public class EnemyTestSprite extends CharacterSprite {
 	/**
@@ -17,7 +15,6 @@ public class EnemyTestSprite extends CharacterSprite {
 	private FrameGen frameGen;
 	
 	private double[] worldBoxBounds;
-	private double[] hurtBoxBounds;
 	private double[] hitBoxBounds;
 	private double[] detectBoxBounds;
 	private double[] checkBoxBounds;

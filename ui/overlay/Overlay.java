@@ -1,8 +1,5 @@
 package ui.overlay;
 
-import arenaPerson.ArenaData;
-import arenaPerson.ArenaLevel;
-
 /**
  * Program Name:    Overlay.java
  *<p>

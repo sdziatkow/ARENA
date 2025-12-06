@@ -13,6 +13,9 @@ public class ArenaData {
 	 * ArenaCharacter can be accessed from an object of this class.
 	*/
 	
+	ArrayList<ArenaStat> allStats;
+	ArrayList<ArenaAttr> allAttr;
+	
 	private ArenaStat hp;
 	private ArenaStat mp;
 	private ArenaStat sp;
@@ -65,6 +68,21 @@ public class ArenaData {
 		dex =  new ArenaAttr(Attribute.DEXTERITY);
 		
 		mvSpeed = new SimpleDoubleProperty();
+		
+		allStats = new ArrayList<ArenaStat>();
+		allStats.add(hp());
+		allStats.add(mp());
+		allStats.add(sp());
+		allStats.add(physDef());
+		allStats.add(magDef());
+		allStats.add(crit());
+		allStats.add(speed());
+		
+		allAttr = new ArrayList<ArenaAttr>();
+		allAttr.add(vigor());
+		allAttr.add(wp());
+		allAttr.add(intel());
+		allAttr.add(dex());
 	}
 	
 //GETTERS--------------------------------------------------------------------------
@@ -154,6 +172,22 @@ public class ArenaData {
 		*/
 		
 		return dex;
+	}
+	
+	public ArrayList<ArenaAttr> getAllAttr() {
+		/*
+		 * 
+		*/
+		
+		return allAttr;
+	}
+	
+	public ArrayList<ArenaStat> getAllStats() {
+		/*
+		 * 
+		*/
+		
+		return allStats;
 	}
 	
 //SET-STATS------------------------------------------------------------------------
@@ -284,39 +318,6 @@ public class ArenaData {
 		hp().fullHeal();
 		mp().fullHeal();
 		sp().fullHeal();
-	}
-	
-	public ArrayList<ArenaAttr> getAllAttr() {
-		/*
-		 * 
-		*/
-		
-		ArrayList<ArenaAttr> all = new ArrayList<ArenaAttr>();
-		
-		all.add(vigor());
-		all.add(wp());
-		all.add(intel());
-		all.add(dex());
-		
-		return all;
-	}
-	
-	public ArrayList<ArenaStat> getAllStats() {
-		/*
-		 * 
-		*/
-		
-		ArrayList<ArenaStat> all = new ArrayList<ArenaStat>();
-		
-		all.add(hp());
-		all.add(mp());
-		all.add(sp());
-		all.add(physDef());
-		all.add(magDef());
-		all.add(crit());
-		all.add(speed());
-		
-		return all;
 	}
 	
 	public void setAttrMins() {

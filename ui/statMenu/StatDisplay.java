@@ -1,5 +1,6 @@
 package ui.statMenu;
 
+
 /**
  * Program Name:    StatDisplay.java
  *<p>
@@ -15,12 +16,11 @@ package ui.statMenu;
  * @author          Sean Dziatkowiec
 */
 
-import javafx.scene.layout.GridPane;
-
-import java.util.ArrayList;
-
-import arenaPerson.ArenaAttr;
 import arenaPerson.ArenaStat;
+import java.util.ArrayList;
+import javafx.scene.layout.GridPane;
+import ui.Menus;
+import worldStage.WorldData;
 import javafx.scene.control.Label;
 
 public class StatDisplay {
@@ -28,11 +28,11 @@ public class StatDisplay {
 	 * 
 	*/
 	
-	private GridPane main;
-	private Label header;
+	public static GridPane main;
+	public static Label header;
 	
-	private GridPane allInfo;
-	private Label info;
+	public static GridPane allInfo;
+	public static ArrayList<Label> infoLabels;
 	
 	public StatDisplay() {
 		/*
@@ -57,20 +57,20 @@ public class StatDisplay {
 		header.getStyleClass().add("header");
 		
 		main.add(header, 0, 0, 4, 1);
+		
+		initStatDisp();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setStatDisp(ArrayList<ArenaStat> statIn) {
+	public static void initStatDisp() {
 		/*
 		 * 
 		*/
 		
-		if (main.getChildren().contains(allInfo)) {
-			main.getChildren().remove(allInfo);
-		}
-		
+		ArrayList<ArenaStat> statIn = WorldData.persons.get(Menus.ID.get()).data().getAllStats();
 		allInfo = new GridPane();
+		infoLabels = new ArrayList<Label>();
 		
 		int col;
 		int row = 0;
@@ -85,7 +85,7 @@ public class StatDisplay {
 			// For each info String in key(0) : value(1) pair.
 			currInfo = currStat.getInfo();
 			for (int i = 0; i < currInfo.size(); ++i) {
-				info = new Label(currInfo.get(i));
+				Label info = new Label(currInfo.get(i));
 				info.getStyleClass().add("label");
 				info.getStyleClass().add("info");
 				
@@ -106,6 +106,7 @@ public class StatDisplay {
 					info.getStyleClass().add("stat-val");
 				}
 				
+				infoLabels.add(info);
 				allInfo.add(info, col, row);
 			}
 			
@@ -116,13 +117,17 @@ public class StatDisplay {
 		main.add(allInfo, 0, 1);
 	}
 	
-//GETTERS--------------------------------------------------------------------------
-	
-	public GridPane getMain() {
+	public static void setStatVals() {
 		/*
 		 * 
 		*/
 		
-		return main;
+		ArenaStat currStat;
+		for (int v = 1; v < infoLabels.size() ; v += 2) {
+			currStat = WorldData.persons.get(Menus.ID.get()).data().getAllStats().get(v / 2);
+			infoLabels.get(v).setText(currStat.getInfo().get(v % 2));
+		}
 	}
+	
+//GETTERS--------------------------------------------------------------------------
 }

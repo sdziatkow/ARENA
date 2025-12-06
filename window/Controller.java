@@ -1,8 +1,5 @@
 package window;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ObservableDoubleValue;
-
 /**
  * Program Name:    Controller.java
  *<p>
@@ -25,9 +22,6 @@ public class Controller{
     /**
      *
     */
-	
-	private ObservableDoubleValue mouseX;
-	private ObservableDoubleValue mouseY;
 	
 	private boolean wDown;
 	private boolean aDown;
@@ -57,15 +51,6 @@ public class Controller{
     }
 
 //SETTERS--------------------------------------------------------------------------
-
-    public void setMousePos(DoubleProperty mX, DoubleProperty mY) {
-        /**
-         * Setter for field:
-        */
-    	
-    	mouseX = mX;
-    	mouseY = mY;
-    }
     
     public void setAttkDown(boolean attkDown) {
         /**
@@ -92,18 +77,6 @@ public class Controller{
     }
 
 //GETTERS--------------------------------------------------------------------------
-    
-    public ObservableDoubleValue getMousePos(int axis) {
-        /**
-         * Setter for field:
-        */
-    	
-    	switch (axis) {
-    	case 0: return mouseX;
-    	case 1: return mouseY;
-    	default: return null;
-    	}
-    }
     
     public boolean getWDown() {
     	/**

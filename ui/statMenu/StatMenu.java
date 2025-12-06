@@ -17,23 +17,12 @@ package ui.statMenu;
 
 import javafx.scene.layout.GridPane;
 
-import java.util.ArrayList;
-
-import arenaPerson.ArenaAttr;
-import arenaPerson.ArenaStat;
-import javafx.scene.Group;
-
 public class StatMenu {
 	/*
 	 * 
 	*/
 	
-	private Group menu;
-	private GridPane main;
-	
-	private AttrDisplay attr;
-	private LevelDisplay lvl;
-	private StatDisplay stat;
+	public static GridPane main;
 	
 	
 	public StatMenu() {
@@ -42,84 +31,48 @@ public class StatMenu {
 		*/
 		
 		main = new GridPane();
-		attr = new AttrDisplay();
-		lvl = new LevelDisplay();
-		stat = new StatDisplay();
-		
-		main.add(attr.getMain(), 0, 0);
-		main.add(lvl.getMain(),  1, 0);
-		main.add(stat.getMain(), 1, 0);
 		
 		main.getStylesheets().add(
 				getClass().getResource("statStyle.css").toExternalForm());
 		main.getStyleClass().add("main");
-		menu = new Group(main);
+		
+		initAttrDisp();
+		initLvlDisp();
+		initStatDisp();
+		
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setAttrDisp(ArrayList<ArenaAttr> attrIn) {
+	public static void initAttrDisp() {
 		/*
 		 * 
 		*/
 		
-		main.getChildren().remove(attr.getMain());
-		
-		attr = new AttrDisplay();
-		attr.setAttrDisp(attrIn);
-		main.add(attr.getMain(), 0, 0);
+		new AttrDisplay();
+		main.add(AttrDisplay.main, 0, 0);
 	}
 	
-	public void setLvlDisp(ArrayList<String> info) {
+	public static void initLvlDisp() {
 		/*
 		 * 
 		*/
 		
-		main.getChildren().remove(lvl.getMain());
-		
-		lvl = new LevelDisplay();
-		lvl.setLvlDisp(info);
-		main.add(lvl.getMain(), 1, 0);
+		new LevelDisplay();
+		main.add(LevelDisplay.main, 1, 0);
 	}
 	
-	public void setStatDisp(ArrayList<ArenaStat> statIn) {
+	public static void initStatDisp() {
 		/*
 		 * 
 		*/
 		
-		main.getChildren().remove(stat.getMain());
-		
-		stat = new StatDisplay();
-		stat.setStatDisp(statIn);
-		main.add(stat.getMain(), 0, 1);
+		new StatDisplay();
+		main.add(StatDisplay.main, 0, 1);
 	}
 	
 	
 //GETTERS--------------------------------------------------------------------------
-	
-	public AttrDisplay getAttrDisp() {
-		/*
-		 * 
-		*/
-		
-		return attr;
-	}
-	
-	public LevelDisplay getLvlDisp() {
-		/*
-		 * 
-		*/
-		
-		return lvl;
-	}
-	
-	public Group getMenu() {
-		/*
-		 * 
-		*/
-		
-		return menu;
-	}
 	
 
 }

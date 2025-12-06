@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import item.*;
-import item.Item.*;
 import item.armor.Armor;
 import item.useable.Useable;
 import item.weapon.Weapon;
@@ -45,6 +44,7 @@ public class Backpack{
 	private ArrayList<Item> useable;
 	private ArrayList<Item> weapon;
 	private ArrayList<Item> armor;
+	private ArrayList<ArrayList<Item>> allItems;
 
     // The index of the Item being manipulated.
     private int itemSlot;
@@ -78,11 +78,23 @@ public class Backpack{
     	useable = new ArrayList<Item>();
     	weapon = new ArrayList<Item>();
     	armor = new ArrayList<Item>();
+    	allItems = new ArrayList<ArrayList<Item>>();
+    	allItems.add(weapon);
+    	allItems.add(armor);
+    	allItems.add(useable);
 	    
 	    this.self = self;
 	}
 
 //SETTERS--------------------------------------------------------------------------
+	
+    public void getSelf(ArenaPerson self) {
+        /**
+         *
+        */
+
+        this.self = self;
+    }
 
     public void look(ItemType itemType) {
         /**
@@ -156,13 +168,6 @@ public class Backpack{
     	/*
     	 * 
     	*/
-    	
-    	ArrayList<ArrayList<Item>> allItems;
-    	allItems = new ArrayList<ArrayList<Item>>();
-    	
-    	allItems.add(getUseable());
-    	allItems.add(getWeapon());
-    	allItems.add(getArmor());
     	
     	return allItems;
     }
@@ -391,7 +396,7 @@ public class Backpack{
     	
     	return null;
     }
-
+    
     public void addItem(Item item) {
         /**
          *
@@ -501,9 +506,6 @@ public class Backpack{
         /**
          * This method will remove an item given ItemType and index(itemSlot).
         */
-
-    	// Will be determined by lookingAt()
-    	ArrayList<Item> tempSlot;
     	
     	// Look at given ItemType and set itemSlot
         look(type);

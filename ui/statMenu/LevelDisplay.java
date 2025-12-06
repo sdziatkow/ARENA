@@ -2,10 +2,11 @@ package ui.statMenu;
 
 import java.util.ArrayList;
 
-import arenaPerson.ArenaAttr;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import ui.Menus;
+import worldStage.WorldData;
+import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 
 /**
  * Program Name:    AttrDisplay.java
@@ -27,11 +28,11 @@ public class LevelDisplay {
 	 * 
 	*/
 	
-	private GridPane main;
+	public static GridPane main;
 	
-	private GridPane allInfo;
-	private Label info;
-	private Button lvlUpBtn;
+	public static GridPane allInfo;
+	public static ArrayList<Label> infoLabels;
+	public static Button lvlUpBtn;
 	
 	public LevelDisplay() {
 		/*
@@ -50,20 +51,25 @@ public class LevelDisplay {
 		main.getStylesheets().add(
 				getClass().getResource("statStyle.css").toExternalForm());
 		main.getStyleClass().add("default-main");
+		
+		initLvlDisp();
+		initButton();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setLvlDisp(ArrayList<String> info) {
+	public static void initLvlDisp() {
 		/*
 		 * 
 		*/
 		
-		if (main.getChildren().contains(allInfo)) {
-			main.getChildren().remove(allInfo);
-		}
-		
+		ArrayList<String> info = WorldData.persons.get(Menus.ID.get()).lvl().getInfo();
+		info.addFirst(WorldData.persons.get(Menus.ID.get()).getCharClass().toString());
+		info.addFirst("CLASS:");
+		info.addFirst(WorldData.persons.get(Menus.ID.get()).getName());
+		info.addFirst("NAME:");
 		allInfo = new GridPane();
+		infoLabels = new ArrayList<Label>();
 		
 		int col = 0;
 		int row = 0;
@@ -88,50 +94,63 @@ public class LevelDisplay {
 				data.getStyleClass().add("key");
 				data.getStyleClass().add("lvl-key");
 			}
+			infoLabels.add(data);
 		}
 		
 		main.add(allInfo, 0, 1);
 	}
 	
-	public void setLvlUpBtn() {
+	public static void setLvlVals() {
 		/*
 		 * 
 		*/
 		
-		if (allInfo.getChildren().contains(lvlUpBtn)) {
-			allInfo.getChildren().remove(lvlUpBtn);
+		WorldData.persons.get(Menus.ID.get()).lvl().setInfo();
+		ArrayList<String> info = WorldData.persons.get(Menus.ID.get()).lvl().getInfo();
+
+		for (int v = 1; v < infoLabels.size(); v += 2) {
+			if (v == 1) {
+				infoLabels.get(v).setText(WorldData.persons.get(Menus.ID.get()).getName());
+			}
+			else if (v == 3) {
+				infoLabels.get(v).setText(WorldData.persons.get(Menus.ID.get()).getCharClass().toString());
+			}
+			else {
+				infoLabels.get(v).setText(info.get(v - 4));
+			}
 		}
+	}
+	
+	public static void initButton() {
+		/*
+		 * 
+		*/
 		
 		lvlUpBtn = new Button("LEVEL-UP");
 		lvlUpBtn.getStyleClass().add("lvl-button");
-		
+		lvlUpBtn.setOnAction(StatEvent.lvlBtnOnActn);
+		hideButton();
 		allInfo.add(lvlUpBtn, 0, allInfo.getRowCount() + 1, 2, 1);
 	}
 	
+	public static void hideButton() {
+		/*
+		 * 
+		*/
+		
+		lvlUpBtn.setVisible(false);
+		lvlUpBtn.setDisable(true);
+	}
+	
+	public static void showButton() {
+		/*
+		 * 
+		*/
+		
+		lvlUpBtn.setVisible(true);
+		lvlUpBtn.setDisable(false);
+	}
+	
 //GETTERS--------------------------------------------------------------------------
-	
-	public Button getLvlUpBtn() {
-		/*
-		 * 
-		*/
-		
-		return lvlUpBtn;
-	}
-	
-	public GridPane getAllInfo() {
-		/*
-		 * 
-		*/
-		
-		return allInfo;
-	}
-	
-	public GridPane getMain() {
-		/*
-		 * 
-		*/
-		
-		return main;
-	}
 
 }
