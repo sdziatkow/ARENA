@@ -16,6 +16,8 @@ package ui.invMenu;
 */
 
 import javafx.scene.layout.GridPane;
+import ui.Menus;
+import worldStage.WorldData;
 
 import java.util.ArrayList;
 
@@ -28,18 +30,15 @@ public class EquipMenu {
 	 * 
 	*/
 	
-	private GridPane main;
-	private Label header;
+	public static GridPane main;
+	public static Label header;
 	
-	private Label type;
+	public static Label type;
 	
-	private Label wName;
-	private Label aName;
-	private Label uName;
+	public static ArrayList<Label> nameLabels;
+	public static ArrayList<ArrayList<Label>> infoLabels;
 	
-	private GridPane wInfo;
-	private GridPane aInfo;
-	private GridPane uInfo;
+	
 	
 	public EquipMenu() {
 		/*
@@ -83,91 +82,101 @@ public class EquipMenu {
 		type.getStyleClass().add("eq-type");
 		main.add(type, 0, 3);
 		
+		initEq();
+		clearEq();
+		setEq();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setEq(ArrayList<Item> items) {
+	public static void initEq() {
 		/*
 		 * This method will set the display to show information of the given items. 
 		*/
 		
-		int row = -1;
+		nameLabels = new ArrayList<Label>();
+		infoLabels = new ArrayList<ArrayList<Label>>();
+		
+		final int TOTAL_INFO_LABELS = 11;
+		
 		Label name;
 		GridPane itemInfo;
-		Item currItem;
+		ArrayList<Label> info;
 		
 		// For Each Item.
-		for (int i = 0; i < items.size(); ++i) {	
-			currItem = items.get(i);
-			
-			if (currItem != null) {
-				
-				// Set the row and display objects depending on type.
-				switch (currItem.getItemType()) {
-				case WEAPON:
-					row = 1;
-					name = wName;
-					itemInfo = wInfo;
-					break;
-				case ARMOR:
-					row = 2;
-					name = aName;
-					itemInfo = aInfo;
-					break;
-				case USEABLE:
-					row = 3;
-					name = uName;
-					itemInfo = uInfo;
-					break;
-				default:
-					return;
-				}
-			
-			
-				// Create label for item name and add it to left-most col.
-				name = new Label(currItem.getInfo().get(0));
-				name.getStyleClass().add("eq-label");
-				name.getStyleClass().add("eq-info-name");
-				main.add(name, 1, row);
-				
-				// Create a new GridPane to store all the item info.
-				itemInfo = new GridPane();
-				itemInfo.getStyleClass().add("eq-info");
-				Label field = new Label();
-				
-				// For each key / name pair.
-				for (int f = 1; f < currItem.getInfo().size(); ++f) {
-					field =  new Label(currItem.getInfo().get(f));
-					field.getStyleClass().add("eq-label");
-					
-					if (f % 2 != 0) {
-						field.getStyleClass().add("eq-info-field");
-						itemInfo.add(field, 0, f - 1);
-					}
-					else {
-						
-						field.getStyleClass().add("eq-info-data");
-						itemInfo.add(field, 1, f - 2);
-						
-					}
-				}
-				
-				main.add(itemInfo, 2, row);
-			}
-		}
+		for (int n = 0; n < 3; ++n) {	
 		
+			// Create label for item name and add it to left-most col.
+			name = new Label();
+			name.getStyleClass().add("eq-label");
+			name.getStyleClass().add("eq-info-name");
+			nameLabels.add(name);
+			main.add(name, 1, n + 1);
+			
+			// Create a new GridPane to store all the item info.
+			itemInfo = new GridPane();
+			itemInfo.getStyleClass().add("eq-info");
+			
+			// For each key / name pair.
+			Label field;
+			info = new ArrayList<Label>();
+			for (int f = 1; f < TOTAL_INFO_LABELS; ++f) {
+				field = new Label();
+				field.getStyleClass().add("eq-label");
+				
+				if (f % 2 != 0) {
+					field.getStyleClass().add("eq-info-field");
+					itemInfo.add(field, 0, f - 1);
+				}
+				else {
+					
+					field.getStyleClass().add("eq-info-data");
+					itemInfo.add(field, 1, f - 2);
+				}
+				info.add(field);
+			}
+			infoLabels.add(info);
+			
+			main.add(itemInfo, 2, n + 1);
+		}
 	}
 	
-//GETTERS--------------------------------------------------------------------------
-	
-	public GridPane getMain() {
+	public static void setEq() {
 		/*
 		 * 
 		*/
 		
-		return main;
+		ArrayList<Item> eq = WorldData.eqSlots.get(Menus.ID.get()).getEquipped();
+		Item currEq;
+		ArrayList<String> currInfo;
+		
+		for (int n = 0; n < nameLabels.size(); ++n) {
+			currEq = eq.get(n);
+			
+			if (currEq != null) {
+				currInfo = currEq.getInfo();
+				nameLabels.get(n).setText(currInfo.get(0));
+				
+				for (int i = 1; i < currInfo.size(); ++i) {
+					infoLabels.get(n).get(i - 1).setText(currInfo.get(i));
+				}
+			}		
+		}
 	}
 	
-
+	public static void clearEq() {
+		/*
+		 * 
+		*/
+		
+		for (int n = 0; n < nameLabels.size(); ++n) {
+			nameLabels.get(n).setText("");
+		}		
+		
+		for (int n = 0; n < infoLabels.size(); ++n) {
+			for (int i = 0; i < infoLabels.get(n).size(); ++i) {
+				infoLabels.get(n).get(i).setText("");
+			}
+		}
+	}
 }

@@ -1,9 +1,5 @@
 package sprite.weaponSprite;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-
 /**
  * Program Name:    WeaponSprite.java
  *<p>
@@ -19,8 +15,10 @@ import javafx.scene.image.WritableImage;
  * @author          Sean Dziatkowiec
 */
 
-import movement.Movement.Going;
 import sprite.FrameGen;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
 public class WeaponSprite {
 	/*

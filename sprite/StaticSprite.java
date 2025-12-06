@@ -1,18 +1,38 @@
 package sprite;
 
+/**
+ * Program Name:    StaticSprite.java
+ *<p>
+ * Purpose:         The purpose of this program is to create a base parent class
+ * 					for all sprites that do not move.
+ *<p>
+ * @version         0.0
+ *<p>
+ * Created:         December 01, 2025
+ *<p>
+ * Updated:         MONTH DD, YYYY
+ *<p>
+ * @author          Sean Dziatkowiec
+*/
+
 import arenaEnum.ColType;
 import collision.CollisionBox;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
+import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 
 public class StaticSprite {
-	/*
-	 * 
+	/**
+	 * @field spriteSheet: Contains file with entire sprite sheet.
+	 * @field spriteView:  Contains WritableImage of frame taken from spriteSheet.
+	 * @field spritePane:  Can contain multiple spriteViews.
+	 * @field worldBox:    Determines where moving sprites will collide with this.
+	 * @field spriteGroup: Contains spritePane and worldBox.
+	 * @field pos:         Property that is bound to spriteGroup's scene position.
 	*/
 	
 	private Image spriteSheet;
@@ -20,7 +40,6 @@ public class StaticSprite {
 	private StackPane spritePane;
 	
 	private CollisionBox worldBox;
-	private double[] worldBoxBounds;
 	
 	private Group spriteGroup;
 	

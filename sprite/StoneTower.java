@@ -15,14 +15,6 @@ package sprite;
  * @author          Sean Dziatkowiec
 */
 
-import collision.CollisionBox;
-import arenaEnum.ColType;
-import javafx.scene.Group;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
-
 public class StoneTower extends StaticSprite{
     /**
      *

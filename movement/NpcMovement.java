@@ -15,14 +15,13 @@ package movement;
  * @author          Sean Dziatkowiec
 */
 
-import java.util.Random;
-import java.util.ArrayList;
+import arenaEnum.Going;
 import arenaEnum.ColType;
 import collision.CollisionBox;
-import javafx.animation.Animation;
-import javafx.geometry.Bounds;
-import sprite.charSprite.CharacterSprite;
-import worldStage.WorldStage;
+import worldStage.WorldData;
+
+import java.util.Random;
+import java.util.ArrayList;
 
 public class NpcMovement extends Movement{
     /**
@@ -108,23 +107,23 @@ public class NpcMovement extends Movement{
     	*/
     	
     	// Check if any hurtBoxes are in range of Sprite's detectBox.
-    	CollisionBox detectBox = getBoxes(ColType.DETECTBOX).get(getColBoxIndex());
+    	CollisionBox detectBox = WorldData.getBoxes(ColType.DETECTBOX).get(getColBoxIndex());
     	CollisionBox hurtBox;
     	
     	// If not moving to hurtBox, get closest hurtBox and set currTargetIdx to 
     	// its idx.
     	if (!isMvToHurtBox) {
-    		hurtBox = getClosestBox(ColType.HURTBOX);
+    		hurtBox = WorldData.getClosestBox(ColType.HURTBOX, getColBoxIndex());
     		
     		if (hurtBox != null) {
-    			currTargetIdx = getBoxes(ColType.HURTBOX).indexOf(hurtBox);
+    			currTargetIdx = WorldData.getBoxes(ColType.HURTBOX).indexOf(hurtBox);
     		}
     	}
     	
     	// If is moving to hurtBox, keep moving to the same one that initially 
     	// entered.
     	else {
-    		hurtBox = getBoxes(ColType.HURTBOX).get(currTargetIdx);
+    		hurtBox = WorldData.getBoxes(ColType.HURTBOX).get(currTargetIdx);
     	}
     	
     	mvRand = true;
@@ -175,7 +174,7 @@ public class NpcMovement extends Movement{
     	 * 
     	*/
     	
-    	CollisionBox checkBox = getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
+    	CollisionBox checkBox = WorldData.getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
     	
     	double minX = checkBox.getOriginalBounds()[0];
     	double minY = checkBox.getOriginalBounds()[1];
@@ -199,12 +198,12 @@ public class NpcMovement extends Movement{
     	*/
     	
     	boolean can = true;
-    	ArrayList<CollisionBox> boxes = getBoxesWithinRange(ColType.WORLDBOX, true);
+    	ArrayList<CollisionBox> boxes = WorldData.getBoxesWithinRange(ColType.WORLDBOX, getColBoxIndex(), true);
     	if (boxes == null) {
     		return can;
     	}
     	
-    	CollisionBox checkBox = getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
+    	CollisionBox checkBox = WorldData.getBoxes(ColType.CHECKBOX).get(getColBoxIndex());
     	moveCheckBox();
     	
     	can = true;
@@ -535,25 +534,25 @@ public class NpcMovement extends Movement{
 				if (totalPathCount > 300) {
 					pathCount = 0;
 					forceDir(dirInOrder[6]);
-					System.out.println(">> PATH WAY TOO LONG, FORCING: " + dirInOrder[6].toString());
+					//System.out.println(">> PATH WAY TOO LONG, FORCING: " + dirInOrder[6].toString());
 				}
 				
 				// Otherwise if pathTooLong force to last moveable dir.
 				else if (pathTooLong) {
-					System.out.println(">  PATH TOO LONG, FORCING: " + dir.toString());
+					//System.out.println(">  PATH TOO LONG, FORCING: " + dir.toString());
 					forceDir(lastPathDir);
 				}
 				else {
 					lastPathDir = dir;
 				}
-				System.out.println("|  DIR FOUND: " + dir.toString());
-				System.out.println("-------------------------");
+				//System.out.println("|  DIR FOUND: " + dir.toString());
+				//System.out.println("-------------------------");
 				return dir;
 			}
     	}
     	
-		System.out.println("!  NO DIR FOUND, FORCING: " + dirInOrder[6].toString());
-		System.out.println("-------------------------");
+		//System.out.println("!  NO DIR FOUND, FORCING: " + dirInOrder[6].toString());
+		//System.out.println("-------------------------");
     	
 		// If no dir found, force to opposite dir and continue.
 		forceDir(dirInOrder[6]);

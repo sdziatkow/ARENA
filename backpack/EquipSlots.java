@@ -58,6 +58,14 @@ public class EquipSlots{
         equipped.add(ARMOR_SLOT, defaultArmor);
         equipped.add(USEABLE_SLOT, defaultUseable);
     }
+    
+    public void getSelf(ArenaPerson self) {
+        /**
+         *
+        */
+
+        this.self = self;
+    }
 
 //GETTERS--------------------------------------------------------------------------
 
@@ -88,6 +96,30 @@ public class EquipSlots{
     	case USEABLE: return equipped.get(USEABLE_SLOT);
 		default: return null;
     	}
+    }
+    
+    public Weapon getWeapon() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return (Weapon)getEquipped(ItemType.WEAPON);
+    }
+    
+    public Armor getArmor() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return (Armor)getEquipped(ItemType.ARMOR);
+    }
+    
+    public Useable getUseable() {
+    	/*
+    	 * 
+    	*/
+    	
+    	return (Useable)getEquipped(ItemType.USEABLE);
     }
 
 //MANIPULATION---------------------------------------------------------------------

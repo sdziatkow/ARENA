@@ -20,7 +20,6 @@ public class Martial extends Weapon {
     		)
     ;
     
-    private boolean combo;
 
     public Martial() {
         /**

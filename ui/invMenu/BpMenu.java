@@ -17,24 +17,28 @@ package ui.invMenu;
 
 import java.util.ArrayList;
 import arenaEnum.itemInfo.ItemType;
+import item.Item;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
+import ui.Menus;
+import worldStage.WorldData;
 
 public class BpMenu {
 	
-	private GridPane main;
+	public static GridPane main;
 	
-	private Label bpLabel;
-	private ObservableList<String> bpOptions;
-	private ListView<String> bpList;
-	private ListView<String> itemList;
-	private GridPane itemDisp;
-	private Button eqButton;
-	private Button useButton;
+	public static Label bpLabel;
+	public static ObservableList<String> bpOptions;
+	public static ListView<String> bpList;
+	public static ListView<String> itemList;
+	public static GridPane itemDisp;
+	public static ArrayList<Label> itemLabels;
+	public static Button eqButton;
+	public static Button useButton;
 	
 	public BpMenu() {
 		/*
@@ -66,36 +70,40 @@ public class BpMenu {
 		bpList = new ListView<String>(bpOptions);
 		bpList.getStyleClass().add("bp-list");
 		bpList.getStyleClass().add("bp-type-list");
+		bpList.getSelectionModel().selectedIndexProperty().addListener(InventoryEvent.bpTypeLstn);
+		
+		// Items of selected type in bpView
+		itemList = new ListView<String>();
+		itemList.getStyleClass().add("bp-list");
+		itemList.getStyleClass().add("item-list");
+		itemList.getSelectionModel().selectedIndexProperty().addListener(InventoryEvent.bpItemLstn);
 		
 		main.add(bpLabel, 0, 0, 5, 1);
 		main.add(bpList, 0, 1, 5, 1);
+		main.add(itemList, 0, 2, 2, 1);
+		
+		bpList.selectionModelProperty().get().clearAndSelect(0);
+		setItemList();
+		initItemDisp();
+		initUseButton();
+		initEqButton();
 	}
 	
 //SETTERS--------------------------------------------------------------------------
 	
-	public void setItemList(ObservableList<String> options) {
-		/*
-		 * This method will display a ListView containting options.
-		*/
-		
-		itemList = new ListView<String>(options);
-		
-		itemList.getStyleClass().add("bp-list");
-		itemList.getStyleClass().add("item-list");
-		main.add(itemList, 0, 2, 2, 1);
-	}
-	
-	public void setItemDisp(ItemType type, ArrayList<String> info) {
+	public static void initItemDisp() {
 		/*
 		 * This method will display all information of currently selected itemList
 		 * item.
 		*/
 		
+		final int TOTAL_INFO_LABELS = 21;
 		itemDisp = new GridPane();
+		itemLabels = new ArrayList<Label>();
 		
-		for (int i = 0; i < info.size(); ++i) {
+		for (int i = 0; i < TOTAL_INFO_LABELS; ++i) {
 				
-			Label infoLabel = new Label(info.get(i));
+			Label infoLabel = new Label();
 			infoLabel.getStyleClass().add("bp-label");
 			
 			if (i == 0) {
@@ -112,92 +120,109 @@ public class BpMenu {
 				infoLabel.getStyleClass().add("item-info-data");
 				itemDisp.add(infoLabel, 1, i - 1, 2, 1);
 			}
-
+			itemLabels.add(infoLabel);
 		}
 		
 		main.add(itemDisp, 2, 2, 3, 1);
 	}
 	
-	public void setEqButton(String text) {
+	public static void setItemList() {
+		/*
+		 * This method will display a ListView containting options.
+		*/
+		
+		itemList.getItems().clear();
+		
+		ArrayList<ArrayList<Item>> allItems = WorldData.bkpks.get(Menus.ID.get()).getAllItems();
+		int currSelect = bpList.selectionModelProperty().get().getSelectedIndex();
+		
+		if (currSelect == 0) {
+			for (int t = 0; t < allItems.size(); ++t) {
+				for (int i = 0; i < allItems.get(t).size(); ++i) {
+					itemList.getItems().add(allItems.get(t).get(i).getName());
+				}
+			}
+		}
+		else if (currSelect > 0){
+			for (int i = 0; i < allItems.get(currSelect - 1).size(); ++i) {
+				itemList.getItems().add(allItems.get(currSelect - 1).get(i).getName());
+			}
+		}
+	}
+	
+	public static void setItemInfo() {
+		/*
+		 * 
+		*/
+		
+		String currSelect = itemList.selectionModelProperty().get().getSelectedItem();
+		Item currItem = WorldData.bkpks.get(Menus.ID.get()).grabItemByName(currSelect);
+		
+		if (currItem != null) {
+			ArrayList<String> info = currItem.getInfo();
+			
+			// Set text of all Labels to be the item's info.
+			itemLabels.get(0).setText(info.get(0));
+			for (int i = 1; i < info.size(); ++i) {
+				itemLabels.get(i).setText(info.get(i));
+			}
+			
+			// Check if item's equip status.
+			if (WorldData.eqSlots.get(0).isEquipped(currItem)) {
+				eqButton.setText("UN-EQUIP");
+			}
+			else {
+				eqButton.setText("EQUIP");
+			}
+			
+			// If useable, show useButton.
+			if (currItem.getItemType().equals(ItemType.USEABLE)) {
+				Menus.show(useButton);
+			}
+			Menus.show(eqButton);
+		}
+	}
+	
+	public static void clearItemInfo() {
+		/*
+		 * 
+		*/
+		
+		for (int i = 0; i < itemLabels.size(); ++i) {
+			itemLabels.get(i).setText("");
+		}
+		
+		Menus.hide(useButton);
+		Menus.hide(eqButton);
+	}
+	
+	public void initEqButton() {
 		/*
 		 * This method will add an equip button in last row spanning all columns
 		 * of itemDisp.
 		*/
 		
-		if (itemDisp.getChildren().contains(getEqButton())) {
-			itemDisp.getChildren().remove(getEqButton());
-		}
-		
 		eqButton = new Button();
-		eqButton.setText(text);
 		eqButton.getStyleClass().add("button");
+		eqButton.setOnAction(InventoryEvent.eqBtnOnActn);
+		
+		Menus.hide(eqButton);
 		itemDisp.add(eqButton, 0, itemDisp.getRowCount() + 1, 2, 1);
 	}
 	
-	public void setUseButton() {
+	public void initUseButton() {
 		/*
 		 * This method will add an equip button in last row spanning all columns
 		 * of itemDisp.
 		*/
-		
-		if (itemDisp.getChildren().contains(getUseButton())) {
-			itemDisp.getChildren().remove(getUseButton());
-		}
 		
 		useButton = new Button();
 		useButton.setText("USE");
 		useButton.getStyleClass().add("button");
+		useButton.setOnAction(InventoryEvent.useBtnOnActn);
+		
+		Menus.hide(useButton);
 		itemDisp.add(useButton, 0, itemDisp.getRowCount() + 1, 2, 1);
-	}
-	
-//GETTERS--------------------------------------------------------------------------
-	
-	public ListView<String> getBpList() {
-		/*
-		 * 
-		*/
-		
-		return bpList;
-	}
-	
-	public ListView<String> getItemList() {
-		/*
-		 * 
-		*/
-		
-		return itemList;
-	}
-	
-	public GridPane getItemDisp() {
-		/*
-		 * 
-		*/
-		
-		return itemDisp;
-	}
-	
-	public Button getEqButton() {
-		/*
-		 * 
-		*/
-		
-		return eqButton;
-	}
-	
-	public Button getUseButton() {
-		/*
-		 * 
-		*/
-		
-		return useButton;
-	}
-	
-	public GridPane getMain() {
-		/*
-		 * 
-		*/
-		
-		return main;
 	}
 
 }

@@ -285,7 +285,6 @@ public class ArenaLevel {
 		 * 
 		*/
 		
-		int lastMax = getMaxXp();
 		
 		incLvl();
 		incSkillPoints();

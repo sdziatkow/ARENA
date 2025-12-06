@@ -14,12 +14,12 @@ package sprite.charSprite;
  * @author          Sean Dziatkowiec
 */
 
+import arenaEnum.Going;
 import collision.CollisionBox;
 import arenaEnum.ColType;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import movement.Movement.Going;
 import sprite.FrameGen;
 
 public class NpcTestSprite extends CharacterSprite {

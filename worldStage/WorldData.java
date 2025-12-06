@@ -16,28 +16,24 @@ package worldStage;
 */
 
 import java.util.ArrayList;
-
 import animate.Animate;
 import arenaEnum.ColType;
+import arenaEnum.itemInfo.ItemType;
 import arenaEnum.personInfo.CharState;
 import arenaEnum.personStats.StatType;
 import arenaPerson.ArenaPerson;
-import arenaPerson.ArenaPlayer;
-import arenaPerson.npc.NPCElm;
-import arenaPerson.npc.NPCWilhelm;
 import backpack.Backpack;
 import backpack.EquipSlots;
 import collision.CollisionBox;
+import item.Item;
+import item.useable.Useable;
 import movement.Movement;
 import movement.NpcMovement;
 import movement.PlayerMovement;
 import sprite.StaticSprite;
 import sprite.charSprite.CharacterSprite;
-import sprite.charSprite.ElmSprite;
-import sprite.charSprite.EnemyTestSprite;
-import sprite.charSprite.PlayerSprite;
 
-public class WorldData {
+public abstract class WorldData {
 	/*
 	 * 
 	*/
@@ -60,7 +56,7 @@ public class WorldData {
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	
-	public WorldData() {
+	protected WorldData() {
 		/*
 		 * 
 		*/
@@ -84,7 +80,7 @@ public class WorldData {
 		}
 	}
 	
-	public void init() {
+	public static void init() {
 		/*
 		 * 
 		*/
@@ -93,8 +89,8 @@ public class WorldData {
 		for (int p = 0; p < persons.size(); ++p) {
 			
 			// Add corresponding backpack and equipSlot.
-			bkpks.add(new Backpack());
-			eqSlots.add(new EquipSlots());
+			bkpks.add(new Backpack(persons.get(p)));
+			eqSlots.add(new EquipSlots(persons.get(p)));
 			
 			// Add each CollisionBox from each corresponding sprite to colBoxes.
 			colBoxes.get(0).add(charSprites.get(p).getWorldBox());
@@ -152,7 +148,29 @@ public class WorldData {
 	
 //GAMEPLAY-------------------------------------------------------------------------
 	
-	public void pause() {
+    public static void runPersonStates() {
+    	/**
+    	 * 
+    	*/
+
+    	for (int i = 0; i < WorldData.persons.size(); ++i) {
+
+    		if (WorldData.mvmnts.get(i) != null) {
+	    		switch (WorldData.persons.get(i).getCharState()) {
+	    		case REST:
+	    			break;
+	    		case MOVE:
+	    			WorldData.mvmnts.get(i).move();
+	    			break;
+	    		case ATTK:
+	    			WorldData.mvmnts.get(i).move();
+	    			break;
+	    		}
+    		}
+    	}
+    }
+	
+	public static void pause() {
 		/*
 		 * Set all persons CharState to REST.
 		*/
@@ -162,7 +180,7 @@ public class WorldData {
 		}
 	}
 	
-	public void play() {
+	public static void play() {
 		/*
 		 * Set all persons CharState to MOVE.
 		*/
@@ -172,7 +190,39 @@ public class WorldData {
 		}
 	}
 	
-    public void updateViewOrder() {
+	public static void useItem(int personIdx) {
+		/*
+		 * 
+		*/
+		
+		Item useable = eqSlots.get(personIdx).getEquipped(ItemType.USEABLE);
+		if (useable != null && !persons.get(personIdx).getCharState().equals(CharState.REST)) {
+			((Useable)eqSlots.get(personIdx).getEquipped(ItemType.USEABLE)).use();
+		}
+	}
+    
+    public static void removePerson(int idx) {
+    	/*
+    	 * 
+    	*/
+		
+		mvmnts.set(idx, null);
+		
+		charSprites.set(idx, null);
+		
+		anims.set(idx, null);
+		
+		viewOrder.remove(viewOrder.indexOf(colBoxes.get(0).get(idx)));
+		viewOrder.trimToSize();
+		for (int b = 0; b < colBoxes.size(); ++b) {
+			colBoxes.get(b).set(idx, null);
+		}
+		
+    }
+	
+//CONTROL--------------------------------------------------------------------------
+    
+    public static void updateViewOrder() {
     	/*
     	 *  
     	*/
@@ -214,8 +264,150 @@ public class WorldData {
     	}
     	
     }
-	
-//READ/WRITE-----------------------------------------------------------------------
+    
+    public static ArrayList<CollisionBox> getBoxes(ColType boxType) {
+    	/**
+    	 * This method will return the ArrayList in colBoxes that matches the
+    	 * given type.
+    	 * @see WorldData.java for ColType idx in colBoxes.
+    	*/
+    	
+    	ArrayList<CollisionBox> boxes;
+    	
+    	switch (boxType) {
+    	case WORLDBOX:
+    		boxes = WorldData.colBoxes.get(0);
+    		break;
+    	case HURTBOX:
+    		boxes = WorldData.colBoxes.get(1);
+    		break;
+    	case CHECKBOX:
+    		boxes = WorldData.colBoxes.get(2);
+    		break;
+    	case HITBOX:
+    		boxes = WorldData.colBoxes.get(3);
+    		break;
+    	case DETECTBOX:
+    		boxes = WorldData.colBoxes.get(4);
+    		break;
+    	default:
+    		boxes = null;
+    		break;
+    	}
+    	
+    	return boxes;
+    }
+    
+    public static CollisionBox getClosestBox(ColType boxType, int idx) {
+    	/*
+    	 * This method will return the CollisionBox of the given type that is
+    	 * closest to its worldBox.
+    	*/
+    	
+    	// All worldBoxes boxes and myBox at colBoxIndex.
+    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
+    	CollisionBox myBox = getBoxes(ColType.WORLDBOX).get(idx);
+    	CollisionBox otherBox;
+    	
+    	// Checking by midY
+    	double myX = myBox.getMidX();
+    	double myY = myBox.getMidY();
+    	double otherX;
+    	double otherY;
+    	
+    	// Absolute value of myX - otherX
+    	double diffX;
+    	double diffY;
+    	
+    	// Will store lowest value of diffX + diffY.
+    	double closestDiff = 1000;
+    	int closestIdx = 0;
+    	
+    	// For each worldBox
+    	for (int b = 0; b < boxes.size(); ++b) {
+    		
+    		otherBox = boxes.get(b);
+    		if (b != idx && otherBox != null) {
+    			
+    			// Get mid x/y vals for otherBox
+	    		otherX = otherBox.getMidX();
+	    		otherY = otherBox.getMidY();
+	    		
+	    		// Calculate difference between points.
+	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
+	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
+	    		if (diffX + diffY < closestDiff) {
+	    			closestDiff = diffX + diffY;
+	    			closestIdx = b;
+	    		}
+    		}
+    	}
+    	
+    	return boxes.get(closestIdx);
+    }
+    
+    public static ArrayList<CollisionBox> getBoxesWithinRange(ColType boxType, int idx, boolean useCheckBox) {
+    	/*
+    	 * This method will return all CollisionBoxes of given type in range 50.
+    	 * If useCheckBox is true, will check range from checkBox bounds instead 
+    	 * of worldBoxBounds.
+    	*/
+    	
+    	final int BOX_LIMIT = 4;
+    	final double RANGE = 50;
+    	ArrayList<CollisionBox> withinRange;
+    	
+    	// All worldBoxes boxes and myBox at colBoxIndex.
+    	ArrayList<CollisionBox> boxes = getBoxes(boxType);
+    	CollisionBox myBox;
+    	if (useCheckBox) {
+        	myBox = getBoxes(ColType.CHECKBOX).get(idx);
+    	}
+    	else {
+    		myBox = getBoxes(ColType.WORLDBOX).get(idx);
+    	}
+    	if (myBox == null) return null;
+    	CollisionBox otherBox;
+    	
+    	// Checking by midY
+    	double myX = myBox.getMidX();
+    	double myY = myBox.getMidY();
+    	double otherX;
+    	double otherY;
+    	
+    	// Absolute value of myX - otherX
+    	double diffX;
+    	double diffY;
+    	
+    	// For each worldBox
+    	withinRange = new ArrayList<CollisionBox>();
+    	for (int b = 0; b < boxes.size() && withinRange.size() < BOX_LIMIT; ++b) {
+    		
+    		otherBox = boxes.get(b);
+    		if (b != idx && otherBox != null) {
+    			
+    			// Get mid x/y vals for otherBox
+	    		otherX = otherBox.getMidX();
+	    		otherY = otherBox.getMidY();
+	    		
+	    		// Calculate difference between points.
+	    		diffX = Math.abs(Math.abs(myX) - Math.abs(otherX));
+	    		diffY = Math.abs(Math.abs(myY) - Math.abs(otherY));
+	    		if (diffX + diffY < RANGE) {
+	    			withinRange.add(otherBox);
+	    		}
+    		}
+    	}
+    	
+    	if (withinRange.isEmpty()) {
+    		return null;
+    	}
+    	else {
+    		return withinRange;
+    	}
+    }
+    
+//SAVE/LOAD------------------------------------------------------------------------
 	
     public void save() {
     	/**
@@ -227,24 +419,6 @@ public class WorldData {
     	/*
     	 * TODO: Load all saved data and apply to stage. 
     	*/
-    }
-    
-    public void removePerson(int idx) {
-    	/*
-    	 * 
-    	*/
-		
-		mvmnts.set(idx, null);
-		
-		charSprites.set(idx, null);
-		
-		anims.set(idx, null);
-		
-		for (int b = 0; b < colBoxes.size(); ++b) {
-			Movement.colBoxes.get(b).set(idx, null);
-			colBoxes.get(b).set(idx, null);
-		}
-		
     }
 
 }

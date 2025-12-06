@@ -1,6 +1,7 @@
 package item.useable;
 
 import arenaEnum.personStats.StatType;
+import worldStage.WorldData;
 
 public class StatPot extends Useable {
 	/**
@@ -85,10 +86,10 @@ public class StatPot extends Useable {
 		
 		getSelf().arenaStat(getPotType()).heal(getHealAmnt());
 		
-		getSelf().bp().removeItem(this);
+		WorldData.bkpks.get(getSelf().getID()).removeItem(this);
 		
 		if (getAmnt() < 1) {
-			getSelf().equipSlot().unEquipItem(getItemType());
+			WorldData.eqSlots.get(getSelf().getID()).unEquipItem(getItemType());
 		}
 		
 		setInfo();

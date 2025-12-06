@@ -16,25 +16,22 @@ package sprite.charSprite;
 */
 
 import collision.CollisionBox;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableBooleanValue;
-import javafx.beans.value.ObservableIntegerValue;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Pos;
+import sprite.weaponSprite.WeaponSprite;
+import ui.overlay.StatBar;
 import javafx.scene.Group;
+import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
-import movement.Movement.Going;
-import sprite.weaponSprite.WeaponSprite;
-import ui.overlay.StatBar;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableIntegerValue;
+import javafx.beans.value.ObservableStringValue;
+import javafx.beans.value.ChangeListener;
 
 public abstract class CharacterSprite{
     /**
@@ -171,8 +168,8 @@ public abstract class CharacterSprite{
 				"-fx-accent: maroon; "
 				+ "-fx-min-width: 32px; "
 				+ "-fx-max-width: 32px; "
-				+ "-fx-min-height: 10px; "
-				+ "-fx-max-height: 10px;"
+				+ "-fx-min-height: 8px; "
+				+ "-fx-max-height: 8px;"
 		);
     }
     

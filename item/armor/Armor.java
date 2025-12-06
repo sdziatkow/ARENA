@@ -28,7 +28,6 @@ public abstract class Armor extends Item {
 	
 	private double basePhysDef;
 	private double baseMagDef;
-	private ArenaPerson self;
 	
 //CONSTRUCTORS---------------------------------------------------------------------
 	

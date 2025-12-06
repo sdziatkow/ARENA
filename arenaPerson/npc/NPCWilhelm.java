@@ -15,19 +15,8 @@ package arenaPerson.npc;
  * @author          Sean Dziatkowiec
 */
 
-import movement.NpcMovement;
-import sprite.charSprite.EnemyTestSprite;
-import sprite.charSprite.PlayerSprite;
-import worldStage.WorldStage;
 
 import arenaEnum.personInfo.CharClass;
-import arenaEnum.personInfo.CharState;
-import arenaEnum.personStats.StatType;
-import arenaEnum.itemInfo.ItemType;
-import item.weapon.SteelGreatAxe;
-import item.weapon.Weapon;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 
 
 public class NPCWilhelm extends ArenaNPC {

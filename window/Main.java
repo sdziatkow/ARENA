@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import animate.Animate;
-import item.Item;
-import arenaEnum.itemInfo.ItemType;
-import item.useable.Useable;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -20,9 +16,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import movement.PlayerMovement;
+import ui.Menus;
+import ui.invMenu.InventoryMenu;
+import ui.statMenu.StatMenu;
 import worldStage.StageOne;
+import worldStage.WorldData;
 import worldStage.WorldStage;
 
 public class Main extends Application {
@@ -42,8 +41,8 @@ public class Main extends Application {
 	private EventHandler<MouseEvent> onMouseClick;
 	private Timer gameTimer;
 	
-	DoubleProperty mouseX;
-	DoubleProperty mouseY;
+	private DoubleProperty mouseX;
+	private DoubleProperty mouseY;
 	
 	
 	public void init() {
@@ -53,8 +52,9 @@ public class Main extends Application {
 		
 		cam = new ParallelCamera();
 		cam.setCache(true);
+		
 		controller = new Controller();
-		currStage = new StageOne(this);
+		currStage = new StageOne();
 		
 		mouseX = new SimpleDoubleProperty();
 		mouseY = new SimpleDoubleProperty();
@@ -81,24 +81,29 @@ public class Main extends Application {
 				case W:
 				case A:
 				case S:
-				case D:
+				case D: // MOVE.
 					controller.playerMovement(eventType, key);
 					break;
-				case I:
+				case Q: // USE ITEM.
+					WorldData.useItem(0);
+					break;
+				case I: // INVENTORY MENU.
 					controller.toggleInvMenu();
-					currStage.dispInvMenu();
-					break;
-				case Q:
-					
-					Item useable = currStage.DATA.persons.get(0).equipSlot().getEquipped(ItemType.USEABLE);
-					if (useable != null && !controller.showingInvMenu() && !controller.showingStatMenu()) {
-						((Useable)currStage.DATA.persons.get(0).equipSlot().getEquipped(ItemType.USEABLE)).use();
+					if (StatMenu.main.isVisible()) {
+						controller.toggleStatMenu();
 					}
+					Menus.dispInvMenu();
 					break;
-					
-				case U:
+				case U: // STAT MENU.
 					controller.toggleStatMenu();
-					currStage.dispStatMenu();
+					if (InventoryMenu.main.isVisible()) {
+						controller.toggleInvMenu();
+					}
+					Menus.dispStatMenu();
+					break;
+				case P: // MENU ID.
+					Menus.nextID();
+					System.out.println("NOW SHOWING: " + Menus.ID.get());
 					break;
 				default:
 					break;
@@ -123,62 +128,16 @@ public class Main extends Application {
 					controller.playerMovement(eventType, key);
 					break;
 				case V: // Toggle visibility of worldBoxes and hurtBoxes.
-					for (int box = 0; box < currStage.DATA.colBoxes.get(0).size(); ++box) {
+					for (int t = 0; t < WorldData.colBoxes.size(); ++t) {
+						for (int b = 0; b < WorldData.colBoxes.get(t).size(); ++b) {
 						
-						if (currStage.DATA.colBoxes.get(0).get(box) != null) {
-							if (currStage.DATA.colBoxes.get(0).get(box).getColBox().getOpacity() != 0) {
-								currStage.DATA.colBoxes.get(0).get(box).getColBox().setOpacity(0);
-							}
-							else {
-								currStage.DATA.colBoxes.get(0).get(box).getColBox().setOpacity(100);
-							}
-						}
-					}
-					
-					for (int box = 0; box < currStage.DATA.colBoxes.get(1).size(); ++box) {
-						
-						if (currStage.DATA.colBoxes.get(1).get(box) != null) {
-							if (currStage.DATA.colBoxes.get(1).get(box).getColBox().getOpacity() != 0) {
-								currStage.DATA.colBoxes.get(1).get(box).getColBox().setOpacity(0);
-							}
-							else {
-								currStage.DATA.colBoxes.get(1).get(box).getColBox().setOpacity(100);
-							}
-						}
-					}
-					
-					for (int box = 0; box < currStage.DATA.colBoxes.get(2).size(); ++box) {
-						
-						if (currStage.DATA.colBoxes.get(2).get(box) != null) {
-							if (currStage.DATA.colBoxes.get(2).get(box).getColBox().getOpacity() != 0) {
-								currStage.DATA.colBoxes.get(2).get(box).getColBox().setOpacity(0);
-							}
-							else {
-								currStage.DATA.colBoxes.get(2).get(box).getColBox().setOpacity(100);
-							}
-						}
-					}
-					
-					for (int box = 0; box < currStage.DATA.colBoxes.get(3).size(); ++box) {
-						
-						if (currStage.DATA.colBoxes.get(3).get(box) != null) {
-							if (currStage.DATA.colBoxes.get(3).get(box).getColBox().getOpacity() != 0) {
-								currStage.DATA.colBoxes.get(3).get(box).getColBox().setOpacity(0);
-							}
-							else {
-								currStage.DATA.colBoxes.get(3).get(box).getColBox().setOpacity(100);
-							}
-						}
-					}
-					
-					for (int box = 0; box < currStage.DATA.colBoxes.get(4).size(); ++box) {
-						
-						if (currStage.DATA.colBoxes.get(4).get(box) != null) {
-							if (currStage.DATA.colBoxes.get(4).get(box).getColBox().getOpacity() != 0) {
-								currStage.DATA.colBoxes.get(4).get(box).getColBox().setOpacity(0);
-							}
-							else {
-								currStage.DATA.colBoxes.get(4).get(box).getColBox().setOpacity(100);
+							if (WorldData.colBoxes.get(t).get(b) != null) {
+								if (WorldData.colBoxes.get(t).get(b).getColBox().getOpacity() != 0) {
+									WorldData.colBoxes.get(t).get(b).getColBox().setOpacity(0);
+								}
+								else {
+									WorldData.colBoxes.get(t).get(b).getColBox().setOpacity(100);
+								}
 							}
 						}
 					}
@@ -201,8 +160,6 @@ public class Main extends Application {
 			}
 		};
 		
-		
-		
 		scene.setOnKeyPressed(onPress);
 		scene.setOnKeyReleased(onRelease);
 		scene.setOnMouseClicked(onMouseClick);
@@ -213,14 +170,19 @@ public class Main extends Application {
         stage.setHeight(500);
         stage.show();
         
-		((PlayerMovement)currStage.DATA.mvmnts.get(0)).setCntrl(controller);
-		((PlayerMovement)currStage.DATA.mvmnts.get(0)).setMousePos(mouseX, mouseY);
+		currStage.onLaunch();
+		((PlayerMovement)WorldData.mvmnts.get(0)).setCntrl(controller);
+		((PlayerMovement)WorldData.mvmnts.get(0)).setMousePos(mouseX, mouseY);
+    	WorldStage.OVERLAY.getOverlayGroup().getChildren().add(cam);
+    	WorldStage.OVERLAY.getOverlayGroup().setLayoutX(-(stage.getWidth() / 2));
+		WorldStage.OVERLAY.getOverlayGroup().setLayoutY(-(stage.getHeight() / 2));
+		
         gameTimer = new Timer();
         gameTimer.scheduleAtFixedRate(new TimerTask() {
 
 			public void run() {
-				Platform.runLater(() -> currStage.DATA.updateViewOrder());
-				Platform.runLater(() -> currStage.runPersonStates());
+				Platform.runLater(() -> WorldData.updateViewOrder());
+				Platform.runLater(() -> WorldData.runPersonStates());
 			}
         	
         }, 0, 32);
@@ -232,53 +194,9 @@ public class Main extends Application {
 			}
         	
         }, 0, 5000);
-        
-		currStage.onLaunch();
-		currStage.getOverlay().getOverlayGroup().getChildren().add(cam);
-        
     }
 
 //GETTERS--------------------------------------------------------------------------  
-    
-    public Stage getRoot() {
-    	/*
-    	 * 
-    	*/
-    	
-    	return stage;
-    }
-    
-    public Scene getScene() {
-    	/*
-    	 * 
-    	*/
-    	
-    	return scene;
-    }
-    
-    public ParallelCamera getCam() {
-    	/*
-    	 * 
-    	*/
-    	
-    	return cam;
-    }
-    
-    public Controller getController() {
-    	/**
-    	 * 
-    	*/
-    	
-    	return controller;
-    }
-    
-    public WorldStage getStage() {
-    	/**
-    	 * 
-    	*/
-
-    	return currStage;
-    }
     
 //MAIN-----------------------------------------------------------------------------
     

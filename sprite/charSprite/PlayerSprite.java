@@ -14,13 +14,12 @@ package sprite.charSprite;
  * @author          Sean Dziatkowiec
 */
 
-import collision.CollisionBox;
 import arenaEnum.ColType;
+import collision.CollisionBox;
+import sprite.FrameGen;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import movement.Movement.Going;
-import sprite.FrameGen;
 
 public class PlayerSprite extends CharacterSprite {
 	/**
@@ -30,9 +29,7 @@ public class PlayerSprite extends CharacterSprite {
 	private FrameGen frameGen;
 	
 	private double[] worldBoxBounds;
-	private double[] hurtBoxBounds;
 	private double[] hitBoxBounds;
-	private double[] checkBoxBounds;
 
 //CONSTRUCTORS---------------------------------------------------------------------
 	
