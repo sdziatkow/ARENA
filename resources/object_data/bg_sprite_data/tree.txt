@@ -1,0 +1,1 @@
+pathToFile|file:resources/sprites/bg_sprites/tree/idle_1x1_96x96.png

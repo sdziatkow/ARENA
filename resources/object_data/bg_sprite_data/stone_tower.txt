@@ -1,0 +1,1 @@
+pathToFile|file:resources/sprites/bg_sprites/stone_tower/idle_1x1_48x128.png

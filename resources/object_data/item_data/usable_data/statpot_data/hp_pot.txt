@@ -1,0 +1,4 @@
+pickableSheet|file:resources/sprites/items/potion/idle_red_1x1_16x16.png
+name|Health Potion
+value|29
+statMod|PLUS;VAL;HP;40.0;PLUS;VAL;SP;20.0

@@ -1,0 +1,9 @@
+pickableSheet|file:resources/sprites/wpns/sword/idle_1x1_16x16.png
+wpnSheet|file:resources/sprites/wpns/sword/attk_4x4_32x32.png
+name|Steel Sword
+value|168
+statMod|PLUS;VAL;VIGOR;10;PLUS;VAL;STRENGTH;10
+attrScaling|VIGOR;0.5;STRENGTH;0.5
+dmgType|PHYS
+maxDmg|37.5
+minDmg|32.1

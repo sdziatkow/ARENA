@@ -1,0 +1,1 @@
+testWorld|resources/object_data/world_data/test_world.txt

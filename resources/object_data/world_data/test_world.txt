@@ -1,0 +1,6 @@
+pathToTileSet|resources/object_data/tile_set_data/grass_area.txt
+spawnPoint|1500;1500
+gameChars|GC001:0;100:true:false,GC002:0;400:true:true,GC002:0;500:true:true,GC002:0;600:true:true
+staticSprites|BG000:100;-50
+storages|SS000:-50;-50
+items|IW000:-50;0,IU000:-50;80,IU000:-60;60

@@ -1,0 +1,4 @@
+mvSheet|file:resources/sprites/character/log/move_4x4_32x32.png
+dialogue|resources/object_data/dialogue_data/log.txt
+name|Log
+class|MONK

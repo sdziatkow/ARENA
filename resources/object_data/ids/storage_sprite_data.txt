@@ -1,0 +1,1 @@
+SS000|resources/object_data/storage_data/wood_chest.txt

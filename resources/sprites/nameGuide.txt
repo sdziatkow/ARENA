@@ -1,0 +1,21 @@
+FOLDER: somewhat descriptive name of what the sprite is /  what it looks like / what it is supposed to look like.
+
+FILE NAME:
+	action_AxB_CxD
+	
+		action: what the sprite is doing in its animation.
+		A = total sets of frames.
+		B = total frames per set.
+		C = width of each frame.
+		D = height of each frame.
+		
+	for (A) sets of frames {
+		for (B) frames per set {
+			store frame of size (C)x(D)
+			move over (C) pixels to next frame
+		}
+		move down (D) pixels to next set of frames.
+	}
+
+
+		

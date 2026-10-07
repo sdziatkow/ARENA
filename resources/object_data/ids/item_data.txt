@@ -1,0 +1,2 @@
+IW000|resources/object_data/item_data/wpn_data/steel_sword.txt
+IU000|resources/object_data/item_data/usable_data/statpot_data/hp_pot.txt

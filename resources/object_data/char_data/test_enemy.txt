@@ -1,0 +1,4 @@
+mvSheet|file:resources/sprites/character/test_enemy/move_4x4_16x32.png
+attkSheet|file:resources/sprites/character/test_enemy/attk_4x4_32x32.png
+name|TEST-ENEMY
+class|BRUTE

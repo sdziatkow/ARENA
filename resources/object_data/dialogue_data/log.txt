@@ -1,0 +1,3 @@
+name|Log
+dialogues|I am log;Who are you?
+reset|true

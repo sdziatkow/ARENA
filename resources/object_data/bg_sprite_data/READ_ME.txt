@@ -1,0 +1,1 @@
+only for sprites with no data relating to them other than their own Object's fields.

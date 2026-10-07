@@ -1,0 +1,1 @@
+pathToAnimSprite|file:resources/sprites/bg_sprites/chest/open_1x3_20x20.png

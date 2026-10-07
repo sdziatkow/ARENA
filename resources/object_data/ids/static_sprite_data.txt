@@ -1,0 +1,1 @@
+BG000|resources/object_data/bg_sprite_data/stone_tower.txt

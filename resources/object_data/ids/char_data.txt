@@ -1,0 +1,3 @@
+GC000|resources/object_data/char_data/default_char.txt
+GC001|resources/object_data/char_data/log.txt
+GC002|resources/object_data/char_data/test_enemy.txt

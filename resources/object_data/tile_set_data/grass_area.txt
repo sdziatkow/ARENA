@@ -1,0 +1,5 @@
+pathToFloor|file:resources/sprites/bottom/grass/large_1x1_96x96.png
+pathToBorder|file:resources/sprites/bg_sprites/tree/idle_1x1_96x96.png
+width|40
+height|40
+offset|0.4
