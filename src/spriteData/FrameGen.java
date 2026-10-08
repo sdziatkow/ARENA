@@ -19,7 +19,7 @@ public class FrameGen {
             if (Character.isDigit(next.charAt(0))) {
                 if (dataCount >= data.length) {
                     throw new IllegalArgumentException
-                            ("Given file is not named correctly. See resources/sprites/nameGuide.txt");
+                            ("Given file is not named correctly. See resources/sprites/NAME_GUIDE.txt");
                 }
                 data[dataCount] = Integer.parseInt(next);
                 ++dataCount;
